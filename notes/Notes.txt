@@ -1,0 +1,40 @@
+Notes:
+- https://www.scenedetect.com/, use for breaking video into clips for GPT
+- https://superuser.com/questions/1421133/extract-i-frames-to-images-quickly, 
+	- Get I frames from video
+
+Python ffmpeg lib
+- https://github.com/kkroening/ffmpeg-python
+- https://thepythoncode.com/article/extract-media-metadata-in-python
+
+Azure OpenAi Stuff
+- https://www.youtube.com/watch?v=qj5TzcdHJxE (setup)
+- https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits, rate limits
+- https://vi.microsoft.com/en-us, Azure already has some tools for video and AI
+- https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=cognitive-services
+	List of all Azure AI Stuff
+
+OpenAI optimize for scale
+- https://platform.openai.com/docs/guides/rate-limits/error-mitigation?context=tier-free
+- Note: take a fat fucking note for batch prompting most important shit, you can prompt may thing at once, just with the draw back of slow response time
+- https://platform.openai.com/docs/guides/production-best-practices 
+
+FFmpeg with node.js and setting it up with a queue system
+- https://github.com/fluent-ffmpeg/node-fluent-ffmpeg
+- https://stackoverflow.com/questions/71339353/how-can-i-implement-a-queue-in-express-app
+
+Top YouTube ChatGPT App
+- https://chromewebstore.google.com/detail/youtube-summary-with-chat/nmmicjeknamkfloonkhhcjmomieiodli/reviews
+- https://getnotable.ai/n/tuxDwYgCwR
+
+Other AI API can use to build system, note: OpenAI has img interpretation system
+- https://docs.anthropic.com/claude/docs#example-prompts--templates
+- https://medium.com/version-1/analysis-of-claude-an-ai-assistant-by-anthropic-1e4aa48c5fe3
+- https://www.pluralsight.com/resources/blog/data/what-is-claude-ai
+
+Chrome ext template that uses react 
+- https://github.com/lxieyang/chrome-extension-boilerplate-react
+
+Side Note, AI search engines, for doing work
+- https://www.searchenginejournal.com/ai-search-engines/497061/
+- https://nordvpn.com/blog/ai-search-engines/
