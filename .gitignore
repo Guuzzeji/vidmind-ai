@@ -1,0 +1,9 @@
+# Mac os stuff
+.DS_Store
+
+# Files
+*.pdf
+*.mp3
+*.mp4
+*.jpg
+*.zip
