@@ -13,29 +13,35 @@ DATABASE_VIDS_TABLE = {}  # Should use sqlite server for this
 def handle_video_dl():
     json_req = request.json
 
+    if json_req.get("vid_id") in DATABASE_VIDS_TABLE:
+        return {
+            "ok": True,
+            "clips": DATABASE_VIDS_TABLE[json_req.get("vid_id")]
+        }
+
     vid_paths = yt.download_yt_video(json_req.get("vid_id"))
 
-    clip_list, _ = ffmpeg_processing.create_clips(
+    clip_list = ffmpeg_processing.create_clips(
         vid_paths["vid"], vid_paths["clip_folder"])
 
-    clips_paths = ffmpeg_processing.create_frames(
-        vid_paths["clip_folder"], vid_paths["frames_folders"], clip_list)
-
-    DATABASE_VIDS_TABLE[json_req.get("vid_id")] = {
-        "vid_path": vid_paths,
-        "clip_list": clip_list,
-        "clip_folders": clips_paths,
-    }
-
-    print(DATABASE_VIDS_TABLE)
+    # clips_paths = ffmpeg_processing.create_frames(
+    #     vid_paths["clip_folder"], vid_paths["frames_folders"], clip_list)
 
     clips_timecodes = []
     for i, clips in enumerate(clip_list):
         clips_timecodes.append({
             "start": clips[0].get_seconds(),
             "end": clips[1].get_seconds(),
-            "num_frames": len(os.listdir(clips_paths[i]))
+            # "num_frames": len(os.listdir(clips_paths[i]))
         })
+
+    DATABASE_VIDS_TABLE[json_req.get("vid_id")] = {
+        "vid_path": vid_paths,
+        "clip_list": clips_timecodes,
+        # "clip_folders": clips_paths,
+    }
+
+    print(DATABASE_VIDS_TABLE)
 
     return {
         "ok": True,
@@ -61,7 +67,7 @@ def handle_clips():
     }
 
 
-@app.route("/API/get-video-info", methods=["GET"])
+@app.route("/API/get-video-info", methods=["POST"])
 def handle_yt_info():
     json_req = request.json
     info = yt.get_yt_info(json_req.get("vid_id"))
