@@ -15,7 +15,8 @@ def handle_video_dl():
     if json_req.get("vid_id") in DATABASE_VIDS_TABLE:
         return {
             "ok": True,
-            "clips": DATABASE_VIDS_TABLE[json_req.get("vid_id")]["clip_list"]
+            "clips": DATABASE_VIDS_TABLE[json_req.get("vid_id")]["clip_list"],
+            "vid_paths": DATABASE_VIDS_TABLE[json_req.get("vid_id")]["vid_paths"]
         }
 
     vid_paths = yt.download_yt_video(json_req.get("vid_id"))
@@ -42,7 +43,8 @@ def handle_video_dl():
 
     return {
         "ok": True,
-        "clips": clips_timecodes
+        "clips": clips_timecodes,
+        "vid_paths": vid_paths,
     }
 
 
