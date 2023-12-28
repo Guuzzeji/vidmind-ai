@@ -56,7 +56,7 @@ def handle_clips():
 
     # Convert to base64 that can be sent back
     for i in range(0, len(img_list)):
-        img_list[i] = str(img_list[i])
+        img_list[i] = str(img_list[i]).removeprefix("b'")
 
     return {
         "ok": True,
