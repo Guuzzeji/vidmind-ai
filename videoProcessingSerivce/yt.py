@@ -8,34 +8,31 @@ import config
 # ! https://pytube.io/en/latest/api.html#pytube.Stream.stream_to_buffer
 
 
-def download_yt_video(id: str) -> dict[str, str]:
-    # vid_id = id.replace("https://www.youtube.com/watch?v=", "")
-    vid_path = os.path.join(config.CURRENT_PATH, config.WORKING_DIR, id)
+def download_yt_video(vid_id: str) -> dict[str, str]:
+    vid_path = os.path.join(config.CURRENT_PATH, config.WORKING_DIR, vid_id)
 
     clips_path = os.path.join(vid_path, "clips")
-    frames_path = os.path.join(vid_path, "frames")
 
     os.mkdir(vid_path)
     os.mkdir(clips_path)
-    os.mkdir(frames_path)
 
-    yt = YouTube("https://www.youtube.com/watch?v="+id)
+    yt = YouTube("https://www.youtube.com/watch?v="+vid_id)
     yt.streams.filter(resolution="720p", only_video=True).first().download(
         output_path=vid_path, filename="video.mp4")
-    yt.streams.filter(only_audio=True).first().download(
+
+    yt.streams.filter(only_audio=True, progressive=False, abr="128kbps").first().download(
         output_path=vid_path, filename="audio.mp3")
 
     return {
         "vid": os.path.join(vid_path, "video.mp4"),
         "audio": os.path.join(vid_path, "audio.mp3"),
         "clip_folder": clips_path,
-        "frames_folders": frames_path,
         "vid_folder": vid_path
     }
 
 
-def get_yt_info(id: str) -> dict[str, str]:
-    url = "https://www.youtube.com/watch?v="+id
+def get_yt_info(vid_id: str) -> dict[str, str]:
+    url = "https://www.youtube.com/watch?v="+vid_id
     yt = YouTube(url)
 
     # From https://github.com/pytube/pytube/issues/1626
