@@ -11,9 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dqbd/tiktoken": "^1.0.7",
     "axios": "^1.6.3",
     "dotenv": "^16.3.1",
+    "gpt-tokenizer": "^2.1.2",
     "langchain": "^0.0.212",
     "openai": "^4.24.1"
   }
