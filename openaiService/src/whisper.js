@@ -13,6 +13,8 @@ export async function createTranscript(file) {
         response_format: 'verbose_json'
     });
 
+    //console.log(transcription);
+
     let cleanTranscription = [];
     for (let x = 0; x < transcription.segments.length; x++) {
         cleanTranscription.push({

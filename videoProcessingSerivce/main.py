@@ -10,4 +10,4 @@ if os.path.exists(path_to_workdir):
 os.mkdir(path_to_workdir)
 
 if __name__ == '__main__':
-    app.run(host=config.HOST, port=config.PORT)
+    app.run(host=config.HOST, port=config.PORT, debug=True)

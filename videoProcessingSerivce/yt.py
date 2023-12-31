@@ -20,7 +20,7 @@ def download_yt_video(vid_id: str) -> dict[str, str]:
     yt.streams.filter(resolution="720p", only_video=True).first().download(
         output_path=vid_path, filename="video.mp4")
 
-    yt.streams.filter(only_audio=True, progressive=False, abr="128kbps").first().download(
+    yt.streams.filter(only_audio=True, progressive=False).first().download(
         output_path=vid_path, filename="audio.mp3")
 
     return {

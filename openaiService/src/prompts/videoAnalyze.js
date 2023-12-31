@@ -1,14 +1,10 @@
 import { PromptTemplate } from "langchain/prompts";
 
 export const VideoAnalysisPrompt = new PromptTemplate({
-    inputVariables: ["description", "title", "keywords", "audio_transcription", "start_time", "end_time"],
+    inputVariables: ["description", "title", "keywords", "start_time", "end_time"],
     template: `As a professional video analyzer, consider the following elements to generate a detailed summary of a video:
 
 1) Context Establishment: Begin by understanding the context. Extract information from the provided video description: "{description}" and title "{title}". Use the following keywords to capture the essence of the video: "{keywords}"
-
-Additionally, if available, leverage the audio transcription:
-
-Audio Transcription: "{audio_transcription}"
 
 Specify the starting and ending time codes of the video:
 
@@ -18,15 +14,15 @@ Video Time Codes: "{start_time}" to "{end_time}"
 
 3) Handle Blank Images Scenario: If the group of images is blank and you cannot generate a response even with the given context, respond with the term: "nothing"
 
-4) Focus on Key Aspects: Concentrate on describing objects, people, actions, and pay particular attention to any text found within the images. Contextualize each element within the overall video sequence.
+4) Focus on Key Aspects: Concentrate on describing objects, people, actions, charts, graphs, diagramas, and pay particular attention to any text found within the images (this include any code found within the images). Contextualize each element within the overall video sequence.
 
 5) Assumption in Ambiguity: If any image appears unclear, leverage the information provided by other images, the video title, description, audio transcription, and video time codes to make informed assumptions.
 
-6) Comprehensive Single Summary: Formulate a single, cohesive paragraph summarizing the collective content of all images. Keep the summary concise, limiting the length to a maximum of 1 to 3 paragraphs.
+6) Comprehensive Summary: Formulate cohesive paragraph summarizing the collective content of all images. Keep the summary concise, limiting the length to a maximum of 1 to 3 sentences.
 
 7) Response Format: Respond back to the user with the following format: "Within the video between 'start_time' to 'end_time', 'your response to the prompt'
 
-Remember that you are a professional video analyzer, employing a chain of reasoning to synthesize information from various sources and create an insightful summary.`,
+Remember that you are a professional video analyzer, employing a chain of reasoning to synthesize information from various sources and create an insightful summary. If you cannot generate a response please say "nothing".`,
 });
 
 export function secondsToTimeCode(seconds) {
