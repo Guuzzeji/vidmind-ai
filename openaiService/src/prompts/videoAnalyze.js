@@ -1,28 +1,22 @@
 import { PromptTemplate } from "langchain/prompts";
 
+// TODO [x]: Rewrite prompt summary part (part 5) to focus on give a detail description of the collective images reather than a summary
+
 export const VideoAnalysisPrompt = new PromptTemplate({
-    inputVariables: ["description", "title", "keywords", "start_time", "end_time"],
-    template: `As a professional video analyzer, consider the following elements to generate a detailed summary of a video:
+    inputVariables: ["audio_transcription", "title"],
+    template: `As a professional image analyzer, your task is to meticulously generate a general description based on screenshots taken from a video using the following steps:
 
-1) Context Establishment: Begin by understanding the context. Extract information from the provided video description: "{description}" and title "{title}". Use the following keywords to capture the essence of the video: "{keywords}"
-
-Specify the starting and ending time codes of the video:
-
-Video Time Codes: "{start_time}" to "{end_time}"
-
-2) Image Sequence Analysis: Examine a sequence of 10 images derived from the video. Recognize that the images are interconnected and dependent on each other in a sequential manner.
-
-3) Handle Blank Images Scenario: If the group of images is blank and you cannot generate a response even with the given context, respond with the term: "nothing"
-
-4) Focus on Key Aspects: Concentrate on describing objects, people, actions, charts, graphs, diagramas, and pay particular attention to any text found within the images (this include any code found within the images). Contextualize each element within the overall video sequence.
-
-5) Assumption in Ambiguity: If any image appears unclear, leverage the information provided by other images, the video title, description, audio transcription, and video time codes to make informed assumptions.
-
-6) Comprehensive Summary: Formulate cohesive paragraph summarizing the collective content of all images. Keep the summary concise, limiting the length to a maximum of 1 to 3 sentences.
-
-7) Response Format: Respond back to the user with the following format: "Within the video between 'start_time' to 'end_time', 'your response to the prompt'
-
-Remember that you are a professional video analyzer, employing a chain of reasoning to synthesize information from various sources and create an insightful summary. If you cannot generate a response please say "nothing".`,
+Step 1) Context Establishment: Initiate by comprehending the context. Extract significant details from the provided video title: "{title}". Utilize this information as a guiding framework for your general description. Additionally, if available, extract insights from the audio transcription: "{audio_transcription}".
+    
+Step 2) Image Sequence Analysis: Scrutinize a sequence of images derived from a video. Acknowledge the interconnection and sequential dependence of these screenshots.
+    
+Step 3) Focus on Key Aspects: Direct your attention towards overarching concepts, ideas, charts, text (including code), and other essential elements found collectively within the images. Provide a general description that encapsulates the overall content without detailing each individual screenshot.
+    
+Step 4) Assumption in Ambiguity: In the event of unclear images, draw upon information from other screenshots, the video title, and the audio transcription to make informed assumptions.
+    
+Step 5) General Description: Craft a concise yet highly detailed general description of the collective content of all screenshots. Integrate the context you established to enrich the depiction. Also, transcribe any text found within the images. Limit the general description to BETWEEN 1 and 2 sentences, with each sentence length BETWEEN 75 and 125 words. Exclude the video title from your response.
+    
+Remember your role as a professional image analyzer, utilizing a structured chain of reasoning to synthesize information and deliver an insightful general description. In the event you cannot generate a response, state: "I cannot generate anything with the information given". YOU CAN DO IT AND TRY YOUR BEST!`
 });
 
 export function secondsToTimeCode(seconds) {
@@ -38,4 +32,4 @@ export function secondsToTimeCode(seconds) {
         + '.' + timeMillSeconds.toString();;
 
     return timeString;
-}
+};
