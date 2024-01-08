@@ -2,7 +2,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { HumanMessage } from "langchain/schema";
 import { VideoAnalysisPrompt, secondsToTimeCode } from './src/prompts/videoAnalyze.js';
-import { createTranscript, findTranscriptionWithBounds } from './src/whisper.js';
+import { createTranscript, findTranscriptionWithBounds, trimTextByTokenAmount } from './src/whisper.js';
 import { encode } from 'gpt-tokenizer';
 import 'dotenv/config';
 import axios from 'axios';
@@ -19,7 +19,7 @@ import axios from 'axios';
 // TODO: Clean up video descprtion to take less token
 // TODO: Create a token algorthiem that can sort sort the array of prompts and set of langchain to do the correct amount of prompt process
 
-const TEST_VID_ID = "Nu8YGneFCWE";
+const TEST_VID_ID = "5o6IbenbaBw";
 
 
 let videoInfo = await axios.post("http://localhost:8080/API/process-yt-video", {
@@ -34,50 +34,45 @@ let videoMetaData = await axios.post("http://localhost:8080/API/get-video-info",
 videoMetaData = videoMetaData.data;
 // console.log(videoMetaData);
 
-// let transcript = await createTranscript(videoInfo.vid_paths.audio);
+let transcript = await createTranscript(videoInfo.vid_paths.audio);
 
 let prompts = [];
 for (let x = 0; x < videoInfo.clips.length; x++) {
-    // let text = findTranscriptionWithBounds(transcript, videoInfo.clips[x].start, videoInfo.clips[x].end);
-    // console.log(text);
+    let text = findTranscriptionWithBounds(transcript, videoInfo.clips[x].start, videoInfo.clips[x].end);
+    text = trimTextByTokenAmount(text, 130);
+    console.log(text);
 
     let prompt = await VideoAnalysisPrompt.format({
-        description: videoMetaData.description.replaceAll("\\n", " "),
-        keywords: videoMetaData.keywords.length == 0 ? "None" : videoMetaData.keywords.toString(),
+        // description: videoMetaData.description.replaceAll("\\n", " "),
+        // keywords: videoMetaData.keywords.length == 0 ? "None" : videoMetaData.keywords.slice(0, videoMetaData.keywords.length - 3).toString(),
         title: videoMetaData.title,
-        // audio_transcription: text,
-        start_time: secondsToTimeCode(videoInfo.clips[x].start),
-        end_time: secondsToTimeCode(videoInfo.clips[x].end)
+        audio_transcription: text,
+        // start_time: secondsToTimeCode(videoInfo.clips[x].start),
+        // end_time: secondsToTimeCode(videoInfo.clips[x].end)
     });
 
     // console.log("======");
     // console.log(prompt);
-    console.log(encode(prompt).length);
+    console.log(encode(prompt).length + 85);
 
     let imgs = await axios.post("http://localhost:8080/API/frames-from-video", {
         "vid_id": TEST_VID_ID,
-        "clip_num": x + 1
+        "clip_num": x
     });
     imgs = imgs.data;
     // console.log(imgs);
-
-
-    for (let y = 0; y < imgs.frames.length; y++) {
-        imgs.frames[y] = {
-            "type": "image_url",
-            "image_url": {
-                "url": "data:image/jpeg;base64," + imgs.frames[y],
-                "detail": "low",
-            },
-        };
-    }
-
     // console.log(imgs.frames);
 
     prompts.push([
         new HumanMessage({
             content: [
-                ...imgs.frames,
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "data:image/jpeg;base64," + imgs.frames,
+                        "detail": "low",
+                    }
+                },
                 { "type": "text", "text": prompt }
             ]
         })
@@ -86,18 +81,19 @@ for (let x = 0; x < videoInfo.clips.length; x++) {
 
 // console.log(prompts[0][0].content);
 
-// const chat = new ChatOpenAI({
-//     openAIApiKey: process.env.OPENAI_API_KEY,
-//     modelName: "gpt-4-vision-preview",
-//     temperature: 0,
-//     maxTokens: 150,
-//     maxConcurrency: 1,
-//     streaming: true,
-// });
+const chat = new ChatOpenAI({
+    openAIApiKey: process.env.OPENAI_API_KEY,
+    modelName: "gpt-4-vision-preview",
+    temperature: 0,
+    maxTokens: 150,
+    maxConcurrency: 3,
+    streaming: false,
+    stop: "\n"
+});
 
-// let respones = await chat.batch(prompts);
+let respones = await chat.batch(prompts);
 
-// console.log(respones);
+console.log(respones);
 
 
 
