@@ -7,6 +7,10 @@ import config
 # ! May want to switch this to bufferio, can do this using stream_to_buffer
 # ! https://pytube.io/en/latest/api.html#pytube.Stream.stream_to_buffer
 
+# TODO: Audio chunk, doing this will make audio processing easier on OPENAI end
+# - https://audiosegment.readthedocs.io/en/latest/audiosegment.html
+# - https://stackoverflow.com/questions/32073278/python-convert-mp3-to-wav-with-pydub
+
 
 def download_yt_video(vid_id: str) -> dict[str, str]:
     vid_path = os.path.join(config.CURRENT_PATH, config.WORKING_DIR, vid_id)
