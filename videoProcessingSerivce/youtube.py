@@ -11,11 +11,14 @@ import config
 def download_yt_video(vid_id: str) -> dict[str, str]:
     vid_path = os.path.join(config.CURRENT_PATH, config.WORKING_DIR, vid_id)
 
+    # Creating working folders to store clips and frames
     clips_path = os.path.join(vid_path, "clips")
-
+    frame_path = os.path.join(vid_path, "frames")
     os.mkdir(vid_path)
     os.mkdir(clips_path)
+    os.mkdir(frame_path)
 
+    # ! Need to fix this b/c not all videos are 720p or have good audio
     yt = YouTube("https://www.youtube.com/watch?v="+vid_id)
     yt.streams.filter(resolution="720p", only_video=True).first().download(
         output_path=vid_path, filename="video.mp4")
@@ -27,7 +30,8 @@ def download_yt_video(vid_id: str) -> dict[str, str]:
         "vid": os.path.join(vid_path, "video.mp4"),
         "audio": os.path.join(vid_path, "audio.mp3"),
         "clip_folder": clips_path,
-        "vid_folder": vid_path
+        "vid_folder": vid_path,
+        "frame_folder": frame_path
     }
 
 
