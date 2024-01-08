@@ -36,17 +36,12 @@ export function findTranscriptionWithBounds(transcription, start, end) {
     // console.log(startIndex, endIndex);
 
     let boundScripts = transcription.slice(startIndex, startIndex + endIndex);
-    let textScript = "";
 
     if (boundScripts.length == 0) {
         return "None";
     }
 
-    for (let x = 0; x < boundScripts.length; x++) {
-        textScript += boundScripts[x].text + " ";
-    }
-
-    return textScript.trim();
+    return boundScripts.join("").trim();
 }
 
 function searchByBound(transcription, time, timeBound, low, high) {
