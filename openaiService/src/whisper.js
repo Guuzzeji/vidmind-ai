@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import fs from 'fs';
 import 'dotenv/config';
+import { encode } from 'gpt-tokenizer';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -67,4 +68,14 @@ function searchByBound(transcription, time, timeBound, low, high) {
     }
 
     return middle;
+}
+
+export function trimTextByTokenAmount(text, maxTokens) {
+    let editText = text;
+    while (encode(editText).length >= maxTokens) {
+        editText = editText.slice(0, -1);
+        //console.log(encode(editText));
+    }
+
+    return editText;
 }
