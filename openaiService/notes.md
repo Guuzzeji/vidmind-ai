@@ -20,6 +20,32 @@ total_time_seconds / (total_time_seconds * percentage) = number of clips
 
 (total_time_seconds * percentage) = number of seconds per clip
 
+
+// Notes:
+// https://platform.openai.com/docs/api-reference/audio/createTranscription?lang=node
+// https://medium.com/@bezbos./openai-audio-whisper-api-guide-36e7272731dc
+// https://js.langchain.com/docs/expression_language/cookbook/multiple_chains
+// https://www.youtube.com/watch?v=IZGBshGqB3g
+// https://www.youtube.com/watch?v=PlxWf493en4&t=581s
+// https://github.com/langchain-ai/langchain/blob/master/cookbook/openai_v1_cookbook.ipynb
+// https://js.langchain.com/docs/expression_language/cookbook/prompt_llm_parser
+// https://api.js.langchain.com/classes/langchain_chat_models_openai.ChatOpenAI.html#batch
+// https://api.js.langchain.com/classes/langchain_prompts.PromptTemplate.html#batch
+// https://js.langchain.com/docs/modules/model_io/models/chat/
+// https://www.sitepoint.com/langchain-javascript-complete-guide/
+// https://js.langchain.com/docs/modules/model_io/models/llms/how_to/dealing_with_rate_limits
+// https://github.com/langchain-ai/langchain/blob/master/cookbook/openai_v1_cookbook.ipynb
+// https://platform.openai.com/docs/guides/rate-limits/usage-tiers?context=tier-three
+// https://js.langchain.com/docs/modules/model_io/models/chat/
+// https://medium.com/@nageshmashette32/gpt4-vision-and-its-alternatives-6ed9d39508cd
+// https://medium.com/@astropomeai/gpt-4-vision-trying-out-real-time-image-analysis-based-on-context-31213a558153
+// https://www.scenedetect.com/docs/latest/api/detectors.html#module-scenedetect.detectors.adaptive_detector
+// https://pytube.io/en/latest/api.html#stream-object
+// https://github.com/jiaaro/pydub
+// https://community.openai.com/t/how-can-i-improve-response-times-from-the-openai-api-while-generating-responses-based-on-our-knowledge-base/237169/2
+// https://www.npmjs.com/package/gpt-tokenizer
+// https://www.scenedetect.com/cli/
+
 # Prompt #1
 As a professional video analyzer, consider the following elements to generate a detailed summary of a video:
 
