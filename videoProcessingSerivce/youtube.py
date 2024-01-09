@@ -7,27 +7,35 @@ import config
 # ! May want to switch this to bufferio, can do this using stream_to_buffer
 # ! https://pytube.io/en/latest/api.html#pytube.Stream.stream_to_buffer
 
+# TODO: Audio chunk, doing this will make audio processing easier on OPENAI end
+# - https://audiosegment.readthedocs.io/en/latest/audiosegment.html
+# - https://stackoverflow.com/questions/32073278/python-convert-mp3-to-wav-with-pydub
+
 
 def download_yt_video(vid_id: str) -> dict[str, str]:
     vid_path = os.path.join(config.CURRENT_PATH, config.WORKING_DIR, vid_id)
 
+    # Creating working folders to store clips and frames
     clips_path = os.path.join(vid_path, "clips")
-
+    frame_path = os.path.join(vid_path, "frames")
     os.mkdir(vid_path)
     os.mkdir(clips_path)
+    os.mkdir(frame_path)
 
+    # ! Need to fix this b/c not all videos are 720p or have good audio
     yt = YouTube("https://www.youtube.com/watch?v="+vid_id)
     yt.streams.filter(resolution="720p", only_video=True).first().download(
         output_path=vid_path, filename="video.mp4")
 
-    yt.streams.filter(only_audio=True, progressive=False, abr="128kbps").first().download(
+    yt.streams.filter(only_audio=True, progressive=False).first().download(
         output_path=vid_path, filename="audio.mp3")
 
     return {
         "vid": os.path.join(vid_path, "video.mp4"),
         "audio": os.path.join(vid_path, "audio.mp3"),
         "clip_folder": clips_path,
-        "vid_folder": vid_path
+        "vid_folder": vid_path,
+        "frame_folder": frame_path
     }
 
 
