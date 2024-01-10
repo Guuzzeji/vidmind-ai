@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@langchain/openai':
+    specifier: ^0.0.10
+    version: 0.0.10
   axios:
     specifier: ^1.6.3
     version: 1.6.3
@@ -280,13 +283,29 @@ packages:
         optional: true
     dependencies:
       '@langchain/core': 0.1.4
-      '@langchain/openai': 0.0.8
+      '@langchain/openai': 0.0.10
       flat: 5.0.2
       langsmith: 0.0.53
       uuid: 9.0.1
       zod: 3.22.4
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@langchain/core@0.1.12:
+    resolution: {integrity: sha512-lBfPEjcizJzkZjVTNJp0j+a85BFaXEjzyiUlsh7GwZRERwkrMEV2vtCSRrujbsnZcHzxN67K2bL02KHNLgWkOg==}
+    engines: {node: '>=18'}
+    dependencies:
+      ansi-styles: 5.2.0
+      camelcase: 6.3.0
+      decamelize: 1.2.0
+      js-tiktoken: 1.0.8
+      langsmith: 0.0.53
+      ml-distance: 4.0.1
+      p-queue: 6.6.2
+      p-retry: 4.6.2
+      uuid: 9.0.1
+      zod: 3.22.4
     dev: false
 
   /@langchain/core@0.1.4:
@@ -305,11 +324,11 @@ packages:
       zod: 3.22.4
     dev: false
 
-  /@langchain/openai@0.0.8:
-    resolution: {integrity: sha512-F8DD6vs5BvMAHiDprINWCVf7jyNaYHp2zAqHwYij3+YAKsgIORm2EQvI6YtT3qPnGghpE3qz8H3DKjTNPywIzQ==}
+  /@langchain/openai@0.0.10:
+    resolution: {integrity: sha512-74BBDsuLHT+jNlDviHPUemqiG2nm1AF8i9ta0zfkwjE9JtNITL5ZVhoCSczklipx5LzO+6etVuhjdhXcwNOfBA==}
     engines: {node: '>=18'}
     dependencies:
-      '@langchain/core': 0.1.4
+      '@langchain/core': 0.1.12
       js-tiktoken: 1.0.8
       openai: 4.24.1
       zod: 3.22.4
@@ -689,7 +708,7 @@ packages:
       '@anthropic-ai/sdk': 0.9.1
       '@langchain/community': 0.0.11
       '@langchain/core': 0.1.4
-      '@langchain/openai': 0.0.8
+      '@langchain/openai': 0.0.10
       axios: 1.6.3
       binary-extensions: 2.2.0
       expr-eval: 2.0.2
