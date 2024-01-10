@@ -17,30 +17,30 @@ const OPENAI_CALL = new ChatOpenAI({
 });
 
 export class VideoTranscript {
-
     // Public
     videoInfo;
+    videoId;
 
     rawAudioTranscript;
-    chunkAudioTranscript;
+    segmentAudioTranscript = [];
     visualTranscript = [];
 
     embedAudioTranscript = [];
     embedVisualTranscript = [];
 
     // Private
-    #framePrompts;
+    #framePrompts = [];
 
     constructor(videoId) {
         this.videoId = videoId;
     }
 
     async initialize() {
-        videoInfo = await this.#getVideoInfomation(this.videoId);
-        rawAudioTranscript = await createTranscript(videoInfo.vid_paths.audio);
+        this.videoInfo = await this.#getVideoInfomation();
+        this.rawAudioTranscript = await createTranscript(this.videoInfo.vid_paths.audio);
         this.#chunkAudioTranscript();
-        this.#createPrompts();
-        this.#gptProcessVideo();
+        await this.#createPrompts();
+        await this.#gptProcessVideo();
     }
 
     async #getVideoInfomation() {
@@ -68,34 +68,36 @@ export class VideoTranscript {
     }
 
     #chunkAudioTranscript() {
-        for (let x = 0; x < videoInfo.clips.length; x++) {
-            chunkAudioTranscript.push(findTranscriptionWithBounds(
-                audioTranscript,
-                videoInfo.clips[x].start,
-                videoInfo.clips[x].end));
+        for (let x = 0; x < this.videoInfo.clips.length; x++) {
+            this.segmentAudioTranscript.push({
+                text: findTranscriptionWithBounds(
+                    this.rawAudioTranscript,
+                    this.videoInfo.clips[x].start,
+                    this.videoInfo.clips[x].end),
+                start: this.videoInfo.clips[x].start,
+                end: this.videoInfo.clips[x].start,
+            });
         }
     }
 
     async #createPrompts() {
-        let prompts = [];
-
         // Looping over all clips to create prompts for each clip
-        for (let x = 0; x < videoInfo.clips.length; x++) {
-            let trimText = trimTextByTokenAmount(chunkAudioTranscript[i], 325);
+        for (let x = 0; x < this.videoInfo.clips.length; x++) {
+            let trimText = trimTextByTokenAmount(this.segmentAudioTranscript[x].text, 325);
 
             let prompt = await VideoAnalysisPrompt.format({
-                title: videoInfo.title,
+                title: this.videoInfo.title,
                 audio_transcription: trimText,
             });
 
             // console.log(prompt);
             // console.log(encode(prompt).length + 85);
 
-            let img = await this.#getVideoFrame(videoId, x);
+            let img = await this.#getVideoFrame(x);
 
             // for some reason you have to set prompt format like this for langchain to 
             // work right
-            prompts.push([
+            this.#framePrompts.push([
                 new HumanMessage({
                     content: [
                         { "type": "text", "text": prompt },
@@ -110,27 +112,35 @@ export class VideoTranscript {
                 })
             ]);
         }
-
-        this.#framePrompts = prompts;
     }
 
     async #gptProcessVideo() {
         let respones = await OPENAI_CALL.batch(this.#framePrompts);
+
         for (let x = 0; x < respones.length; x++) {
-            // console.log(messages.content + '\n');
             this.visualTranscript.push({
-                start: this.videoId.clip[x].start,
-                end: this.videoId.clip[x].end,
-                text: messages.content
+                start: this.videoInfo.clips[x].start,
+                end: this.videoInfo.clips[x].end,
+                text: respones[x].content
             });
         }
     };
 
-    async embedVisualTranscript() {
-        this.embedVisualTranscript = await embedTextList(visualTranscript);
+    async createEmbedVisualTranscript() {
+        let transcript = [];
+        for (let script of this.visualTranscript) {
+            transcript.push(script.text);
+        }
+
+        this.embedVisualTranscript = await embedTextList(transcript);
     }
 
-    async embedAudioTranscript() {
-        this.embedAudioTranscript = await embedTextList(chunkAudioTranscript);
+    async createEmbedAudioTranscript() {
+        let transcript = [];
+        for (let script of this.segmentAudioTranscript) {
+            transcript.push(script.text);
+        }
+
+        this.embedAudioTranscript = await embedTextList(transcript);
     }
 }
