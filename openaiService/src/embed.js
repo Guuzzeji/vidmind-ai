@@ -9,7 +9,7 @@ export async function embedTextList(rawTextList) {
     let emebedTexts = await embedingModel.embedDocuments(rawTextList);
     let structuredEmbedWithText = [];
 
-    for (let i = 0; i < emebedText.length; i++) {
+    for (let i = 0; i < emebedTexts.length; i++) {
         structuredEmbedWithText.push({
             text: rawTextList[i],
             embed: emebedTexts[i]
