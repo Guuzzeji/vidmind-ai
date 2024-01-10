@@ -2,7 +2,7 @@ import { HumanMessage } from "langchain/schema";
 import { VideoAnalysisPrompt } from './prompts/videoAnalyze.js';
 import { createTranscript, findTranscriptionWithBounds, trimTextByTokenAmount } from './audioTranscript.js';
 // import { encode } from 'gpt-tokenizer';
-import 'dotenv/config';
+import 'dotenv/config.js';
 import axios from 'axios';
 
 async function getVideoInfomation(videoId) {
@@ -20,19 +20,19 @@ async function getVideoInfomation(videoId) {
     };
 }
 
-async function getVideoFrame(videoId, clip_number) {
+export async function getVideoFrame(videoId, clip_number) {
     let img = await axios.post("http://localhost:8080/API/frames-from-video", {
         "vid_id": videoId,
         "clip_num": clip_number
-    }).data;
+    });
 
-    return img;
+    return img.data;
 }
 
 export async function createPromptsForVideo(videoId) {
     let prompts = [];
 
-    let videoInfo = getVideoInfomation(videoId);
+    let videoInfo = await getVideoInfomation(videoId);
     let audioTranscript = await createTranscript(videoInfo.vid_paths.audio);
 
     // Looping over all clips to create prompts for each clip

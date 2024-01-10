@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "langchain/chat_models/openai.js";
+import { ChatOpenAI } from "langchain/chat_models/openai";
 import { createPromptsForVideo } from "./src/createVisualDescription.js";
 import 'dotenv/config';
 
