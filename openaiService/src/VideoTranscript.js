@@ -1,12 +1,15 @@
 import { HumanMessage } from "langchain/schema";
 import { ChatOpenAI } from "langchain/chat_models/openai";
+import cosineSimilarity from "compute-cosine-similarity";
 import 'dotenv/config';
 import axios from 'axios';
 
 import { VideoAnalysisPrompt } from './prompts/videoAnalyze.js';
 import { createTranscript, findTranscriptionWithBounds, trimTextByTokenAmount } from './audioTranscript.js';
-import { embedTextList } from './embed.js';
+import { embedTextList, searchEmbed } from './embed.js';
 
+// ! iMPORTANT this is only for MVP, should remove this and rewrite for better batching with OpenAI
+// Batching this with OpenAI will allow for better scale use
 const OPENAI_CALL = new ChatOpenAI({
     openAIApiKey: process.env.OPENAI_API_KEY,
     modelName: "gpt-4-vision-preview",
@@ -35,6 +38,7 @@ export class VideoTranscript {
         this.videoId = videoId;
     }
 
+    // ! Processing video
     async initialize() {
         this.videoInfo = await this.#getVideoInfomation();
         this.rawAudioTranscript = await createTranscript(this.videoInfo.vid_paths.audio);
@@ -126,21 +130,49 @@ export class VideoTranscript {
         }
     };
 
+    // ! Embeding stuff
     async createEmbedVisualTranscript() {
-        let transcript = [];
-        for (let script of this.visualTranscript) {
-            transcript.push(script.text);
-        }
-
+        let transcript = this.#createTextArray(this.visualTranscript);
         this.embedVisualTranscript = await embedTextList(transcript);
     }
 
     async createEmbedAudioTranscript() {
+        let transcript = this.#createTextArray(this.segmentAudioTranscript);
+        this.embedAudioTranscript = await embedTextList(transcript);
+    }
+
+    async searchAudioTranscript(searchTerm) {
+        let searchQuery = await searchEmbed(searchTerm);
+        return this.#findSimilarText(searchQuery, this.embedAudioTranscript);
+    }
+
+    async searchVisualTranscript(searchTerm) {
+        let searchQuery = await searchEmbed(searchTerm);
+        return this.#findSimilarText(searchQuery, this.embedVisualTranscript);
+    }
+
+    // Note: should probably write this as a sorting alghoritm then finding best match
+    #findSimilarText(embedQuery, embedText) {
+        let maxPercent = { content, similarity: 0, }; // Used to keep track of best embedding result
+
+        for (let y = 0; y < embedText.length; y++) {
+            let similarity = cosineSimilarity(embedText[y].embed, embedQuery.queryEmbed);
+
+            if (maxPercent.similarity < similarity) {
+                maxPercent.content = this.embedAudioTranscript[y];
+                maxPercent.similarity = similarity;
+            }
+        }
+
+        return maxPercent;
+    }
+
+    #createTextArray(transcript) {
         let transcript = [];
-        for (let script of this.segmentAudioTranscript) {
+        for (let script of this.transcript) {
             transcript.push(script.text);
         }
 
-        this.embedAudioTranscript = await embedTextList(transcript);
+        return transcript;
     }
 }
