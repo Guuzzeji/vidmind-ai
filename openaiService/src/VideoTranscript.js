@@ -132,47 +132,52 @@ export class VideoTranscript {
 
     // ! Embeding stuff
     async createEmbedVisualTranscript() {
-        let transcript = this.#createTextArray(this.visualTranscript);
+        let transcript = this.#createTextOnlyTranscript(this.visualTranscript);
         this.embedVisualTranscript = await embedTextList(transcript);
     }
 
     async createEmbedAudioTranscript() {
-        let transcript = this.#createTextArray(this.segmentAudioTranscript);
+        let transcript = this.#createTextOnlyTranscript(this.segmentAudioTranscript);
         this.embedAudioTranscript = await embedTextList(transcript);
     }
 
     async searchAudioTranscript(searchTerm) {
         let searchQuery = await searchEmbed(searchTerm);
-        return this.#findSimilarText(searchQuery, this.embedAudioTranscript);
+        return this.#sortSimilarText(searchQuery, this.embedAudioTranscript);
     }
 
     async searchVisualTranscript(searchTerm) {
         let searchQuery = await searchEmbed(searchTerm);
-        return this.#findSimilarText(searchQuery, this.embedVisualTranscript);
+        return this.#sortSimilarText(searchQuery, this.embedVisualTranscript);
     }
 
-    // Note: should probably write this as a sorting alghoritm then finding best match
-    #findSimilarText(embedQuery, embedText) {
-        let maxPercent = { content, similarity: 0, }; // Used to keep track of best embedding result
+    #sortSimilarText(embedQuery, embedText) {
+        let sortedText = embedText; // Making a copy of array to return and not mess up main embeding
 
-        for (let y = 0; y < embedText.length; y++) {
-            let similarity = cosineSimilarity(embedText[y].embed, embedQuery.queryEmbed);
+        sortedText.sort(function (a, b) {
+            let aSim = cosineSimilarity(a.embed, embedQuery.queryEmbed);
+            let bSim = cosineSimilarity(b.embed, embedQuery.queryEmbed);
 
-            if (maxPercent.similarity < similarity) {
-                maxPercent.content = this.embedAudioTranscript[y];
-                maxPercent.similarity = similarity;
+            // This will sort from Closest similarity to Least similarity
+            if (aSim < bSim) {
+                return 1;
+            } else if (aSim > bSim) {
+                return -1;
             }
-        }
 
-        return maxPercent;
+            return 0;
+        });
+
+        return sortedText;
     }
 
-    #createTextArray(transcript) {
-        let transcript = [];
-        for (let script of this.transcript) {
-            transcript.push(script.text);
+    #createTextOnlyTranscript(transcript) {
+        let textOnlyTranscript = [];
+        for (let script of transcript) {
+            console.log(script);
+            textOnlyTranscript.push(script.text);
         }
 
-        return transcript;
+        return textOnlyTranscript;
     }
 }
