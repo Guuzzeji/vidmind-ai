@@ -14,7 +14,7 @@ def create_clips(vid_path: str, clips_path: str) -> list[dict[str, int]]:
     # Getting time segment base on %4 rule, chunk video by a percentage (0.04)
     # This will give us 25 chunks to use when processing with GPT
     video_info = ffprobe(vid_path)
-    seg_time = float(video_info.json.get("streams")[0].get("duration")) * 0.04
+    seg_time = float(video_info.json.get("streams")[0].get("duration")) * 0.033
 
     # ffmpeg -i input.mp4 -map 0 -c copy -f segment -segment_time 1800 -reset_timestamps 1 output_%03d.mp4
     ffmpeg.option("i", vid_path)
@@ -64,8 +64,10 @@ def extract_frames(vid_path: str, frame_path: str, file_name: str):
 
     # This will create frame strip that will can use, frames are base on thumbnail model
     # ffmpeg -i output_010.mp4 -vf "thumbnail,tile=6x1" -frames:v 1 -qscale:v 1 THUMBNAIL.png
+    # ! Try this, https://superuser.com/questions/1336285/use-ffmpeg-for-thumbnail-selections
+    # ! https://ffmpeg.org/ffmpeg-all.html#thumbnail
     ffmpeg.option("i", vid_path)
-    ffmpeg.option("vf", "thumbnail,tile=15x1")
+    ffmpeg.option("vf", "thumbnail=250,tile=15x1")
     ffmpeg.option("frames:v", 1)
     ffmpeg.option("qscale:v", 1)
     ffmpeg.output(save_path)

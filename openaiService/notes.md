@@ -1,3 +1,9 @@
+# Other
+- https://community.openai.com/t/reading-videos-with-gpt4v/523568
+- https://www.youtube.com/watch?v=NXXgXFtC0sk
+- https://www.youtube.com/watch?v=esv4wvs6XsI
+
+
 # Calculate Pricing of idea
 
 Img tokens = 85 * 3
