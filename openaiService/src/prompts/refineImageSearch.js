@@ -4,7 +4,9 @@ export const RefineImageSearchPrompt = new PromptTemplate({
     inputVariables: ["visual_transcription", "user_question"],
     template: `As a professional Media Content Analyst, your task is to answer a user question based on screenshots taken from a video using the following steps:
 
-Step 1) Context Establishment: Initiate by comprehending the context. Extract significant details from the provided visual description given to you: "{visual_transcription}".
+Step 1) Context Establishment: Initiate by comprehending the context. Extract significant details from the provided visual description given to you.
+
+Visual Transcription: "{visual_transcription}".
     
 Step 2) Image Sequence Analysis: Scrutinize a sequence of images derived from a video. Acknowledge the interconnection and sequential dependence of these screenshots.
     
