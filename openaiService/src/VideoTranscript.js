@@ -174,7 +174,7 @@ export class VideoTranscript {
     #createTextOnlyTranscript(transcript) {
         let textOnlyTranscript = [];
         for (let script of transcript) {
-            console.log(script);
+            // console.log(script);
             textOnlyTranscript.push(script.text);
         }
 
