@@ -3,6 +3,15 @@ import { RefineImageSearchPrompt } from "../prompts/refineImageSearch.js";
 import { getVideoFrame } from "../createVisualDescription.js";
 import 'dotenv/config.js';
 
+const CALL_OPENAI_API = new ChatOpenAI({
+    openAIApiKey: process.env.OPENAI_API_KEY,
+    modelName: "gpt-4-vision-preview",
+    temperature: 0.0,
+    maxTokens: 250,
+    maxConcurrency: 0,
+    streaming: false,
+});
+
 async function answerImageQuestion(question, visualDescription, clipNum, videoId) {
     let prompt = [];
 
@@ -27,16 +36,9 @@ async function answerImageQuestion(question, visualDescription, clipNum, videoId
         })
     );
 
-    const chat = new ChatOpenAI({
-        openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: "gpt-4-vision-preview",
-        temperature: 0.0,
-        maxTokens: 250,
-        maxConcurrency: 0,
-        streaming: false,
-    });
+    return prompt;
 
-    let response = await chat.invoke(prompt);
+    // let response = await CALL_OPENAI_API.invoke(prompt);
 
-    return response.content;
+    // return response.content;
 }
