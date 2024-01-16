@@ -7,7 +7,7 @@ import { VideoTranscript } from './src/VideoTranscript.js';
 const OPENAI_CALL = new ChatOpenAI({
     openAIApiKey: process.env.OPENAI_API_KEY,
     modelName: "gpt-3.5-turbo-1106",
-    temperature: 0.05,
+    temperature: 0.5,
     // maxTokens: 250,
     maxConcurrency: 1,
     streaming: true,
