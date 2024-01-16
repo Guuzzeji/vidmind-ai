@@ -1,3 +1,25 @@
+# Refine search
+- https://js.langchain.com/docs/modules/agents/tools/dynamic
+- https://platform.openai.com/docs/api-reference/audio/createTranscription
+  - Can change temp of whisper test to see if get better results
+- https://platform.openai.com/docs/guides/vision
+  - How to optimize GPT vision
+- https://cookbook.openai.com/examples/gpt_with_vision_for_video_understanding
+- https://cookbook.openai.com/examples/vector_databases/redis/getting-started-with-redis-and-openai
+  - Redis vector db
+- Resize image, https://note.nkmk.me/en/python-pillow-image-resize/
+
+# Random Stuff
+- https://community.openai.com/t/sam-altman-is-asking-what-would-you-like-openai-to-build-fix-in-2024/569943/2
+- https://scale.com/
+- https://www.rabbit.tech/
+- https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.crop
+- https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/gpt-with-vision#use-vision-enhancement-with-video
+- https://learn.microsoft.com/en-us/azure/ai-services/openai/gpt-v-quickstart?tabs=video&pivots=programming-language-studio
+- https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/supercharge-archive-content-discovery-with-chatgpt-and-azure/ba-p/3788061
+- https://stackoverflow.com/questions/47490466/ffmpeg-extract-frame-timestamps-from-video
+- 
+
 # Other
 - https://community.openai.com/t/reading-videos-with-gpt4v/523568
 - https://www.youtube.com/watch?v=NXXgXFtC0sk
