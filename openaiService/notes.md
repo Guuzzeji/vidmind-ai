@@ -1,3 +1,17 @@
+# Setup API for discord bot for better marketing
+- https://stackoverflow.com/questions/41745070/sending-private-messages-to-user
+- https://discord.com/developers/docs/intro
+- https://discordjs.guide/popular-topics/embeds.html#embed-preview
+
+# Marketing
+- https://www.producthunt.com/products/product-hunt/alternatives
+- https://prowly.com/magazine/ai-journalists/
+
+# New Embed systems REALLY CHEAP
+- https://openai.com/blog/new-embedding-models-and-api-updates
+- https://openai.com/pricing
+- https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+
 # Use RAG system, but for mulit-shot examples
 - Basically break down the RAG into context, action, outcome, which can be given to GPT to have a better understanding on what to do in a specific situation.
 - Similar to one-shot examples, but is more flexible and RAG base
