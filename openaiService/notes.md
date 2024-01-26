@@ -1,3 +1,7 @@
+# Use RAG system, but for mulit-shot examples
+- Basically break down the RAG into context, action, outcome, which can be given to GPT to have a better understanding on what to do in a specific situation.
+- Similar to one-shot examples, but is more flexible and RAG base
+
 # Refine search
 - https://js.langchain.com/docs/modules/agents/tools/dynamic
 - https://platform.openai.com/docs/api-reference/audio/createTranscription
