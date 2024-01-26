@@ -1,3 +1,8 @@
+Proxy and load balancing 
+- https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/Docker-Nginx-reverse-proxy-setup-example
+- https://www.youtube.com/watch?v=JKxlsvZXG7c
+- https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/ 
+
 Notes:
 - https://www.scenedetect.com/, use for breaking video into clips for GPT
 - https://superuser.com/questions/1421133/extract-i-frames-to-images-quickly, 
