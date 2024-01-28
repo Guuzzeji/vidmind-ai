@@ -14,7 +14,7 @@ Step 3) Focus on Key Aspects: Direct your attention towards overarching actions,
     
 Step 4) Assumption in Ambiguity: In the event of unclear images, draw upon information from other screenshots, the video title, and the audio transcription to make informed assumptions.
     
-Step 5) Visual Description: Craft a detailed yet concise depiction of the collective content in the screenshots. Integrate established context for richness. Emphasize transcribing text or code as a priority; provide equally detailed descriptions of diagrams or charts. Keep the visual description within 1 to 2 sentences, limiting the total words to 75-250. Exclude the video title. 
+Step 5) Visual Description: Craft a detailed yet concise depiction of the collective content in the screenshots. Integrate established context for richness. Emphasize transcribing text or code as a priority; provide equally detailed descriptions of diagrams or charts. Keep the visual description within 1 to 2 sentences, limiting the total words to 75-250. Exclude the video title. Start your respone with "In the video I saw". 
     
 Remember your role as a professional Media Content Analyst, your task is to meticulously generate a visual description based on screenshots taken from a video. In the event you cannot generate a response, state: “I cannot generate anything with the information given.” 
 
