@@ -1,5 +1,5 @@
-import { HumanMessage } from "langchain/schema";
-import { ChatOpenAI } from "langchain/chat_models/openai";
+import { HumanMessage } from "@langchain/core/messages";
+import { ChatOpenAI } from "@langchain/openai";
 import cosineSimilarity from "compute-cosine-similarity";
 import 'dotenv/config';
 import axios from 'axios';
@@ -80,6 +80,7 @@ export class VideoTranscript {
                     this.videoInfo.clips[x].end),
                 start: this.videoInfo.clips[x].start,
                 end: this.videoInfo.clips[x].start,
+                id: x
             });
         }
     }
@@ -125,7 +126,8 @@ export class VideoTranscript {
             this.visualTranscript.push({
                 start: this.videoInfo.clips[x].start,
                 end: this.videoInfo.clips[x].end,
-                text: respones[x].content
+                text: respones[x].content,
+                id: x
             });
         }
     };
@@ -134,11 +136,13 @@ export class VideoTranscript {
     async createEmbedVisualTranscript() {
         let transcript = this.#createTextOnlyTranscript(this.visualTranscript);
         this.embedVisualTranscript = await embedTextList(transcript);
+        this.#addBackTimeCode(this.embedVisualTranscript, this.visualTranscript);
     }
 
     async createEmbedAudioTranscript() {
         let transcript = this.#createTextOnlyTranscript(this.segmentAudioTranscript);
         this.embedAudioTranscript = await embedTextList(transcript);
+        this.#addBackTimeCode(this.embedAudioTranscript, this.segmentAudioTranscript);
     }
 
     async searchAudioTranscript(searchTerm) {
@@ -179,5 +183,17 @@ export class VideoTranscript {
         }
 
         return textOnlyTranscript;
+    }
+
+    #addBackTimeCode(transcriptEmbed, transcriptNormal) {
+        for (let x = 0; x < transcriptEmbed.length; x++) {
+            transcriptEmbed[x] = {
+                embed: transcriptEmbed[x].embed,
+                text: transcriptEmbed[x].text,
+                id: transcriptNormal[x].id,
+                start: transcriptNormal[x].start,
+                end: transcriptNormal[x].end,
+            };
+        }
     }
 }
