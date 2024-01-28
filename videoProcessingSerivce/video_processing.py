@@ -67,7 +67,7 @@ def extract_frames(vid_path: str, frame_path: str, file_name: str):
     # ! Try this, https://superuser.com/questions/1336285/use-ffmpeg-for-thumbnail-selections
     # ! https://ffmpeg.org/ffmpeg-all.html#thumbnail
     ffmpeg.option("i", vid_path)
-    ffmpeg.option("vf", "thumbnail=250,tile=15x1")
+    ffmpeg.option("vf", "thumbnail=65,tile=15x1")
     ffmpeg.option("frames:v", 1)
     ffmpeg.option("qscale:v", 1)
     ffmpeg.output(save_path)
