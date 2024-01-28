@@ -36,10 +36,10 @@ async function getVideoFrame(videoId, clipNumber) {
 export const ClipSearchTool = new DynamicTool({
     name: "clipAnswerQuestion",
     description: `Using another AI that can analyize video clips, get an answer to a specific question regard a specific clip. 
-    Input for this function is a single string with the following fields in this order: "question, clip_number, videoId" Each item should be separated by using this character "||". Do not use newline characters.`,
+    Input for this function is a single string with the following fields in this order: "question, clip_number, videoId" Each item should be separated by using this character ",". Do not use newline characters.`,
     func: async function (input) {
         console.log(input);
-        const AI_INPUT = input.split("||");
+        const AI_INPUT = input.split(",");
         let question = AI_INPUT[0];
         // let visual_description = AI_INPUT[1];
         let clip_number = parseInt(AI_INPUT[1].trim());
@@ -60,7 +60,7 @@ export const ClipSearchTool = new DynamicTool({
                         "type": "image_url",
                         "image_url": {
                             "url": "data:image/jpeg;base64," + img.frames,
-                            "detail": "low",
+                            "detail": "high",
                         }
                     }
                 ]
