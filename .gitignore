@@ -7,3 +7,6 @@
 *.mp4
 *.jpg
 *.zip
+.env.*
+
+.vscode
