@@ -1,86 +1,71 @@
 from flask import Flask
 from flask import request
-import youtube
-import video_processing
+from werkzeug.utils import secure_filename
+import uuid
+import video_chopper
 import os
-import base64
+import config
+import utils
+import s3_client
 
 app = Flask(__name__)
+ALLOWED_EXTENSIONS = {'mp4', 'mkv'}
 
-DATABASE_VIDS_TABLE = {}  # Should use sqlite server for this
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/API/process-yt-video", methods=["POST"])
+@app.route("/API/upload_video", methods=["POST"])
 def handle_video_dl():
-    json_req = request.json
+    if request.method == "POST":
+        if 'file' not in request.files:
+            return {
+                "error": True
+            }
 
-    # Checking temp database for speed
-    if json_req.get("vid_id") in DATABASE_VIDS_TABLE:
-        return {
-            "ok": True,
-            "clips": DATABASE_VIDS_TABLE[json_req.get("vid_id")]["clip_list"],
-            "vid_paths": DATABASE_VIDS_TABLE[json_req.get("vid_id")]["vid_paths"]
-        }
+        file = request.files['file']
+        title = request.form.get("title")
+        if file.filename == '' or request.form.get("title") is None or request.form.get("title") is "":
+            return {
+                "error": True
+            }
 
-    vid_paths = youtube.download_yt_video(json_req.get("vid_id"))
-    clip_list = video_processing.create_clips(
-        vid_paths["vid"], vid_paths["clip_folder"])
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_id = str(uuid.uuid1())
 
-    # Getting clips from ffmpeg processing video
-    clip_files = os.listdir(vid_paths["clip_folder"])
+            # Creating working folder
+            file_path = os.path.join(
+                config.CURRENT_PATH, config.WORKING_DIR, file_id)
+            os.mkdir(file_path)
+            folders = utils.create_work_folders(file_id)
 
-    # Taking thoses clips and breaking them down into frame strips
-    for file in clip_files:
-        file_name = file.removesuffix(".mp4")
-        if file_name.isdigit():
-            video_processing.extract_frames(
-                os.path.join(vid_paths["clip_folder"], file),
-                vid_paths["frame_folder"],
-                file_name)
+            # Save file and encode to 720p
+            video_path = os.path.join(file_path, filename)
+            file.save(video_path)
+            rencode_video = video_chopper.encode_video(video_path, file_path)
 
-    DATABASE_VIDS_TABLE[json_req.get("vid_id")] = {
-        "vid_paths": vid_paths,
-        "clip_list": clip_list,
-    }
+            # Creating clips
+            segment_time = video_chopper.create_clips(
+                rencode_video, folders["clip_folder"])
+            video_chopper.process_clips(
+                folders["clip_folder"], folders["frame_folder"], folders["audio_folder"])
 
-    print(DATABASE_VIDS_TABLE)
+            # Upload files
+            frame_urls = s3_client.upload_folder(
+                folders["frame_folder"], "frames", file_id)
+            audio_urls = s3_client.upload_folder(
+                folders["audio_folder"], "audios", file_id)
 
-    return {
-        "ok": True,
-        "clips": clip_list,
-        "vid_paths": vid_paths,
-    }
-
-
-@app.route("/API/frames-from-video", methods=["POST"])
-def handle_clips():
-    json_req = request.json
-    vid = DATABASE_VIDS_TABLE[json_req.get("vid_id")]
-    files = os.listdir(vid["vid_paths"]["frame_folder"])
-
-    # Finding the frame we want to send back as base64
-    for file in files:
-        file_name = file.split(".")[0]
-        if file_name.isdigit() and (int(file_name) == int(json_req.get("clip_num"))):
-            with open(os.path.join(vid["vid_paths"]["frame_folder"], file), "rb") as image_file:
-                data = base64.b64encode(image_file.read())
+            utils.delete_work_folder(file_path)
 
             return {
                 "ok": True,
-                "vid_id": json_req.get("vid_id"),
-                "clip_num": json_req.get("clip_num"),
-                "frames": str(data).removeprefix("b'").removesuffix("'")
+                "id": file_id,
+                "title": title,
+                "frames": frame_urls,
+                "audio_urls": audio_urls,
+                "time_code": segment_time
             }
-
-    return {
-        "ok": False,
-        "error": "not a clip index"
-    }
-
-
-@app.route("/API/get-video-info", methods=["POST"])
-def handle_yt_info():
-    json_req = request.json
-    info = youtube.get_yt_info(json_req.get("vid_id"))
-
-    return info
