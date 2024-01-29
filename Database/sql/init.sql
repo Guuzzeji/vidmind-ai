@@ -5,29 +5,30 @@
 -- \ c VIDEO_INFORMATION;
 -- Create the extension if not exists
 CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Create Metadata table
 CREATE TABLE IF NOT EXISTS METADATA (
-    id SERIAL PRIMARY KEY,
+    id uuid PRIMARY KEY,
     title TEXT,
     numberOfClips INT
 );
 -- Create S3 Store table
 CREATE TABLE IF NOT EXISTS S3_FILES (
-    id SERIAL,
+    id uuid,
     s3AudioUrl TEXT,
     s3FramesUrl TEXT,
     clipId INT
 );
 -- Embed for frames / video
 CREATE TABLE IF NOT EXISTS FRAME_EMBED (
-    id SERIAL,
+    id uuid,
     embedding vector,
     rawText TEXT,
     clipId INT
 );
 -- Embed for audio
 CREATE TABLE IF NOT EXISTS AUDIO_EMBED (
-    id SERIAL,
+    id uuid,
     embedding vector,
     rawText TEXT,
     clipId INT
