@@ -7,6 +7,21 @@ from PIL import Image
 # - https://blog.gdeltproject.org/experiments-with-ffmpeg-scene-detection-to-explore-the-parallel-universe-of-russian-state-television-channel-russia1/
 
 
+def encode_video(vid_path: str, encode_video_save: str) -> str:
+    ffmpeg = FFmpeg()
+    save_path = os.path.join(encode_video_save, "encode.mp4")
+
+    # ffmpeg -i input.mp4 -vf "scale=1280:720" output.mp4
+    ffmpeg.option("i", vid_path)
+    ffmpeg.option("vf", "scale=1280:720")
+    ffmpeg.option("b:a", "96k")
+    ffmpeg.output(save_path)
+
+    ffmpeg.execute()
+
+    return save_path
+
+
 def create_clips(vid_path: str, clips_path: str) -> list[dict[str, int]]:
     ffmpeg = FFmpeg()
     save_path = os.path.join(clips_path, "%03d.mp4")
@@ -72,7 +87,7 @@ def extract_frames(vid_path: str, frame_path: str, file_name: str):
     ffmpeg.option("qscale:v", 1)
     ffmpeg.output(save_path)
 
-    print(ffmpeg.arguments)
+    # print(ffmpeg.arguments)
     ffmpeg.execute()
 
     # Croping out any black empty space within the frame strip
@@ -80,3 +95,35 @@ def extract_frames(vid_path: str, frame_path: str, file_name: str):
     mask = img.getbbox()
     cropped = img.crop(mask)
     cropped.save(save_path)
+
+
+def extract_audio(vid_path: str, frame_path: str, file_name: str):
+    ffmpeg = FFmpeg()
+    save_path = os.path.join(frame_path, file_name+".mp3")
+
+    # https://superuser.com/questions/332347/how-can-i-convert-mp4-video-to-mp3-audio-with-ffmpeg
+    ffmpeg.option("i", vid_path)
+    ffmpeg.option("map", "a")
+    ffmpeg.option("q:a", "0")
+    ffmpeg.output(save_path)
+
+    print(ffmpeg.arguments)
+    ffmpeg.execute()
+
+
+def process_clips(clip_folder: str, frame_folder: str, audio_folder: str):
+    # Getting clips from ffmpeg processing video
+    clip_files = os.listdir(clip_folder)
+
+    # Taking thoses clips and breaking them down into frame strips
+    for file in clip_files:
+        file_name = file.removesuffix(".mp4")
+        if file_name.isdigit():
+            extract_frames(
+                os.path.join(clip_folder, file),
+                frame_folder,
+                file_name)
+            extract_audio(
+                os.path.join(clip_folder, file),
+                audio_folder,
+                file_name)
