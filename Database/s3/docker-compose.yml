@@ -1,5 +1,8 @@
 version: '3'
 
+# From: https://stackoverflow.com/questions/29377853/how-can-i-use-environment-variables-in-docker-compose
+# How to use environment variables
+
 services:
   minio:
     image: docker.io/bitnami/minio:2022
