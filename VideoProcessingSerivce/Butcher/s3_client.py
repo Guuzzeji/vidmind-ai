@@ -5,6 +5,7 @@ import os
 import config
 
 BUCKET_NAME = config.S3_BUCKET_NAME
+BASE_URL_S3 = "http://" + config.S3_HOST + "/"
 client = Minio(config.S3_HOST,
                access_key=config.S3_KEY,
                secret_key=config.S3_PWD,
@@ -40,7 +41,7 @@ def upload_file(s3_folder_id: str, file_source: str, file_name: str, folder_name
     client.fput_object(BUCKET_NAME,
                        s3_folder_id + "/" + folder_name + "/" + file_name,
                        file_source)
-    return BUCKET_NAME + "/" + s3_folder_id + "/" + folder_name + "/" + file_name
+    return BASE_URL_S3 + BUCKET_NAME + "/" + s3_folder_id + "/" + folder_name + "/" + file_name
 
 
 def upload_folder(folder_path: str, folder_name: str, s3_folder_id: str) -> list[str]:
