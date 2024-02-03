@@ -3,6 +3,10 @@ version: '3'
 # From: https://stackoverflow.com/questions/29377853/how-can-i-use-environment-variables-in-docker-compose
 # How to use environment variables
 
+# Notes
+# - https://stackoverflow.com/questions/77355287/adding-local-minio-host-to-mc-configuration-failed-to-add-temporary-minio-ser
+# - https://medium.com/@randy.hamzah.h/running-minio-server-with-docker-compose-54bab3afbe31
+
 services:
   minio:
     image: docker.io/bitnami/minio:2022
@@ -15,7 +19,7 @@ services:
       - 'minio_data:/data'
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} # pwd should be at least 8 char long
       - MINIO_DEFAULT_BUCKETS=${MINIO_DEFAULT_BUCKETS}
 
 networks:
