@@ -1,15 +1,28 @@
 from flask import Flask
 from flask import request
 from werkzeug.utils import secure_filename
-import uuid
+
 import video_chopper
-import os
-import config
-import utils
 import s3_client
 
-app = Flask(__name__)
+import redis
+
+import config
+import utils
+import uuid
+import json
+import os
+
+
 ALLOWED_EXTENSIONS = {'mp4', 'mkv'}
+
+app = Flask(__name__)
+r = redis.Redis(
+    host="127.0.0.1",
+    port=6379
+)
+
+# https://dev.to/rohit20001221/simple-pub-sub-system-using-redis-and-python-25jh
 
 
 def allowed_file(filename):
@@ -27,11 +40,12 @@ def handle_video_dl():
 
         file = request.files['file']
         title = request.form.get("title")
-        if file.filename == '' or request.form.get("title") is None or request.form.get("title") is "":
+        if file.filename == '' or request.form.get("title") is None or request.form.get("title") == "":
             return {
                 "error": True
             }
 
+        # Should create this into a queue later
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file_id = str(uuid.uuid1())
@@ -59,13 +73,33 @@ def handle_video_dl():
             audio_urls = s3_client.upload_folder(
                 folders["audio_folder"], "audios", file_id)
 
+            frame_urls.sort()
+            audio_urls.sort()
+
             utils.delete_work_folder(file_path)
 
-            return {
-                "ok": True,
+            # Adding everything into a single object
+            chunk_clip_list = []
+            for x in range(len(segment_time)):
+                chunk_clip_list.append({
+                    "id": x,
+                    "startTime": segment_time[x].get("start"),
+                    "endTime": segment_time[x].get("end"),
+                    "audio_url": audio_urls[x],
+                    "frame_url": frame_urls[x]
+                })
+
+            package_msg = {
                 "id": file_id,
                 "title": title,
-                "frames": frame_urls,
-                "audio_urls": audio_urls,
-                "time_code": segment_time
+                "chunks": chunk_clip_list
             }
+
+            # Should use streams
+            # https://www.youtube.com/watch?v=rBlnHJZKD_M&t=459s
+            # https://www.linkedin.com/pulse/redis-streams-real-time-data-processing-powerhouse-appasaheb-salunke-jaa9f
+            r.xadd("EMBED_TICKETS", {"data": json.dumps(package_msg)})
+
+            return {
+                "ok": True
+            }, 202
