@@ -1,8 +1,5 @@
 -- From: https://medium.com/@johannes.ocean/setting-up-a-postgres-database-with-the-pgvector-extension-10ab7ff212cc
--- Create the database
--- CREATE DATABASE VIDEO_INFORMATION;
--- -- Connect to the database
--- \ c VIDEO_INFORMATION;
+-- UUID FROM: https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-uuid/
 -- Create the extension if not exists
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -24,12 +21,16 @@ CREATE TABLE IF NOT EXISTS FRAME_EMBED (
     id uuid,
     embedding vector,
     rawText TEXT,
-    clipId INT
+    clipId INT,
+    startTime FLOAT,
+    endTime FLOAT
 );
 -- Embed for audio
 CREATE TABLE IF NOT EXISTS AUDIO_EMBED (
     id uuid,
     embedding vector,
     rawText TEXT,
-    clipId INT
+    clipId INT,
+    startTime FLOAT,
+    endTime FLOAT
 );
