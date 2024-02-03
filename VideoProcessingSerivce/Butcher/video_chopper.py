@@ -13,7 +13,7 @@ def encode_video(vid_path: str, encode_video_save: str) -> str:
 
     # ffmpeg -i input.mp4 -vf "scale=1280:720" output.mp4
     ffmpeg.option("i", vid_path)
-    ffmpeg.option("vf", "scale=1280:720")
+    ffmpeg.option("vf", "scale=-2:720")
     ffmpeg.option("b:a", "96k")
     ffmpeg.output(save_path)
 
@@ -107,7 +107,7 @@ def extract_audio(vid_path: str, frame_path: str, file_name: str):
     ffmpeg.option("q:a", "0")
     ffmpeg.output(save_path)
 
-    print(ffmpeg.arguments)
+    # print(ffmpeg.arguments)
     ffmpeg.execute()
 
 
