@@ -5,7 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "startDev": "node --env-file=.env.development.local index.js",
+    "startPro": "node --env-file=.env.production index.js"
   },
   "keywords": [],
   "author": "",
