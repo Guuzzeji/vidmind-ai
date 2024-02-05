@@ -8,5 +8,6 @@
 *.jpg
 *.zip
 .env.*
+.env
 
 .vscode
