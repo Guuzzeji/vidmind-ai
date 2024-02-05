@@ -1,15 +1,16 @@
 import os
-from ffprobe import ffprobe
 from ffmpeg import FFmpeg
 from PIL import Image
+
+from src.video.ffprobe import ffprobe
 
 # Good Stuff (Main idea behind video processing):
 # - https://blog.gdeltproject.org/experiments-with-ffmpeg-scene-detection-to-explore-the-parallel-universe-of-russian-state-television-channel-russia1/
 
 
-def encode_video(vid_path: str, encode_video_save: str) -> str:
+def encode_video(vid_path: str, encode_video_save: str, video_id: str) -> str:
     ffmpeg = FFmpeg()
-    save_path = os.path.join(encode_video_save, "encode.mp4")
+    save_path = os.path.join(encode_video_save, "encode_" + video_id + ".mp4")
 
     # ffmpeg -i input.mp4 -vf "scale=1280:720" output.mp4
     ffmpeg.option("i", vid_path)
@@ -27,9 +28,9 @@ def create_clips(vid_path: str, clips_path: str) -> list[dict[str, int]]:
     save_path = os.path.join(clips_path, "%03d.mp4")
 
     # Getting time segment base on %4 rule, chunk video by a percentage (0.04)
-    # This will give us 25 chunks to use when processing with GPT
+    # This will give us 50 chunks to use when processing with GPT
     video_info = ffprobe(vid_path)
-    seg_time = float(video_info.json.get("streams")[0].get("duration")) * 0.033
+    seg_time = float(video_info.json.get("streams")[0].get("duration")) * 0.020
 
     # ffmpeg -i input.mp4 -map 0 -c copy -f segment -segment_time 1800 -reset_timestamps 1 output_%03d.mp4
     ffmpeg.option("i", vid_path)
@@ -81,10 +82,11 @@ def extract_frames(vid_path: str, frame_path: str, file_name: str):
     # ffmpeg -i output_010.mp4 -vf "thumbnail,tile=6x1" -frames:v 1 -qscale:v 1 THUMBNAIL.png
     # ! Try this, https://superuser.com/questions/1336285/use-ffmpeg-for-thumbnail-selections
     # ! https://ffmpeg.org/ffmpeg-all.html#thumbnail
+    # ! New Idea from https://blog.gdeltproject.org/using-ffmpegs-scene-detection-to-generate-a-visual-shot-summary-of-television-news/
     ffmpeg.option("i", vid_path)
-    ffmpeg.option("vf", "thumbnail=65,tile=15x1")
+    ffmpeg.option("vf", "thumbnail=65,tile=30x1")
     ffmpeg.option("frames:v", 1)
-    ffmpeg.option("qscale:v", 1)
+    ffmpeg.option("qscale:v", 3)
     ffmpeg.output(save_path)
 
     # print(ffmpeg.arguments)

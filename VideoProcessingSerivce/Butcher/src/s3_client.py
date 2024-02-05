@@ -1,7 +1,9 @@
-from minio import Minio
-from minio.error import S3Error
 import json
 import os
+
+from minio import Minio
+from minio.error import S3Error
+
 import config
 
 BUCKET_NAME = config.S3_BUCKET_NAME

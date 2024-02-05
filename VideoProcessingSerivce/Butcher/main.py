@@ -1,7 +1,8 @@
 import os
 import shutil
+
 import config
-from api import app
+from src.api import app
 
 path_to_workdir = os.path.join(config.CURRENT_PATH, config.WORKING_DIR)
 if os.path.exists(path_to_workdir):
