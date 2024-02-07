@@ -20,6 +20,10 @@ const OPENAI_CALL = new ChatOpenAI({
     streaming: false,
 });
 
+// TODO (LATER IDEA): Add chain base prompting, allow the new group of frames to have the context/descriptions  
+//      of the perivous frame in the prompt to ensure that contiune context is kept with in the frames and ensures that context 
+//      is always being keep
+//      This may couse slow down in process frames, but hopeful with the boost in better quality frame descriptions
 export async function createVisualPrompt(title, audio_transcription, img) {
     let trimText = trimTextByTokenAmount(audio_transcription, 325);
 
