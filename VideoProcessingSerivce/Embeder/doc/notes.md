@@ -1,3 +1,10 @@
+# Google
+- https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-multimodal-embeddings#img-txt-vid-embedding
+- https://cloud.google.com/vertex-ai/docs/generative-ai/video/video-descriptions
+
+# Fix cost usage
+- https://www.youtube.com/watch?v=lHxl5SchjPA
+
 # how_to_add_source_citation_for_langchains
 - https://www.reddit.com/r/LangChain/comments/157833e/how_to_add_source_citation_for_langchains/
 - https://zilliz.com/blog/retrieval-augmented-generation-with-citations
