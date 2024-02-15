@@ -1,3 +1,21 @@
+# Google
+- https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-multimodal-embeddings#img-txt-vid-embedding
+- https://cloud.google.com/vertex-ai/docs/generative-ai/video/video-descriptions
+
+# Fix cost usage
+- https://www.youtube.com/watch?v=lHxl5SchjPA
+
+# how_to_add_source_citation_for_langchains
+- https://www.reddit.com/r/LangChain/comments/157833e/how_to_add_source_citation_for_langchains/
+- https://zilliz.com/blog/retrieval-augmented-generation-with-citations
+- https://arxiv.org/pdf/2305.14627.pdf
+- https://www.youtube.com/watch?v=MOawB4k9-jk
+- https://python.langchain.com/docs/modules/chains#return-source-documents
+
+# Use perplexity.ai online (web scrapper GPT), can get the most accurate infomation from using bot
+- https://docs.perplexity.ai/docs/pricing (use 7b)
+- Paper, https://blog.perplexity.ai/blog/introducing-pplx-online-llms
+
 # Setup API for discord bot for better marketing
 - https://stackoverflow.com/questions/41745070/sending-private-messages-to-user
 - https://discord.com/developers/docs/intro

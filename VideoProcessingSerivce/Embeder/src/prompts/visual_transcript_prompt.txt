@@ -1,10 +1,4 @@
-import { PromptTemplate } from "@langchain/core/prompts";
-
-// TODO [x]: Rewrite prompt summary part (part 5) to focus on give a detail description of the collective images reather than a summary
-
-export const VideoAnalysisPrompt = new PromptTemplate({
-    inputVariables: ["audio_transcription", "title"],
-    template: `As a professional Media Content Analyst, your task is to meticulously generate a visual description based on screenshots taken from a video using the following steps:
+As a professional Media Content Analyst, your task is to meticulously generate a visual description based on screenshots taken from a video using the following steps:
 
 Step 1) Context Establishment: Initiate by comprehending the context. Extract significant details from the provided video title: "{title}". Utilize this information as a guiding framework for your visual description. Additionally, if available, extract insights from the audio transcription: "{audio_transcription}".
     
@@ -20,20 +14,4 @@ Remember your role as a professional Media Content Analyst, your task is to meti
 
 Remember to always create a visual description no matter what!!
 
-Screenshots From Video As One Single Image:`
-});
-
-export function secondsToTimeCode(seconds) {
-    let dateObj = new Date(seconds * 1000);
-    let timeHours = dateObj.getUTCHours();
-    let timeMinutes = dateObj.getUTCMinutes();
-    let timeSeconds = dateObj.getSeconds();
-    let timeMillSeconds = dateObj.getMilliseconds();
-
-    let timeString = timeHours.toString().padStart(2, '0')
-        + ':' + timeMinutes.toString().padStart(2, '0')
-        + ':' + timeSeconds.toString().padStart(2, '0')
-        + '.' + timeMillSeconds.toString();;
-
-    return timeString;
-};
+Screenshots From Video As One Single Image:
