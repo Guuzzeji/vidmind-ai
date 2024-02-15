@@ -21,7 +21,7 @@ while (true) {
 
     if (pendingTicket != null && pendingTicket[0][1].length != 0) {
         let redisPackage = JSON.parse(pendingTicket[0][1][0][1][1]);
-        // console.log(redisPackage);
+        console.log(redisPackage);
 
         await workerDoTask(redisPackage);
 
@@ -29,19 +29,8 @@ while (true) {
         let redisId = pendingTicket[0][1][0][0];
         await clientRedis.sendCommand(["XACK", String(process.env.REDIS_STREAM), String(process.env.REDIS_GROUP), redisId]);
 
-    } else if (idePendingTicket != null && idePendingTicket[0] != undefined) {
-        let redisId = idePendingTicket[0][0];
-        let redisGroup = idePendingTicket[0][1];
-
-        let getPackageMsg = await clientRedis.sendCommand(["XREAD", "STREAMS", String(process.env.REDIS_STREAM), redisId]);
-        let redisPackage = JSON.parse(getPackageMsg[0][1][0][1][1]);
-        // console.log(redisPackage);
-
-        await workerDoTask(redisPackage);
-
-        // Remove ticket from queue
-        await clientRedis.sendCommand(["XACK", String(process.env.REDIS_STREAM), redisGroup, redisId]);
     } else {
+        // TODO: Write ide ticket pending process to the server to help speed up video processing
         console.log("No work to do...");
     }
 
