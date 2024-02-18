@@ -1,30 +1,45 @@
-import { initTRPC } from '@trpc/server';
-import * as trpcExpress from '@trpc/server/adapters/express';
-import { z } from 'zod';
+import express from 'express';
+import * as bodyParser from 'body-parser';
 
-// created for each request
-export const createContext = ({ req, res, }: trpcExpress.CreateExpressContextOptions) => (console.log(req, res), {}); // no context
-type Context = Awaited<ReturnType<typeof createContext>>;
+import { ChatBot, ChatBotParms } from "../chatBot.ts"
+import { SearchDBParms, searchDBEmbeddings } from "../searchEmbed.ts"
+import { LLMRewritUserPrompt } from "../rewritePrompt.ts"
 
-export const t = initTRPC.context<Context>().create();
+export const ApiRouter = express.Router()
+ApiRouter.use(bodyParser.json())
 
-export const appRouter = t.router({
-    getUser: t.procedure.input(z.string()).query((opts) => {
-        opts.input; // string
-        return { id: opts.input, name: 'Bilbo' };
-    }),
-    helloworld: t.procedure.query((opts) => {// string
-        return { id: opts.input, name: 'Bilbo' };
-    }),
-    createUser: t.procedure
-        .input(z.object({ name: z.string().min(5) }))
-        .mutation(async () => {
-            // use your ORM of choice
-            return {
-                data: "hello"
-            }
-        }),
-});
+ApiRouter.post("/generate", async function (req, res) {
+    try {
+        let parms = req.body
+        let message = await ChatBot({ videoID: parms.videoID, userPrompt: parms.userPrompt, chatHistory: [] })
+        res.send(message)
 
-// export type definition of API
-export type AppRouter = typeof appRouter;
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+ApiRouter.post("/chat", async function (req, res) {
+    try {
+        let parms: ChatBotParms = req.body
+        let message = await ChatBot(parms)
+        res.send(message)
+
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+ApiRouter.post("/search", async function (req, res) {
+    try {
+        let parms: SearchDBParms = req.body;
+        let improvePromp = await LLMRewritUserPrompt.invoke({ userPrompt: parms.query })
+        let videoContent = await searchDBEmbeddings({ videoID: parms.videoID, query: improvePromp });
+        res.send(videoContent)
+
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+
