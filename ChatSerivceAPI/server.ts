@@ -10,4 +10,4 @@ import { ApiRouter } from './src/router/api.ts';
 const app = express();
 app.use('/API', ApiRouter);
 
-app.listen(4000);
+app.listen(process.env.PORT);
