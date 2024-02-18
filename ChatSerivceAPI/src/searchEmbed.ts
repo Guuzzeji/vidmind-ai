@@ -24,9 +24,20 @@ export type OpenAIEmbedResult = {
 
 export type DBEmbedResult = {
     rawtext: string,
-    clipID: number,
+    clipid: number,
     starttime: number,
     endtime: number
+}
+
+export type Cite = {
+    clipID: number,
+    starttime: number,
+    endtime: number,
+}
+
+export type SearchDBParms = {
+    videoID: string,
+    query: string
 }
 
 async function createEmbedQuery(text: string): Promise<OpenAIEmbedResult> {
@@ -37,7 +48,7 @@ async function createEmbedQuery(text: string): Promise<OpenAIEmbedResult> {
     };
 }
 
-export async function searchDBEmbeddings(videoID: string, query: string): Promise<{ videoID: string, Frames: DBEmbedResult[], Audios: DBEmbedResult[] }> {
+export async function searchDBEmbeddings({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Frames: DBEmbedResult[], Audios: DBEmbedResult[] }> {
     let embedQuery = await createEmbedQuery(query);
     let client = await POOL.connect();
     let sqlQueryFrames = `SELECT clipId, rawText, startTime, endTime FROM FRAME_EMBED WHERE id = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]'  LIMIT 10`
@@ -65,6 +76,19 @@ export function convertDBEmbedResultToString(embeds: DBEmbedResult[]): string {
     }
 
     return textResult;
+}
+
+export function createCitionList(embeds: DBEmbedResult[]): Cite[] {
+    let result = [];
+    for (let i = 0; i < embeds.length; i++) {
+        result.push({
+            clipID: embeds[i].clipid,
+            starttime: embeds[i].starttime,
+            endtime: embeds[i].endtime
+        })
+    }
+
+    return [... new Set(result)];
 }
 
 
