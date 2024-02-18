@@ -15,7 +15,9 @@ ApiRouter.post("/generate", async function (req, res) {
         res.send(message)
 
     } catch (error) {
-        res.send(error.message)
+        res.send({
+            error: error.message
+        })
     }
 })
 
@@ -26,7 +28,9 @@ ApiRouter.post("/chat", async function (req, res) {
         res.send(message)
 
     } catch (error) {
-        res.send(error.message)
+        res.send({
+            error: error.message
+        })
     }
 })
 
@@ -38,7 +42,9 @@ ApiRouter.post("/search", async function (req, res) {
         res.send(videoContent)
 
     } catch (error) {
-        res.send(error.message)
+        res.send({
+            error: error.message
+        })
     }
 })
 
