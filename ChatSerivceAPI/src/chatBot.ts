@@ -5,7 +5,7 @@ import 'dotenv/config'
 
 import { searchDBEmbeddings, convertDBEmbedResultToString, Cite, createCitionList } from "./searchEmbed.ts"
 import { LLMSummarize } from "./summarize.ts"
-import { LLMRewritUserPrompt } from "./rewritePrompt.ts"
+import { LLMRewriteUserPrompt } from "./rewritePrompt.ts"
 
 export type AIChatMessage = {
     text: string,
@@ -56,7 +56,7 @@ User Current Prompt:
 const answerUserPrompt = chatBotPrompt.pipe(GPT).pipe(new StringOutputParser())
 
 export async function ChatBot({ videoID, userPrompt, chatHistory = [] }: ChatBotParms): Promise<AIChatMessage> {
-    let rewritePrompt = await LLMRewritUserPrompt.invoke({ userPrompt: userPrompt });
+    let rewritePrompt = await LLMRewriteUserPrompt.invoke({ userPrompt: userPrompt });
     let searchDB = await searchDBEmbeddings({ videoID, query: rewritePrompt })
 
     let audioTextChunk = await LLMSummarize.invoke({ textToSummarize: convertDBEmbedResultToString(searchDB.Audios) })

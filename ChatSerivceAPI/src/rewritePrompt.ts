@@ -20,4 +20,4 @@ Do not add "Refined Prompt:" to your respones, just give back the rewritten prom
 User Prompt: "{userPrompt}"`
 )
 
-export const LLMRewritUserPrompt = rewritePrompt.pipe(GPT).pipe(new StringOutputParser())
+export const LLMRewriteUserPrompt = rewritePrompt.pipe(GPT).pipe(new StringOutputParser())
