@@ -5,6 +5,8 @@ import { ChatBot, ChatBotParms } from "../chatBot.ts"
 import { SearchDBParms, searchDBEmbeddings } from "../searchEmbed.ts"
 import { LLMRewriteUserPrompt } from "../rewritePrompt.ts"
 
+// TODO: Add queue system to and help serivce scale better
+// LOOK AT: https://docs.bullmq.io/guide/queues/auto-removal-of-jobs
 export const ApiRouter = express.Router()
 ApiRouter.use(bodyParser.json())
 
