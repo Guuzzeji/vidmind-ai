@@ -51,8 +51,8 @@ async function createEmbedQuery(text: string): Promise<OpenAIEmbedResult> {
 export async function searchDBEmbeddings({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Frames: DBEmbedResult[], Audios: DBEmbedResult[] }> {
     let embedQuery = await createEmbedQuery(query);
     let client = await POOL.connect();
-    let sqlQueryFrames = `SELECT clipId, rawText, startTime, endTime FROM FRAME_EMBED WHERE id = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]'  LIMIT 10`
-    let sqlQueryAudio = `SELECT clipId, rawText, startTime, endTime FROM AUDIO_EMBED WHERE id = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]' LIMIT 10`
+    let sqlQueryFrames = `SELECT clipId, rawText, startTime, endTime FROM FRAME_EMBED WHERE id = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]'  LIMIT 15`
+    let sqlQueryAudio = `SELECT clipId, rawText, startTime, endTime FROM AUDIO_EMBED WHERE id = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]' LIMIT 15`
     let resFrames = await client.query(sqlQueryFrames);
     let resAudio = await client.query(sqlQueryAudio);
     await client.query('COMMIT');
