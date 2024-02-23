@@ -6,14 +6,19 @@ const OPENAI_CALL_EMBED = new OpenAIEmbeddings({
     modelName: 'text-embedding-3-large'
 });
 
-export async function embedTextList(rawTextList) {
+type Embeddings = {
+    text: string,
+    embedding: number[]
+}
+
+export async function embedTextList(rawTextList: string[]): Promise<Embeddings[]> {
     let emebedTexts = await OPENAI_CALL_EMBED.embedDocuments(rawTextList);
-    let structuredEmbedWithText = [];
+    let structuredEmbedWithText: Embeddings[] = [];
 
     for (let i = 0; i < emebedTexts.length; i++) {
         structuredEmbedWithText.push({
             text: rawTextList[i],
-            embed: emebedTexts[i]
+            embedding: emebedTexts[i]
         });
     }
 
