@@ -7,7 +7,7 @@ const openai = new OpenAI({
 });
 
 export async function createTranscriptFromAudio(fileBase64: string): Promise<string> {
-    let transcription = await openai.audio.transcriptions.create({
+    let transcription: any = await openai.audio.transcriptions.create({
         file: await toFile(Buffer.from(fileBase64, 'base64'), "audio.mp3", {
             type: "audio/mp3",
         }),
@@ -16,7 +16,7 @@ export async function createTranscriptFromAudio(fileBase64: string): Promise<str
         response_format: 'text'
     });
 
-    return transcription.text;
+    return transcription;
 }
 
 export function trimTextByTokenAmount(text: string, maxTokens: number): string {
