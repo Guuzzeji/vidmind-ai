@@ -2,19 +2,20 @@
   "name": "embederserivce",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "main": "index.js",
   "scripts": {
-    "startDev": "node --env-file=.env.development.local index.js",
-    "startPro": "node --env-file=.env.production index.js"
+    "dev": "npx nodemon server.ts",
+    "build": "tsc ",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts src --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@langchain/community": "^0.0.17",
-    "@langchain/core": "0.1.13",
-    "@langchain/openai": "^0.0.12",
+    "@langchain/community": "^0.0.30",
+    "@langchain/core": "^0.1.30",
+    "@langchain/openai": "^0.0.14",
     "axios": "^1.6.3",
     "gpt-tokenizer": "^2.1.2",
     "langchain": "^0.1.3",
@@ -26,6 +27,7 @@
     "@types/node": "^20.11.19",
     "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
+    "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
