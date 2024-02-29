@@ -18,7 +18,7 @@ export class InsertDataToDB {
     }
 
     public static async initialize(): Promise<InsertDataToDB> {
-        let client = DB_POOL.connect()
+        let client = await DB_POOL.connect()
         return new InsertDataToDB(client);
     }
 
