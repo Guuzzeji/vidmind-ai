@@ -49,10 +49,10 @@ def upload_file(s3_folder_id: str, file_source: str, file_name: str, folder_name
 def upload_folder(folder_path: str, folder_name: str, s3_folder_id: str) -> list[str]:
     # Upload files
     files = os.listdir(folder_path)
-    s3_urls = []
+    s3_urls = {}
     for file in files:
         path_to_file = os.path.join(folder_path, file)
         url = upload_file(s3_folder_id, path_to_file, file, folder_name)
-        s3_urls.append(url)
+        s3_urls[file] = url
 
     return s3_urls
