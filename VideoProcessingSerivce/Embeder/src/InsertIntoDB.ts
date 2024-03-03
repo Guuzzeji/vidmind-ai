@@ -23,26 +23,32 @@ export class InsertDataToDB {
     }
 
     public async addVideoMetadata({ id, title, numOfClips }) {
-        let sqlCall = "INSERT INTO METADATA(id, title, numberOfClips) VALUES($1, $2, $3)";
+        let sqlCall = "INSERT INTO video_metadata(id, title, numberOfClips) VALUES($1, $2, $3)";
         let values = [id, title, numOfClips];
         this.dbClient.query(sqlCall, values);
     }
 
     public async addAudioEmbed({ id, embedding, rawText, clipId, start, end }) {
-        let sqlCall = "INSERT INTO AUDIO_EMBED(id, embedding, rawText, clipId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6)";
-        let values = [id, embedding, rawText, clipId, start, end];
+        let sqlCall = "INSERT INTO audio_embeds(videoId, embedding, rawText, clipId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6)";
+        let values = [id, `[${String(embedding)}]`, rawText, clipId, start, end];
         this.dbClient.query(sqlCall, values);
     }
 
-    public async addVisualEmbed({ id, embedding, rawText, clipId, start, end }) {
-        let sqlCall = "INSERT INTO FRAME_EMBED(id, embedding, rawText, clipId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6)";
-        let values = [id, embedding, rawText, clipId, start, end];
+    public async addVisualEmbed({ id, embedding, rawText, clipId, frameId, start, end }) {
+        let sqlCall = "INSERT INTO frame_embeds(videoId, embedding, rawText, clipId, frameId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6, $7)";
+        let values = [id, `[${String(embedding)}]`, rawText, clipId, frameId, start, end];
         this.dbClient.query(sqlCall, values);
     }
 
-    public async addFileURL({ id, audioUrl, frameUrl, clipId }) {
-        let sqlCall = "INSERT INTO S3_FILES(id, s3AudioUrl, s3FramesUrl, clipId) VALUES($1, $2, $3, $4)";
-        let values = [id, audioUrl, frameUrl, clipId];
+    public async addFileAudioUrl({ id, audioUrl, clipId }) {
+        let sqlCall = "INSERT INTO s3_files_audio(videoId, s3AudioUrl, clipId) VALUES($1, $2, $3)";
+        let values = [id, audioUrl, clipId];
+        this.dbClient.query(sqlCall, values);
+    }
+
+    public async addFileImageUrl({ id, frameUrl, clipId, frameID }) {
+        let sqlCall = "INSERT INTO S3_FILES(videoId, imgUrl, clipId, frameID) VALUES($1, $2, $3, $4)";
+        let values = [id, frameUrl, clipId, frameID];
         this.dbClient.query(sqlCall, values);
     }
 
