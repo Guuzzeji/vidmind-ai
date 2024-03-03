@@ -193,7 +193,7 @@ class ContentExtractor:
 
         # Taking thoses clips and breaking them down into frame strips
         for clip in self.timestamps:
-            print(clip)
+            # print(clip)
             self.__extract_audio(
                 clip["clip_vid_path"], self.folder_location["audio_folder"], str(clip["id"]))
 

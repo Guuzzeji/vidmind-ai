@@ -3,8 +3,7 @@ import { InsertDataToDB } from './InsertIntoDB.ts';
 import { createTranscriptFromAudio } from './audioTranscript.ts';
 import { embedText } from './embed.ts';
 
-import { secondsToTimestamp } from './utils.ts';
-import { getBase64, } from './utils.ts';
+import { secondsToTimestamp, getBase64 } from './utils.ts';
 
 type ClipChunk = {
     id: number,
@@ -100,12 +99,12 @@ export class Worker {
                 imgs: chunk.frames
             });
 
-            console.log(chunk.frames);
+            // console.log(chunk.frames);
             let splitTimecodeInfo = visualText.split("\n");
 
             for (let j = 0; j < splitTimecodeInfo.length; j++) {
                 let visualEmbed = await embedText(splitTimecodeInfo[j])
-                console.log(visualText);
+                // console.log(visualText);
                 this.visual.push({
                     clipId: chunk.id,
                     frameId: chunk.frames[j].id,

@@ -12,6 +12,11 @@ type Images = {
     imgUrl: string
 }
 
+type VLMPromptParms = {
+    audioTranscription: string,
+    imgs: Images[]
+}
+
 const OPENAI_CALL = new ChatOpenAI({
     openAIApiKey: process.env.OPENAI_API_KEY,
     modelName: "gpt-4-vision-preview",
@@ -39,7 +44,7 @@ export class VisualTranscrpitVLM {
         this.title = title;
     }
 
-    async createVisualPrompt({ audioTranscription, imgs }: { audioTranscription: string, imgs: Images[] }): Promise<string> {
+    async createVisualPrompt({ audioTranscription, imgs }: VLMPromptParms): Promise<string> {
         let audioSummary = await LLMSummarize.invoke({ textToSummarize: audioTranscription })
         let imagePrompt = await VisualTranscrpitVLM.createImagePromptList(imgs)
 
