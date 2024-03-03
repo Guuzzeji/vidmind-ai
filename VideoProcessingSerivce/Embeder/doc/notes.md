@@ -1,3 +1,6 @@
+# WAR 
+- https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024/#sundar-note
+
 # Prompts
 // Make this System Message of LLM
 
