@@ -43,13 +43,20 @@ def worker(video_id: str, title: str, video_path: str):
     # Adding everything into a single object
     chunk_clip_list = []
     for chunk in video_breakdown.timestamps:
+        frame_chunks = []
+
+        for frame in chunk.get("imgs_timestamps"):
+            frame_copy = frame
+            frame_copy["imgUrl"] = frame_url_table[str(
+                chunk.get("id"))]['{:03d}.jpg'.format(frame_copy.get("id") + 1)]
+            frame_chunks.append(frame_copy)
+
         chunk_clip_list.append({
             "id": chunk.get("id"),
             "startTime": chunk.get("start"),
             "endTime": chunk.get("end"),
-            "frameTimestamps": chunk.get("imgs_timestamps"),
+            "frames": frame_chunks,
             "audioUrl": audio_urls[str(chunk.get("id"))+".mp3"],
-            "frameUrl": frame_url_table[str(chunk.get("id"))]
         })
 
     package_msg = {
@@ -57,6 +64,8 @@ def worker(video_id: str, title: str, video_path: str):
         "title": title,
         "clipChunks": chunk_clip_list
     }
+
+    # return package_msg
 
     r.xadd("EMBED_TICKETS", {"data": json.dumps(package_msg)})
 
