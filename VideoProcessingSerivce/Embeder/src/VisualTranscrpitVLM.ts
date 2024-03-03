@@ -2,6 +2,7 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatOpenAI } from "@langchain/openai";
+import 'dotenv/config'
 
 import { LLMSummarize } from './summarize.ts'
 import { getBase64, secondsToTimestamp } from "./utils.ts";
@@ -16,6 +17,7 @@ type VLMPromptParms = {
     audioTranscription: string,
     imgs: Images[]
 }
+
 
 const OPENAI_CALL = new ChatOpenAI({
     openAIApiKey: process.env.OPENAI_API_KEY,
