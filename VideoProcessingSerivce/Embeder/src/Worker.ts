@@ -9,9 +9,14 @@ import { getBase64, } from './utils.ts';
 type ClipChunk = {
     id: number,
     startTime: number,
-    endTime: number
+    endTime: number,
+    frames: {
+        end: number,
+        start: number,
+        id: number,
+        imgUrl: string
+    }[],
     audioUrl: string,
-    frameUrl: string,
 }
 
 type WorkDetails = {
@@ -20,21 +25,34 @@ type WorkDetails = {
     clipChunks: ClipChunk[]
 }
 
-type IdText = {
+type AudioEmbed = {
     id: number,
     text: string,
     embed: number[] | null,
     startTime: number,
-    endTime: number
+    endTime: number,
+    audioUrl: string
 }
+
+
+type VisualEmbed = {
+    clipId: number,
+    frameId: number,
+    text: string,
+    embed: number[] | null,
+    startTime: number,
+    endTime: number,
+    imgUrl: string
+}
+
 
 export class Worker {
     private title: string;
     private clipChunks: ClipChunk[];
     private id: string;
 
-    private audio: IdText[] = [];
-    private visual: IdText[] = [];
+    private audio: AudioEmbed[] = [];
+    private visual: VisualEmbed[] = [];
 
     private DBClient: InsertDataToDB;
     private VisualLLM: VisualTranscrpitVLM;
@@ -72,50 +90,76 @@ export class Worker {
                 text: audioText,
                 embed: audioEmbed,
                 startTime: chunk.startTime,
-                endTime: chunk.endTime
+                endTime: chunk.endTime,
+                audioUrl: chunk.audioUrl
             });
 
             // Creating visual
-            let img = await getBase64(chunk.frameUrl);
             let visualText = await this.VisualLLM.createVisualPrompt({
                 audioTranscription: audioText,
-                imgBase64: img,
-                timeStart: secondsToTimestamp(chunk.startTime),
-                timeEnd: secondsToTimestamp(chunk.endTime)
+                imgs: chunk.frames
             });
-            let visualEmbed = await embedText(visualText)
-            console.log(visualText);
-            this.visual.push({
-                id: i,
-                text: visualText,
-                embed: visualEmbed,
-                startTime: chunk.startTime,
-                endTime: chunk.endTime
-            });
+
+            console.log(chunk.frames);
+            let splitTimecodeInfo = visualText.split("\n");
+
+            for (let j = 0; j < splitTimecodeInfo.length; j++) {
+                let visualEmbed = await embedText(splitTimecodeInfo[j])
+                console.log(visualText);
+                this.visual.push({
+                    clipId: chunk.id,
+                    frameId: chunk.frames[j].id,
+                    text: visualText,
+                    embed: visualEmbed,
+                    startTime: chunk.frames[j].start,
+                    endTime: chunk.frames[j].end,
+                    imgUrl: chunk.frames[j].imgUrl
+                });
+            }
+
         }
     }
 
     private async dbUpload() {
         await this.DBClient.addVideoMetadata({ id: this.id, title: this.title, numOfClips: this.clipChunks.length });
 
-        for (let x = 0; x < this.clipChunks.length; x++) {
-            let chunk = this.clipChunks[x];
-            this.DBClient.addFileURL({ id: this.id, audioUrl: chunk.audioUrl, frameUrl: chunk.frameUrl, clipId: chunk.id })
+        for (let x = 0; x < this.audio.length; x++) {
+            let audioEmbedInfo = this.audio[x];
 
-            this.DBClient.addAudioEmbed({
+            await this.DBClient.addFileAudioUrl({
                 id: this.id,
-                embedding: this.audio[x].embed,
-                rawText: this.audio[x].text,
-                clipId: this.audio[x].id,
-                start: this.audio[x].startTime, end: this.audio[x].endTime
+                audioUrl: audioEmbedInfo.audioUrl,
+                clipId: audioEmbedInfo.id
             })
 
-            this.DBClient.addAudioEmbed({
+            await this.DBClient.addAudioEmbed({
                 id: this.id,
-                embedding: this.visual[x].embed,
-                rawText: this.visual[x].text,
-                clipId: this.visual[x].id,
-                start: this.visual[x].startTime, end: this.visual[x].endTime
+                embedding: audioEmbedInfo.embed,
+                rawText: audioEmbedInfo.text,
+                clipId: audioEmbedInfo.id,
+                start: audioEmbedInfo.startTime,
+                end: audioEmbedInfo.endTime
+            })
+        }
+
+        for (let x = 0; x < this.visual.length; x++) {
+            let frameEmbed = this.visual[x];
+
+            await this.DBClient.addFileImageUrl({
+                id: this.id,
+                frameUrl: frameEmbed.imgUrl,
+                clipId: frameEmbed.clipId,
+                frameID: frameEmbed.frameId
+            })
+
+            await this.DBClient.addVisualEmbed({
+                id: this.id,
+                frameId: frameEmbed.frameId,
+                embedding: frameEmbed.embed,
+                rawText: frameEmbed.text,
+                clipId: frameEmbed.clipId,
+                start: frameEmbed.startTime,
+                end: frameEmbed.endTime
             })
         }
 

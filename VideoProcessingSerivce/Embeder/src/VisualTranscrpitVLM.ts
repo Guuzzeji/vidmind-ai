@@ -4,37 +4,44 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatOpenAI } from "@langchain/openai";
 
 import { LLMSummarize } from './summarize.ts'
+import { getBase64, secondsToTimestamp } from "./utils.ts";
 
-type VisualPromptParms = {
-    audioTranscription: string,
-    imgBase64: string,
-    timeStart: string,
-    timeEnd: string
+type Images = {
+    start: number,
+    end: number,
+    imgUrl: string
 }
 
 const OPENAI_CALL = new ChatOpenAI({
     openAIApiKey: process.env.OPENAI_API_KEY,
     modelName: "gpt-4-vision-preview",
-    temperature: 0.0,
+    temperature: 0.25,
     maxTokens: 4000,
     // maxConcurrency: 3,
     streaming: false,
 
 });
 
-const SYSTEM_PROMPT = `Your role is a Visual Media Content Analyst. Your task is to generate concise visual summaries from video screenshots. Start by establishing context using the video title, audio transcription, and any previous summaries available. Analyze the image sequence, focusing on key aspects like actions, charts, diagrams, and text. When images are unclear, make informed assumptions based on context. Craft a detailed summary, prioritizing text or code transcription and detailed descriptions of diagrams or charts. Exclude the video title and "Visual Summary:" in your response. Always provide a summary with the timestamp included at the start of your response (Example: "start timestamp" to "end timestamp" - "your response"). Keep your response short, between 3-5 sentences; if unable, state: 'None'.`;
+const SYSTEM_PROMPT = `As a Image-to-Text Conversion Specialist, your role is to provide detailed text summaries for each frame of the video. Begin by establishing context using the video title, audio transcription, and any additional text information provided to help you describe each image. Analyze each image, focusing on key elements such as actions, charts, diagrams, and text. If any image is unclear, use context from the audio transcript, other text information, and the any other images given to you to make informed assumptions. Craft a detailed summary for each frame, prioritizing the transcription of text or code and descriptions of diagrams or charts. 
+
+Exclude the video title and "Visual Summary:" from your response. Always include the time code at the start of your response. Also make sure to start a newline for each image you are summarizing, Do not add spacing between image summary, Your response should look like this:
+
+"start time code" to "end time code" : "your first response"
+"start time code" to "end time code" : "your second response"
+"start time code" to "end time code" : "your third response"
+
+Keep your response concise. If unable to summarize a frame, state: 'None'.`;
 
 export class VisualTranscrpitVLM {
     private title: string;
-    private previousVisualInfomation = "None";
 
     constructor(title: string) {
         this.title = title;
     }
 
-    async createVisualPrompt({ audioTranscription, imgBase64, timeStart, timeEnd }: VisualPromptParms): Promise<string> {
+    async createVisualPrompt({ audioTranscription, imgs }: { audioTranscription: string, imgs: Images[] }): Promise<string> {
         let audioSummary = await LLMSummarize.invoke({ textToSummarize: audioTranscription })
-        let previousVisualSummary = (this.previousVisualInfomation != "None") ? await LLMSummarize.invoke({ textToSummarize: this.previousVisualInfomation }) : "None"
+        let imagePrompt = await VisualTranscrpitVLM.createImagePromptList(imgs)
 
         // for some reason you have to set prompt format like this for langchain to work
         let prompt = [
@@ -47,43 +54,45 @@ export class VisualTranscrpitVLM {
                 content: [
                     {
                         "type": "text",
-                        "text": `Previous Visual Summary: "${previousVisualSummary}"`
+                        "text": `Video Title: "${this.title}"\n`
                     },
                     {
                         "type": "text",
-                        "text": `Video Title: "${this.title}"`
+                        "text": `Audio Transcription For All Images: "${audioSummary}"\n`
                     },
                     {
                         "type": "text",
-                        "text": `Audio Transcription: "${audioSummary}"`
+                        "text": `Video Screenshots Below\n`
                     },
-                    {
-                        "type": "text",
-                        "text": `Audio Transcription: "${audioSummary}"`
-                    },
-                    {
-                        "type": "text",
-                        "text": `Video Timestamp: "${timeStart}" to "${timeEnd}"`
-                    },
-                    {
-                        "type": "text",
-                        "text": `Video Screenshot:`
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": "data:image/jpeg;base64," + imgBase64,
-                            "detail": "low",
-                        }
-                    }
-                ]
-            })
+                    ...imagePrompt
+                ],
+            }),
         ];
 
         let res = await VisualTranscrpitVLM.callVLM(prompt);
-        this.previousVisualInfomation = res
-
         return res;
+    }
+
+    private static async createImagePromptList(imgs: Images[]): Promise<any[]> {
+        let result = []
+        for (let img of imgs) {
+            let base64 = await getBase64(img.imgUrl)
+            let titleMsg = {
+                "type": "text",
+                "text": `This image is from the time code "${secondsToTimestamp(img.start)}" to "${secondsToTimestamp(img.end)}"`
+            }
+            let imageMsg = {
+                "type": "image_url",
+                "image_url": {
+                    "url": "data:image/jpeg;base64," + base64,
+                    "detail": "high",
+                }
+            }
+            result.push(titleMsg)
+            result.push(imageMsg)
+        }
+
+        return result
     }
 
     private static async callVLM(prompt: AIMessage[]): Promise<string> {
