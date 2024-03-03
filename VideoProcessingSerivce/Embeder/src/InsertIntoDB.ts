@@ -2,6 +2,44 @@ import pkg from 'pg';
 
 const { Pool } = pkg;
 
+type VideoMetadataSQLParms = {
+    id: string,
+    title: string,
+    numOfClips: number
+}
+
+type AudioEmbedSQLParms = {
+    id: string,
+    embedding: number[],
+    rawText: string,
+    clipId: number,
+    start: number,
+    end: number
+}
+
+type VisualsEmbedSQLParms = {
+    id: string,
+    embedding: number[],
+    rawText: string,
+    clipId: number,
+    frameId: number,
+    start: number,
+    end: number
+}
+
+type FileAudioSQLParms = {
+    id: string,
+    audioUrl: string,
+    clipId: number,
+}
+
+type FileImageSQLParms = {
+    id: string,
+    frameUrl: string,
+    clipId: number,
+    frameId: number,
+}
+
 const DB_POOL = new Pool({
     user: process.env.DB_USER,
     password: process.env.DB_PWD,
@@ -22,33 +60,33 @@ export class InsertDataToDB {
         return new InsertDataToDB(client);
     }
 
-    public async addVideoMetadata({ id, title, numOfClips }) {
+    public async addVideoMetadata({ id, title, numOfClips }: VideoMetadataSQLParms) {
         let sqlCall = "INSERT INTO video_metadata(id, title, numberOfClips) VALUES($1, $2, $3)";
         let values = [id, title, numOfClips];
         this.dbClient.query(sqlCall, values);
     }
 
-    public async addAudioEmbed({ id, embedding, rawText, clipId, start, end }) {
+    public async addAudioEmbed({ id, embedding, rawText, clipId, start, end }: AudioEmbedSQLParms) {
         let sqlCall = "INSERT INTO audio_embeds(videoId, embedding, rawText, clipId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6)";
         let values = [id, `[${String(embedding)}]`, rawText, clipId, start, end];
         this.dbClient.query(sqlCall, values);
     }
 
-    public async addVisualEmbed({ id, embedding, rawText, clipId, frameId, start, end }) {
+    public async addVisualEmbed({ id, embedding, rawText, clipId, frameId, start, end }: VisualsEmbedSQLParms) {
         let sqlCall = "INSERT INTO frame_embeds(videoId, embedding, rawText, clipId, frameId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6, $7)";
         let values = [id, `[${String(embedding)}]`, rawText, clipId, frameId, start, end];
         this.dbClient.query(sqlCall, values);
     }
 
-    public async addFileAudioUrl({ id, audioUrl, clipId }) {
+    public async addFileAudioUrl({ id, audioUrl, clipId }: FileAudioSQLParms) {
         let sqlCall = "INSERT INTO s3_files_audio(videoId, s3AudioUrl, clipId) VALUES($1, $2, $3)";
         let values = [id, audioUrl, clipId];
         this.dbClient.query(sqlCall, values);
     }
 
-    public async addFileImageUrl({ id, frameUrl, clipId, frameID }) {
-        let sqlCall = "INSERT INTO S3_FILES(videoId, imgUrl, clipId, frameID) VALUES($1, $2, $3, $4)";
-        let values = [id, frameUrl, clipId, frameID];
+    public async addFileImageUrl({ id, frameUrl, clipId, frameId }: FileImageSQLParms) {
+        let sqlCall = "INSERT INTO s3_files_frame(videoId, imgUrl, clipId, frameId) VALUES($1, $2, $3, $4)";
+        let values = [id, frameUrl, clipId, frameId];
         this.dbClient.query(sqlCall, values);
     }
 

@@ -149,7 +149,7 @@ export class Worker {
                 id: this.id,
                 frameUrl: frameEmbed.imgUrl,
                 clipId: frameEmbed.clipId,
-                frameID: frameEmbed.frameId
+                frameId: frameEmbed.frameId
             })
 
             await this.DBClient.addVisualEmbed({

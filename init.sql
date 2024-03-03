@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS s3_files_audio (
 CREATE TABLE IF NOT EXISTS s3_files_frame (
     videoId uuid NOT NULL,
     clipId INT,
-    frameID INT,
+    frameId INT,
     imgUrl TEXT,
     PRIMARY KEY(videoId, clipId, frameID),
     FOREIGN KEY(videoId) REFERENCES video_metadata(id)
