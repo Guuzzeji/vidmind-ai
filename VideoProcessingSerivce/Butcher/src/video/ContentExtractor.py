@@ -86,6 +86,8 @@ class ContentExtractor:
 
     def __create_segment_time_list(self, clips_path: str) -> list[dict[str, float]]:
         folder = os.listdir(clips_path)
+        folder.sort()  # Fix issue with list being not sorted correctly
+
         seg_list = []
 
         for file in folder:
