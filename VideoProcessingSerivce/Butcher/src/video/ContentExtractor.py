@@ -159,14 +159,16 @@ class ContentExtractor:
 
         else:
             save_images(scenes, video, num_images=1,
-                        image_name_template=save_path, encoder_param=90)
+                        image_name_template=save_path, encoder_param=85)
 
         img_list = os.listdir(save_folder_path)
         for img_path in img_list:
             full_path = os.path.join(save_folder_path, img_path)
             img = Image.open(full_path)
-            img.thumbnail((512, 512), Image.ANTIALIAS)
-            img.save(full_path)
+            img.thumbnail((1280, 720), Image.ANTIALIAS)
+            mask = img.getbbox()
+            cropped = img.crop(mask)
+            cropped.save(full_path)
 
         img_timestamps = []
         if len(scenes) != 0:
