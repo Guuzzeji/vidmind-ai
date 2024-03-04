@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS s3_files_frame (
     clipId INT,
     frameId INT,
     imgUrl TEXT,
-    PRIMARY KEY(videoId, clipId, frameID),
+    PRIMARY KEY(videoId, clipId, frameId),
     FOREIGN KEY(videoId) REFERENCES video_metadata(id)
 );
 
@@ -39,9 +39,9 @@ CREATE TABLE IF NOT EXISTS frame_embeds (
     rawText TEXT,
     startTime FLOAT,
     endTime FLOAT,
-    PRIMARY KEY(videoId, clipId, frameID),
+    PRIMARY KEY(videoId, clipId, frameId),
     FOREIGN KEY(videoId) REFERENCES video_metadata(id),
-    FOREIGN KEY(videoId, clipId, frameID) REFERENCES s3_files_frame(videoId, clipId, frameID)
+    FOREIGN KEY(videoId, clipId, frameId) REFERENCES s3_files_frame(videoId, clipId, frameId)
 );
 
 -- Embed for audio

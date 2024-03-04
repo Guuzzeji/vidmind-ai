@@ -81,7 +81,7 @@ export class Worker {
             // Preprocessing audio
             let audioFile = await getBase64(chunk.audioUrl);
             let audioText = await createTranscriptFromAudio(audioFile);
-            audioText = `${secondsToTimestamp(chunk.startTime)} to ${secondsToTimestamp(chunk.endTime)}` + audioText;
+            audioText = `${secondsToTimestamp(chunk.startTime)} to ${secondsToTimestamp(chunk.endTime)} - ${audioText}`;
             let audioEmbed = await embedText(audioText)
             this.audio.push({
                 id: i,
@@ -99,15 +99,16 @@ export class Worker {
             });
 
             // console.log(chunk.frames);
-            let splitTimecodeInfo = visualText.split("\n");
+            let splitTimecodeInfo = visualText.trim().replace(new RegExp("\n\n", 'g'), "**NEWLINE**").trim().split("**NEWLINE**");
+            // console.log(splitTimecodeInfo)
 
             for (let j = 0; j < splitTimecodeInfo.length; j++) {
                 let visualEmbed = await embedText(splitTimecodeInfo[j])
-                // console.log(visualText);
+                // console.log("DEBUG EMBED TEXT - ", j, splitTimecodeInfo[j]);
                 this.visual.push({
                     clipId: chunk.id,
                     frameId: chunk.frames[j].id,
-                    text: visualText,
+                    text: splitTimecodeInfo[j],
                     embed: visualEmbed,
                     startTime: chunk.frames[j].start,
                     endTime: chunk.frames[j].end,
