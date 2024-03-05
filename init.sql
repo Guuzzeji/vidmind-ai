@@ -1,36 +1,58 @@
 -- From: https://medium.com/@johannes.ocean/setting-up-a-postgres-database-with-the-pgvector-extension-10ab7ff212cc
 -- UUID FROM: https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-uuid/
 -- Create the extension if not exists
+
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Create Metadata table
-CREATE TABLE IF NOT EXISTS METADATA (
+CREATE TABLE IF NOT EXISTS video_metadata (
     id uuid PRIMARY KEY,
     title TEXT,
     numberOfClips INT
 );
+
 -- Create S3 Store table
-CREATE TABLE IF NOT EXISTS S3_FILES (
-    id uuid,
+CREATE TABLE IF NOT EXISTS s3_files_audio (
+    videoId uuid NOT NULL,
+    clipId INT,
     s3AudioUrl TEXT,
-    s3FramesUrl TEXT,
-    clipId INT
+    PRIMARY KEY(videoId, clipId),
+    FOREIGN KEY(videoId) REFERENCES video_metadata(id)
 );
+
+CREATE TABLE IF NOT EXISTS s3_files_frame (
+    videoId uuid NOT NULL,
+    clipId INT,
+    frameId INT,
+    imgUrl TEXT,
+    PRIMARY KEY(videoId, clipId, frameId),
+    FOREIGN KEY(videoId) REFERENCES video_metadata(id)
+);
+
 -- Embed for frames / video
-CREATE TABLE IF NOT EXISTS FRAME_EMBED (
-    id uuid,
+CREATE TABLE IF NOT EXISTS frame_embeds (
+    videoId uuid NOT NULL,
+    clipId INT,
+    frameId INT,
     embedding vector,
     rawText TEXT,
-    clipId INT,
     startTime FLOAT,
-    endTime FLOAT
+    endTime FLOAT,
+    PRIMARY KEY(videoId, clipId, frameId),
+    FOREIGN KEY(videoId) REFERENCES video_metadata(id),
+    FOREIGN KEY(videoId, clipId, frameId) REFERENCES s3_files_frame(videoId, clipId, frameId)
 );
+
 -- Embed for audio
-CREATE TABLE IF NOT EXISTS AUDIO_EMBED (
-    id uuid,
+CREATE TABLE IF NOT EXISTS audio_embeds (
+    videoId uuid NOT NULL,
+    clipId INT,
     embedding vector,
     rawText TEXT,
-    clipId INT,
     startTime FLOAT,
-    endTime FLOAT
+    endTime FLOAT,
+    PRIMARY KEY(videoId, clipId),
+    FOREIGN KEY(videoId) REFERENCES video_metadata(id),
+    FOREIGN KEY(videoId, clipId) REFERENCES s3_files_audio(videoId, clipId)
 );

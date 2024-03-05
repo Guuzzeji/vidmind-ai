@@ -46,7 +46,7 @@ def handle_video_dl():
             file_path = os.path.join(
                 config.CURRENT_PATH, config.WORKING_DIR, file_id)
             os.mkdir(file_path)
-            folders = utils.create_work_folders(file_id)
+            # folders = utils.create_work_folders(file_id)
 
             # Save file and encode to 720p
             video_path = os.path.join(file_path, filename)
@@ -54,15 +54,14 @@ def handle_video_dl():
 
             queue.worker_pool.submit(queue.worker,
                                      file_id,
-                                     folders,
                                      title,
                                      video_path)
 
             # queue.worker(file_id,
-            #              folders,
             #              title,
             #              video_path)
 
             return {
-                "ok": True
+                "ok": True,
+                # "data": package_msg
             }, 202
