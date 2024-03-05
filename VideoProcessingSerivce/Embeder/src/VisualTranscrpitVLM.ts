@@ -46,7 +46,7 @@ export class VisualTranscrpitVLM {
         this.title = title;
     }
 
-    async createVisualPrompt({ audioTranscription, imgs }: VLMPromptParms): Promise<string> {
+    public async createVisualPrompt({ audioTranscription, imgs }: VLMPromptParms): Promise<string> {
         let audioSummary = await LLMSummarize.invoke({ textToSummarize: audioTranscription })
         let imagePrompt = await VisualTranscrpitVLM.createImagePromptList(imgs)
 
