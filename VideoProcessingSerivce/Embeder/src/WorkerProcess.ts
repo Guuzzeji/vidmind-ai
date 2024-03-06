@@ -44,7 +44,7 @@ type VisualEmbed = {
 }
 
 
-export class Worker {
+export class WorkerProcess {
     private title: string;
     private clipChunks: ClipChunk[];
     private id: string;
@@ -65,7 +65,7 @@ export class Worker {
 
     static async initialize({ title, clipChunks, id }: WorkDetails) {
         let dbConnection = await InsertDataToDB.initialize();
-        return new Worker({ title, clipChunks, id, DBClient: dbConnection });
+        return new WorkerProcess({ title, clipChunks, id, DBClient: dbConnection });
     }
 
     public async doJob() {

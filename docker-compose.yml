@@ -14,7 +14,9 @@ services:
     # restart: always
     ports:
       - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
+    # Have to set memory size of redis for BullMQ to work properly
+    # From: https://peterkellner.net/2023/09/24/Managing-Redis-Memory-Limits-with-Docker-Compose/ 
+    command: redis-server --save 20 1  --maxmemory 1GB --maxmemory-policy noeviction --loglevel warning
     volumes: 
       - redis-stream:/data
   
