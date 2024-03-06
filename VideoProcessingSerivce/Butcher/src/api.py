@@ -5,8 +5,7 @@ from flask import Flask
 from flask import request
 from werkzeug.utils import secure_filename
 
-import src.utils as utils
-import src.worker as queue
+from src.worker import worker_run_task
 
 import config
 
@@ -52,14 +51,7 @@ def handle_video_dl():
             video_path = os.path.join(file_path, filename)
             file.save(video_path)
 
-            queue.worker_pool.submit(queue.worker,
-                                     file_id,
-                                     title,
-                                     video_path)
-
-            # queue.worker(file_id,
-            #              title,
-            #              video_path)
+            worker_run_task(file_id, title, video_path)
 
             return {
                 "ok": True,

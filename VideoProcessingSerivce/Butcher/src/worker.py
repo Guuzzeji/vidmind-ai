@@ -1,21 +1,34 @@
-import json
-import os
+import asyncio
 import concurrent.futures
-import redis
+import os
+from bullmq import Queue
 
 from src.video.ContentExtractor import ContentExtractor
 from src import s3_client
 
+import config
+
 # Should use streams
 # https://www.youtube.com/watch?v=rBlnHJZKD_M&t=459s
 # https://www.linkedin.com/pulse/redis-streams-real-time-data-processing-powerhouse-appasaheb-salunke-jaa9f
-r = redis.Redis(
-    host="127.0.0.1",
-    port=6379
-)
+
+queue = Queue(
+    config.REDIS_QUEUE_NAME, {
+        "connection": "redis://" + config.REDIS_HOST+":" + config.REDIS_PORT
+    })
+
+worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
 
 
-def worker(video_id: str, title: str, video_path: str):
+def worker_run_task(file_id: str, title: str, video_path: str):
+
+    def run():
+        asyncio.run(worker(file_id, title, video_path))
+
+    worker_pool.submit(run)
+
+
+async def worker(video_id: str, title: str, video_path: str):
 
     video_breakdown = ContentExtractor(video_path, video_id)
     video_breakdown.get_content()
@@ -65,9 +78,6 @@ def worker(video_id: str, title: str, video_path: str):
         "clipChunks": chunk_clip_list
     }
 
+    await queue.add(video_id, package_msg)
+
     # return package_msg
-
-    r.xadd("EMBED_TICKETS", {"data": json.dumps(package_msg)})
-
-
-worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
