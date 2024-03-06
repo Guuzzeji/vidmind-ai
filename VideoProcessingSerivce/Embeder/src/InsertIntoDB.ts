@@ -1,5 +1,6 @@
 import pkg from 'pg';
 import 'dotenv/config'
+import * as log from 'npmlog';
 
 const { Pool } = pkg;
 
@@ -62,36 +63,42 @@ export class InsertDataToDB {
     }
 
     public async addVideoMetadata({ id, title, numOfClips }: VideoMetadataSQLParms) {
+        log.info("[DB] INSERT Video Metadata - ", "Video ID:", id, "title:", title, "numOfClips:", numOfClips)
         let sqlCall = "INSERT INTO video_metadata(id, title, numberOfClips) VALUES($1, $2, $3)";
         let values = [id, title, numOfClips];
         this.dbClient.query(sqlCall, values);
     }
 
     public async addAudioEmbed({ id, embedding, rawText, clipId, start, end }: AudioEmbedSQLParms) {
+        log.info("[DB] Audio Embed - ", "Video ID:", id, "text:", rawText, "clipId:", clipId)
         let sqlCall = "INSERT INTO audio_embeds(videoId, embedding, rawText, clipId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6)";
         let values = [id, `[${String(embedding)}]`, rawText, clipId, start, end];
         this.dbClient.query(sqlCall, values);
     }
 
     public async addVisualEmbed({ id, embedding, rawText, clipId, frameId, start, end }: VisualsEmbedSQLParms) {
+        log.info("[DB] Audio Embed - ", "Video ID:", id, "text:", rawText, "clipId:", clipId, "frameId:", frameId)
         let sqlCall = "INSERT INTO frame_embeds(videoId, embedding, rawText, clipId, frameId, startTime, endTime) VALUES($1, $2, $3, $4, $5, $6, $7)";
         let values = [id, `[${String(embedding)}]`, rawText, clipId, frameId, start, end];
         this.dbClient.query(sqlCall, values);
     }
 
     public async addFileAudioUrl({ id, audioUrl, clipId }: FileAudioSQLParms) {
+        log.info("[DB] Audio URLs - ", "Video ID:", id, "fileUrl:", audioUrl, "clipId:", clipId)
         let sqlCall = "INSERT INTO s3_files_audio(videoId, s3AudioUrl, clipId) VALUES($1, $2, $3)";
         let values = [id, audioUrl, clipId];
         this.dbClient.query(sqlCall, values);
     }
 
     public async addFileImageUrl({ id, frameUrl, clipId, frameId }: FileImageSQLParms) {
+        log.info("[DB] Frame URLs - ", "Video ID:", id, "fileUrl:", frameUrl, "clipId:", clipId)
         let sqlCall = "INSERT INTO s3_files_frame(videoId, imgUrl, clipId, frameId) VALUES($1, $2, $3, $4)";
         let values = [id, frameUrl, clipId, frameId];
         this.dbClient.query(sqlCall, values);
     }
 
     public async commit() {
+        log.info("[DB] Commit to DB...")
         await this.dbClient.query('COMMIT');
         await this.dbClient.release()
     }

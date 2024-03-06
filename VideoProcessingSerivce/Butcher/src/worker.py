@@ -1,12 +1,17 @@
+import config
+from src import s3_client
+from src.video.ContentExtractor import ContentExtractor
 import asyncio
 import concurrent.futures
 import os
+import logging
 from bullmq import Queue
+import logging
 
-from src.video.ContentExtractor import ContentExtractor
-from src import s3_client
+logging.basicConfig(format='%(asctime)s - %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S')
+logging.getLogger().setLevel(logging.DEBUG)
 
-import config
 
 # Should use streams
 # https://www.youtube.com/watch?v=rBlnHJZKD_M&t=459s
@@ -34,11 +39,13 @@ async def worker(video_id: str, title: str, video_path: str):
     video_breakdown.get_content()
 
     # Upload files
+    logging.info("S3 Upload Audio ID:" + video_id)
     audio_urls = s3_client.upload_folder(
         video_breakdown.folder_location["audio_folder"],
         "audio",
         video_id)
 
+    logging.info("S3 Upload Frame ID:" + video_id)
     frame_url_table = {}
     for folder in os.listdir(video_breakdown.folder_location["frame_folder"]):
         path_subframe_folder = os.path.join(
@@ -54,6 +61,7 @@ async def worker(video_id: str, title: str, video_path: str):
     video_breakdown.delete_work_folder()
 
     # Adding everything into a single object
+    logging.info("Creating Embeder Ticket Package Video Id:" + video_id)
     chunk_clip_list = []
     for chunk in video_breakdown.timestamps:
         frame_chunks = []
@@ -78,6 +86,7 @@ async def worker(video_id: str, title: str, video_path: str):
         "clipChunks": chunk_clip_list
     }
 
+    logging.info("Sending Ticket to Embeder Video Id:" + video_id)
     await queue.add(video_id, package_msg)
 
     # return package_msg

@@ -4,6 +4,7 @@ import { createTranscriptFromAudio } from './audioTranscript.ts';
 import { embedText } from './embed.ts';
 
 import { secondsToTimestamp, getBase64 } from './utils.ts';
+import * as log from 'npmlog';
 
 type ClipChunk = {
     id: number,
@@ -79,6 +80,7 @@ export class WorkerProcess {
             let chunk = this.clipChunks[i];
 
             // Preprocessing audio
+            log.info("[Video Processing] Audio - ", "URL:", chunk.audioUrl, "ChunkID:", chunk.id);
             let audioFile = await getBase64(chunk.audioUrl);
             let audioText = await createTranscriptFromAudio(audioFile);
             audioText = `${secondsToTimestamp(chunk.startTime)} to ${secondsToTimestamp(chunk.endTime)} - ${audioText}`;
@@ -93,6 +95,7 @@ export class WorkerProcess {
             });
 
             // Creating visual
+            log.info("[Video Processing] Visual - ", "URL:", JSON.stringify(chunk.frames), "ChunkID:", chunk.id);
             let visualText = await this.VisualLLM.createVisualPrompt({
                 audioTranscription: audioText,
                 imgs: chunk.frames
@@ -120,6 +123,7 @@ export class WorkerProcess {
     }
 
     private async dbUpload() {
+        log.info("[Video Processing] Upload DB - ", "Video ID:", this.id);
         await this.DBClient.addVideoMetadata({ id: this.id, title: this.title, numOfClips: this.clipChunks.length });
 
         for (let x = 0; x < this.audio.length; x++) {

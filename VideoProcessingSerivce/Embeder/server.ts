@@ -1,5 +1,6 @@
 import { Worker, Job, Queue } from 'bullmq';
 import { setTimeout } from 'timers/promises';
+import * as log from 'npmlog';
 import 'dotenv/config'
 
 import { WorkerProcess } from './src/WorkerProcess.ts';
@@ -29,10 +30,10 @@ const queue = new Queue(process.env.REDIS_QUEUE_NAME);
 // Job name = store id of video
 // Job data = data of job
 const worker = new Worker(process.env.REDIS_QUEUE_NAME, async (job: Job) => {
-    console.log(job)
-
+    log.info("Job Given - ", "ID:", job.name, "Data:", JSON.stringify(job.data))
     try {
         // let WorkerInstance = await WorkerProcess.initialize(job.data);
+        // log.info("Running job for ...", "ID:", job.name)
         // await WorkerInstance.doJob()
         return {
             ok: true,
@@ -57,21 +58,23 @@ const worker = new Worker(process.env.REDIS_QUEUE_NAME, async (job: Job) => {
 });
 
 async function main() {
+    log.info("Starting...", new Date().toLocaleString())
     while (true) {
-        console.log("Queue Size - ", await queue.count())
+        log.info("Queue Size - ", await queue.count())
 
         if (!worker.isRunning()) {
             worker.run();
 
             worker.on('completed', (job: Job, returnvalue: any) => {
-                console.log(job, returnvalue)
+                log.info("Job Completed - ", job.name, returnvalue)
             });
 
             worker.on('failed', (job: Job, error: Error) => {
-                console.log(job, error)
+                log.info("Job Failed - ", job.name, error)
             });
         }
 
+        log.info("Sleeping at", new Date().toLocaleString())
         await setTimeout(5 * 1000); // Sleep before next check up
     }
 }

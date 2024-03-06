@@ -1,15 +1,17 @@
+from src.video.ffprobe import ffprobe
+from PIL import Image
+from scenedetect import open_video, SceneManager, ContentDetector, save_images
+from ffmpeg import FFmpeg
 import os
 import shutil
 from pathlib import Path
-import time
 import config
+import logging
 
-from ffmpeg import FFmpeg
-from scenedetect import open_video, SceneManager, ContentDetector, save_images
-from PIL import Image
+logging.basicConfig(format='%(asctime)s - %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S')
+logging.getLogger().setLevel(logging.DEBUG)
 
-
-from src.video.ffprobe import ffprobe
 
 # This will create frame strip that will can use, frames are base on thumbnail model
 # ffmpeg -i output_010.mp4 -vf "thumbnail,tile=6x1" -frames:v 1 -qscale:v 1 THUMBNAIL.png
@@ -35,6 +37,7 @@ class ContentExtractor:
     timestamps = []
 
     def __init__(self, vid_path: str, id_file: str):
+        self.id = id_file
         self.vid_path = vid_path
         self.folder_location = self.__create_work_folders(id_file)
 
@@ -191,15 +194,24 @@ class ContentExtractor:
     #! == PUBLIC ==
 
     def get_content(self):
+        logging.info("Creating Clips Video ID: " + self.id)
         self.__create_clips()
 
         # Taking thoses clips and breaking them down into frame strips
+        logging.info("Processing each Audio Clips Video ID: " + self.id)
         for clip in self.timestamps:
             # print(clip)
+            logging.info("Processing Audio Clips Video ID: "
+                         + self.id
+                         + " ClipId:" + str(clip["id"]))
             self.__extract_audio(
                 clip["clip_vid_path"], self.folder_location["audio_folder"], str(clip["id"]))
 
+        logging.info("Processing each Frame Clips Video ID: " + self.id)
         for clip in self.timestamps:
+            logging.info("Processing Frame Clips Video ID: "
+                         + self.id
+                         + " ClipId:" + str(clip["id"]))
             self.__extract_frames(clip["clip_vid_path"], str(clip["id"]), clip)
 
     def delete_work_folder(self):
