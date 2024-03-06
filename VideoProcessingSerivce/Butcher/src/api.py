@@ -16,7 +16,6 @@ logging.getLogger().setLevel(logging.DEBUG)
 ALLOWED_EXTENSIONS = {'mp4', 'mkv'}
 
 app = Flask(__name__)
-# https://dev.to/rohit20001221/simple-pub-sub-system-using-redis-and-python-25jh
 
 
 def allowed_file(filename):

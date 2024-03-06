@@ -12,11 +12,6 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
-
-# Should use streams
-# https://www.youtube.com/watch?v=rBlnHJZKD_M&t=459s
-# https://www.linkedin.com/pulse/redis-streams-real-time-data-processing-powerhouse-appasaheb-salunke-jaa9f
-
 queue = Queue(
     config.REDIS_QUEUE_NAME, {
         "connection": "redis://" + config.REDIS_HOST+":" + config.REDIS_PORT

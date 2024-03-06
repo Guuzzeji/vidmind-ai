@@ -13,26 +13,6 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-# This will create frame strip that will can use, frames are base on thumbnail model
-# ffmpeg -i output_010.mp4 -vf "thumbnail,tile=6x1" -frames:v 1 -qscale:v 1 THUMBNAIL.png
-# ! Try this, https://superuser.com/questions/1336285/use-ffmpeg-for-thumbnail-selections
-# ! https://ffmpeg.org/ffmpeg-all.html#thumbnail
-# ! New Idea from https://blog.gdeltproject.org/using-ffmpegs-scene-detection-to-generate-a-visual-shot-summary-of-television-news/
-# * IMPORTANT: Image limit of gpt is ~45 images on low, so seting to 25 images and increase step count may be the best bet, from: https://community.openai.com/t/gpt-4-vision-maximum-amount-of-images/573110
-# * https://www.reddit.com/r/ffmpeg/comments/mye9h1/timestamp_from_metadata_on_image_timelapse/
-# https://stackoverflow.com/questions/22531444/how-to-get-the-timestamp-of-the-image-extracted-using-ffmpeg
-# https://superuser.com/questions/841872/how-do-i-extract-the-timestamps-associated-with-frames-ffmpeg-extracts-from-a-vi
-# https://superuser.com/questions/1707609/ffmpeg-extract-several-individual-frames-from-a-video-given-a-list-of-timestamp
-# https://video.stackexchange.com/questions/28287/how-to-add-timestamp-of-n-mins-between-photos-on-a-video-combined-from-photos
-
-# Croping out any black empty space within the frame strip
-# Create video image group chopper that we can use to group file into folder and upload to s3
-# Fuck price, if it 2.55 then GOOD, use openai low res, just array the images into one prompt
-
-
-# TODO [x]: Have class store all file location of things
-# TODO [x]: Impliement new clip system
-
 class ContentExtractor:
     timestamps = []
 
