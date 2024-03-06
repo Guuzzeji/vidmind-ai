@@ -1,40 +1,23 @@
+from src.video.ffprobe import ffprobe
+from PIL import Image
+from scenedetect import open_video, SceneManager, ContentDetector, save_images
+from ffmpeg import FFmpeg
 import os
 import shutil
 from pathlib import Path
-import time
 import config
+import logging
 
-from ffmpeg import FFmpeg
-from scenedetect import open_video, SceneManager, ContentDetector, save_images
-from PIL import Image
+logging.basicConfig(format='%(asctime)s - %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S')
+logging.getLogger().setLevel(logging.DEBUG)
 
-
-from src.video.ffprobe import ffprobe
-
-# This will create frame strip that will can use, frames are base on thumbnail model
-# ffmpeg -i output_010.mp4 -vf "thumbnail,tile=6x1" -frames:v 1 -qscale:v 1 THUMBNAIL.png
-# ! Try this, https://superuser.com/questions/1336285/use-ffmpeg-for-thumbnail-selections
-# ! https://ffmpeg.org/ffmpeg-all.html#thumbnail
-# ! New Idea from https://blog.gdeltproject.org/using-ffmpegs-scene-detection-to-generate-a-visual-shot-summary-of-television-news/
-# * IMPORTANT: Image limit of gpt is ~45 images on low, so seting to 25 images and increase step count may be the best bet, from: https://community.openai.com/t/gpt-4-vision-maximum-amount-of-images/573110
-# * https://www.reddit.com/r/ffmpeg/comments/mye9h1/timestamp_from_metadata_on_image_timelapse/
-# https://stackoverflow.com/questions/22531444/how-to-get-the-timestamp-of-the-image-extracted-using-ffmpeg
-# https://superuser.com/questions/841872/how-do-i-extract-the-timestamps-associated-with-frames-ffmpeg-extracts-from-a-vi
-# https://superuser.com/questions/1707609/ffmpeg-extract-several-individual-frames-from-a-video-given-a-list-of-timestamp
-# https://video.stackexchange.com/questions/28287/how-to-add-timestamp-of-n-mins-between-photos-on-a-video-combined-from-photos
-
-# Croping out any black empty space within the frame strip
-# Create video image group chopper that we can use to group file into folder and upload to s3
-# Fuck price, if it 2.55 then GOOD, use openai low res, just array the images into one prompt
-
-
-# TODO [x]: Have class store all file location of things
-# TODO [x]: Impliement new clip system
 
 class ContentExtractor:
     timestamps = []
 
     def __init__(self, vid_path: str, id_file: str):
+        self.id = id_file
         self.vid_path = vid_path
         self.folder_location = self.__create_work_folders(id_file)
 
@@ -191,15 +174,24 @@ class ContentExtractor:
     #! == PUBLIC ==
 
     def get_content(self):
+        logging.info("Creating Clips Video ID: " + self.id)
         self.__create_clips()
 
         # Taking thoses clips and breaking them down into frame strips
+        logging.info("Processing each Audio Clips Video ID: " + self.id)
         for clip in self.timestamps:
             # print(clip)
+            logging.info("Processing Audio Clips Video ID: "
+                         + self.id
+                         + " ClipId:" + str(clip["id"]))
             self.__extract_audio(
                 clip["clip_vid_path"], self.folder_location["audio_folder"], str(clip["id"]))
 
+        logging.info("Processing each Frame Clips Video ID: " + self.id)
         for clip in self.timestamps:
+            logging.info("Processing Frame Clips Video ID: "
+                         + self.id
+                         + " ClipId:" + str(clip["id"]))
             self.__extract_frames(clip["clip_vid_path"], str(clip["id"]), clip)
 
     def delete_work_folder(self):

@@ -1,3 +1,16 @@
+// TODO: USE 
+// - https://github.com/taskforcesh/bullmq?tab=readme-ov-file
+// - https://bullmq.io/
+// - https://docs.bullmq.io/guide/queues/auto-removal-of-jobs
+// - Note: use bullmq with python code
+// - https://www.youtube.com/watch?v=JfM1mr2bCuk
+
+// TODO List
+// - [x] Create queue for bullmq to add / read from emebeder (Call QueueProcessor.ts)
+// - [x] Create queue for embeder (optional also butcher for video porcessing)
+// - [] Create event handlers for when job complete, fails, in processing and store in sql db (QueueEventHandler.ts)
+//      Add some type of logger, https://betterstack.com/community/guides/logging/best-nodejs-logging-libraries/ 
+
 # WAR 
 - https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024/#sundar-note
 

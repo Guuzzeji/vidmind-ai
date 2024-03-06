@@ -4,6 +4,7 @@ import { createTranscriptFromAudio } from './audioTranscript.ts';
 import { embedText } from './embed.ts';
 
 import { secondsToTimestamp, getBase64 } from './utils.ts';
+import * as log from 'npmlog';
 
 type ClipChunk = {
     id: number,
@@ -44,7 +45,7 @@ type VisualEmbed = {
 }
 
 
-export class Worker {
+export class WorkerProcess {
     private title: string;
     private clipChunks: ClipChunk[];
     private id: string;
@@ -65,7 +66,7 @@ export class Worker {
 
     static async initialize({ title, clipChunks, id }: WorkDetails) {
         let dbConnection = await InsertDataToDB.initialize();
-        return new Worker({ title, clipChunks, id, DBClient: dbConnection });
+        return new WorkerProcess({ title, clipChunks, id, DBClient: dbConnection });
     }
 
     public async doJob() {
@@ -79,6 +80,7 @@ export class Worker {
             let chunk = this.clipChunks[i];
 
             // Preprocessing audio
+            log.info("[Video Processing] Audio - ", "URL:", chunk.audioUrl, "ChunkID:", chunk.id);
             let audioFile = await getBase64(chunk.audioUrl);
             let audioText = await createTranscriptFromAudio(audioFile);
             audioText = `${secondsToTimestamp(chunk.startTime)} to ${secondsToTimestamp(chunk.endTime)} - ${audioText}`;
@@ -93,6 +95,7 @@ export class Worker {
             });
 
             // Creating visual
+            log.info("[Video Processing] Visual - ", "URL:", JSON.stringify(chunk.frames), "ChunkID:", chunk.id);
             let visualText = await this.VisualLLM.createVisualPrompt({
                 audioTranscription: audioText,
                 imgs: chunk.frames
@@ -120,6 +123,7 @@ export class Worker {
     }
 
     private async dbUpload() {
+        log.info("[Video Processing] Upload DB - ", "Video ID:", this.id);
         await this.DBClient.addVideoMetadata({ id: this.id, title: this.title, numOfClips: this.clipChunks.length });
 
         for (let x = 0; x < this.audio.length; x++) {

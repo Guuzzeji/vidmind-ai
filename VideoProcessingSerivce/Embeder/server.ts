@@ -1,48 +1,69 @@
-import { createClient } from 'redis';
+import { Worker, Job, Queue } from 'bullmq';
 import { setTimeout } from 'timers/promises';
+import * as log from 'npmlog';
+import 'dotenv/config'
 
-import { Worker } from './src/Worker.ts';
+import { WorkerProcess } from './src/WorkerProcess.ts';
 
-// TODO: USE 
-// - https://github.com/taskforcesh/bullmq?tab=readme-ov-file
-// - https://bullmq.io/
-// - https://docs.bullmq.io/guide/queues/auto-removal-of-jobs
-// - Note: use bullmq with python code
-// - https://www.youtube.com/watch?v=JfM1mr2bCuk
-async function run() {
-    const clientRedis = await createClient({
-        url: process.env.REDIS_URL
-    }).connect();
+const CONNECTION_REDIS = {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT)
+}
 
+const queue = new Queue(process.env.REDIS_QUEUE_NAME);
+
+// Note:
+// Job name = store id of video
+// Job data = data of job
+const worker = new Worker(process.env.REDIS_QUEUE_NAME, async (job: Job) => {
+    log.info("Job Given - ", "ID:", job.name, "Data:", JSON.stringify(job.data))
     try {
-        await clientRedis.sendCommand(["XGROUP", "CREATE", String(process.env.REDIS_STREAM), String(process.env.REDIS_GROUP), "$", "MKSTREAM"]);
+        let WorkerInstance = await WorkerProcess.initialize(job.data);
+        log.info("Running job for ...", "ID:", job.name)
+        await WorkerInstance.doJob()
+        return {
+            ok: true,
+            id: job.name
+        }
     } catch (err) {
-        console.log(err);
-        console.log("Can igorne if saying group already created");
+        return {
+            ok: false,
+            err: err
+        }
     }
 
+}, {
+    connection: CONNECTION_REDIS,
+    autorun: false,
+    removeOnComplete: {
+        count: 1000
+    },
+    removeOnFail: {
+        count: 5000
+    }
+});
+
+async function main() {
+    log.info("Starting...", new Date().toLocaleString())
     while (true) {
-        console.log("Checking...");
-        let pendingTicket = await clientRedis.sendCommand(["XREADGROUP", "GROUP", String(process.env.REDIS_GROUP), String(process.env.REDIS_WORKER_NAME), "STREAMS", String(process.env.REDIS_STREAM), ">"]);
+        log.info("Checking for Work | Queue Size - ", await queue.count())
 
-        if (pendingTicket != null && pendingTicket[0][1].length != 0) {
-            let redisPackage = JSON.parse(pendingTicket[0][1][0][1][1]);
-            console.log(redisPackage);
+        if (!worker.isRunning()) {
+            worker.run();
 
-            let WorkerInstance = await Worker.initialize(redisPackage);
-            await WorkerInstance.doJob()
+            // NOTE: Should add pub/sub with redis to send upates on progress of video processing
+            worker.on('completed', (job: Job, returnvalue: any) => {
+                log.info("Job Completed - ", job.name, returnvalue)
+            });
 
-            // Remove ticket from queue
-            let redisId = pendingTicket[0][1][0][0];
-            await clientRedis.sendCommand(["XACK", String(process.env.REDIS_STREAM), String(process.env.REDIS_GROUP), redisId]);
-
-        } else {
-            // TODO: Write ide ticket pending process to the server to help speed up video processing
-            console.log("No work to do...");
+            worker.on('failed', (job: Job, error: Error) => {
+                log.info("Job Failed - ", job.name, error)
+            });
         }
 
+        log.info("Sleeping at", new Date().toLocaleString())
         await setTimeout(5 * 1000); // Sleep before next check up
     }
 }
 
-run();
+main()
