@@ -7,6 +7,7 @@ import { LLMRewriteUserPrompt } from "../rewritePrompt.ts"
 
 // TODO: Add queue system to and help serivce scale better
 // LOOK AT: https://docs.bullmq.io/guide/queues/auto-removal-of-jobs
+// Add webhooks api system for this project
 export const ApiRouter = express.Router()
 ApiRouter.use(bodyParser.json())
 
