@@ -23,16 +23,11 @@ export type OpenAIEmbedResult = {
 }
 
 export type DBEmbedResult = {
+    frameId: number | undefined,
     rawtext: string,
     clipid: number,
     starttime: number,
     endtime: number
-}
-
-export type Cite = {
-    clipID: number,
-    starttime: number,
-    endtime: number,
 }
 
 export type SearchDBParms = {
@@ -48,25 +43,51 @@ async function createEmbedQuery(text: string): Promise<OpenAIEmbedResult> {
     };
 }
 
-export async function searchDBEmbeddings({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Frames: DBEmbedResult[], Audios: DBEmbedResult[] }> {
+export async function searchAudioEmbed({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Audios: DBEmbedResult[] }> {
     let embedQuery = await createEmbedQuery(query);
     let client = await POOL.connect();
-    let sqlQueryFrames = `SELECT clipId, rawText, startTime, endTime FROM FRAME_EMBED WHERE id = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]'  LIMIT 15`
-    let sqlQueryAudio = `SELECT clipId, rawText, startTime, endTime FROM AUDIO_EMBED WHERE id = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]' LIMIT 15`
-    let resFrames = await client.query(sqlQueryFrames);
+    let sqlQueryAudio = `SELECT clipId, rawText, startTime, endTime FROM audio_embeds WHERE videoId = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]' LIMIT 15`
     let resAudio = await client.query(sqlQueryAudio);
-    await client.query('COMMIT');
-
     client.release();
 
     // console.log(resFrames, resAudio);
 
     return {
         videoID: videoID,
-        Frames: resFrames.rows,
         Audios: resAudio.rows
     };
 }
+
+export async function searchVisualEmbed({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Frames: DBEmbedResult[] }> {
+    let embedQuery = await createEmbedQuery(query);
+    let client = await POOL.connect();
+    let sqlQueryFrames = `SELECT clipId, rawText, startTime, endTime, frameId FROM frame_embeds WHERE videoId = '${videoID}' ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]'  LIMIT 15`
+    let resFrames = await client.query(sqlQueryFrames);
+    client.release();
+
+    // console.log(resFrames);
+
+    return {
+        videoID: videoID,
+        Frames: resFrames.rows,
+    };
+}
+
+export async function searchVisualEmbedForImages({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Frames: any[] }> {
+    let embedQuery = await createEmbedQuery(query);
+    let client = await POOL.connect();
+    let sqlQueryFrames = `SELECT frame_embeds.clipId, imgurl, startTime, endTime, frame_embeds.frameId FROM frame_embeds, s3_files_frame WHERE frame_embeds.videoId = '${videoID}' AND s3_files_frame.clipId = frame_embeds.clipId AND s3_files_frame.frameId = frame_embeds.frameId  ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]' LIMIT 15`
+    let resFrames = await client.query(sqlQueryFrames);
+    client.release();
+
+    console.log(resFrames);
+
+    return {
+        videoID: videoID,
+        Frames: resFrames.rows,
+    };
+}
+
 
 export function convertDBEmbedResultToString(embeds: DBEmbedResult[]): string {
     let textResult = "";
@@ -77,19 +98,5 @@ export function convertDBEmbedResultToString(embeds: DBEmbedResult[]): string {
 
     return textResult;
 }
-
-export function createCitionList(embeds: DBEmbedResult[]): Cite[] {
-    let result = [];
-    for (let i = 0; i < embeds.length; i++) {
-        result.push({
-            clipID: embeds[i].clipid,
-            starttime: embeds[i].starttime,
-            endtime: embeds[i].endtime
-        })
-    }
-
-    return [... new Set(result)];
-}
-
 
 

@@ -2,7 +2,7 @@ import express from 'express';
 import * as bodyParser from 'body-parser';
 
 import { ChatBot, ChatBotParms } from "../chatBot.ts"
-import { SearchDBParms, searchDBEmbeddings } from "../searchEmbed.ts"
+import { SearchDBParms, searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../searchEmbed.ts"
 import { LLMRewriteUserPrompt } from "../rewritePrompt.ts"
 
 // TODO: Add queue system to and help serivce scale better
@@ -36,11 +36,11 @@ ApiRouter.post("/chat", async function (req, res) {
     }
 })
 
-ApiRouter.post("/search", async function (req, res) {
+ApiRouter.post("/searchVisualAsText", async function (req, res) {
     try {
         let parms: SearchDBParms = req.body;
         let improvePromp = await LLMRewriteUserPrompt.invoke({ userPrompt: parms.query })
-        let videoContent = await searchDBEmbeddings({ videoID: parms.videoID, query: improvePromp });
+        let videoContent = await searchVisualEmbed({ videoID: parms.videoID, query: improvePromp });
         res.send(videoContent)
 
     } catch (error) {
@@ -49,5 +49,34 @@ ApiRouter.post("/search", async function (req, res) {
         })
     }
 })
+
+ApiRouter.post("/searchVisualAsImage", async function (req, res) {
+    try {
+        let parms: SearchDBParms = req.body;
+        let improvePromp = await LLMRewriteUserPrompt.invoke({ userPrompt: parms.query })
+        let videoContent = await searchVisualEmbedForImages({ videoID: parms.videoID, query: improvePromp });
+        res.send(videoContent)
+
+    } catch (error) {
+        res.send({
+            error: error.message
+        })
+    }
+})
+
+ApiRouter.post("/searchAudio", async function (req, res) {
+    try {
+        let parms: SearchDBParms = req.body;
+        let improvePromp = await LLMRewriteUserPrompt.invoke({ userPrompt: parms.query })
+        let videoContent = await searchAudioEmbed({ videoID: parms.videoID, query: improvePromp });
+        res.send(videoContent)
+
+    } catch (error) {
+        res.send({
+            error: error.message
+        })
+    }
+})
+
 
 
