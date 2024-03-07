@@ -30,6 +30,14 @@ export type DBEmbedResult = {
     endtime: number
 }
 
+export type DBEmbedImageResult = {
+    frameId: number,
+    imgurl: string
+    clipid: number,
+    starttime: number,
+    endtime: number
+}
+
 export type SearchDBParms = {
     videoID: string,
     query: string
@@ -73,14 +81,14 @@ export async function searchVisualEmbed({ videoID, query }: SearchDBParms): Prom
     };
 }
 
-export async function searchVisualEmbedForImages({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Frames: any[] }> {
+export async function searchVisualEmbedForImages({ videoID, query }: SearchDBParms): Promise<{ videoID: string, Frames: DBEmbedImageResult[] }> {
     let embedQuery = await createEmbedQuery(query);
     let client = await POOL.connect();
     let sqlQueryFrames = `SELECT frame_embeds.clipId, imgurl, startTime, endTime, frame_embeds.frameId FROM frame_embeds, s3_files_frame WHERE frame_embeds.videoId = '${videoID}' AND s3_files_frame.clipId = frame_embeds.clipId AND s3_files_frame.frameId = frame_embeds.frameId  ORDER BY embedding <-> '[${embedQuery.queryEmbed.toString()}]' LIMIT 15`
     let resFrames = await client.query(sqlQueryFrames);
     client.release();
 
-    console.log(resFrames);
+    // console.log(resFrames);
 
     return {
         videoID: videoID,
