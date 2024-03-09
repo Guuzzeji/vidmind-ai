@@ -5,7 +5,6 @@ import 'dotenv/config'
 
 import { searchAudioEmbed, searchVisualEmbed, convertDBEmbedResultToString } from "./searchEmbed.ts"
 import { LLMSummarize } from "./summarize.ts"
-import { LLMRewriteUserPrompt } from "./rewritePrompt.ts"
 
 export type AIChatMessage = {
     text: string,
@@ -56,9 +55,8 @@ User Current Prompt:
 const answerUserPrompt = chatBotPrompt.pipe(GPT).pipe(new StringOutputParser())
 
 export async function ChatBot({ videoID, userPrompt, chatHistory = [] }: ChatBotParms): Promise<AIChatMessage> {
-    let rewritePrompt = await LLMRewriteUserPrompt.invoke({ userPrompt: userPrompt });
-    let audioInfomation = await searchAudioEmbed({ videoID, query: rewritePrompt })
-    let visualInfomation = await searchVisualEmbed({ videoID, query: rewritePrompt })
+    let audioInfomation = await searchAudioEmbed({ videoID, query: userPrompt })
+    let visualInfomation = await searchVisualEmbed({ videoID, query: userPrompt })
 
     let msgHistory = "None"
     if (chatHistory.length != 0) {
@@ -69,12 +67,12 @@ export async function ChatBot({ videoID, userPrompt, chatHistory = [] }: ChatBot
         visualInfomation: convertDBEmbedResultToString(visualInfomation.Frames),
         audioInfomation: convertDBEmbedResultToString(audioInfomation.Audios),
         chatHistory: msgHistory,
-        userPrompt: rewritePrompt
+        userPrompt: userPrompt
     })
 
     return {
         text: chatMessage,
-        modifyPrompt: rewritePrompt,
+        modifyPrompt: userPrompt,
         cite: {
             frames: visualInfomation.Frames,
             audios: audioInfomation.Audios

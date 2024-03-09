@@ -2,83 +2,113 @@
 
 > Note: should use context trpc to get userID and user infomation to make life easier
 
-## /generate
-- Action: Query
-- Generates one a single result base on the video context. Without any history or context regarding chat logs
-
-**Input design**
-```json
-{
-    "videoID": "uuid string here",
-    "prompt": "prompt goes here"
-}
-```
-
-**Output design**
-```json
-{
-    "videoID": "uuid string here",
-    "answer": "answer goes here",
-    "contextFromVideo" [
-        {
-            "clipID" : 0,
-            "citeNum" : 0
-        }
-    ]
-}
-```
-
-## /searchForContext
-- Action: Query
+## /search
+- Action: Post
 - Generates a list video context that can be used to search for clips.
 
 **Input design**
 ```json
 {
-    "videoID": "uuid string here",
-    "prompt": "prompt goes here"
+    "searchFor": "image" || "imgtext" || "audiotext",
+    "searchBy": "image" || "text",
+    "videoID": "uuid string",
+    "query": "text",
+    "imgBase64": "text"
 }
 ```
 
 **Output design**
+
+Audio Search
 ```json
 {
     "videoID": "uuid string here",
-    "contextFromVideo" [
+    "audio" [
         {
-            "clipID" : 0,
-            "citeNum" : 0
+            "clipId" : 0,
+            "starttime": 0.00,
+            "endtime" : 0.00,
+            "rawText" : "text"
         }
     ]
 }
 ```
 
-## /chat
-- Action: Query
+Image Text Search
+```json
+{
+    "videoID": "uuid string here",
+    "frames" [
+        {
+            "clipId" : 0,
+            "frameId" : 0,
+            "starttime": 0.00,
+            "endtime" : 0.00,
+            "rawText" : "text"
+        }
+    ]
+}
+```
+
+Image Search
+```json
+{
+    "videoID": "uuid string here",
+    "frames" [
+        {
+            "clipId" : 0,
+            "frameId" : 0,
+            "starttime": 0.00,
+            "endtime" : 0.00,
+            "imgurl" : "text"
+        }
+    ]
+}
+```
+
+## /generate & chat
+- Action: Post
 - Generates one a single result base on the video context and chat logs.
+- Can also generate base on not chat logs
 
 **Input design**
 ```json
 {
-    "videoID": "uuid string here",
+    "videoID": "uuid string",
+    "type": "text" || "img",
     "chatHistory": [
-        ""
+        "text",
+        "text"
         ... // Max 50 logs of all messages made with chat, excuding command messages
     ],
-    "prompt": "prompt goes here"
+    "prompt": "text",
+    "imgBase64": "text"
 }
 ```
 
 **Output design**
 ```json
 {
-    "videoID": "uuid string here",
-    "answer": "answer goes here",
-    "contextFromVideo" [
+    "videoID": "uuid string",
+    "answer": "text",
+    "moditfyPrompt" : "text"
+    "context": {
+        "frames": [
         {
-            "clipID" : 0,
-            "citeNum" : 0
+            "clipId" : 0,
+            "frameId" : 0,
+            "starttime": 0.00,
+            "endtime" : 0.00,
+            "rawText" : "text"
+        }],
+        "audio": [
+        {
+            "clipId" : 0,
+            "starttime": 0.00,
+            "endtime" : 0.00,
+            "rawText" : "text"
         }
     ]
+    }
 }
 ```
