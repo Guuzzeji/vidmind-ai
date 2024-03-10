@@ -58,7 +58,7 @@ export async function searchAudioEmbed({ videoID, query }: SearchDBParms): Promi
     let resAudio = await client.query(sqlQueryAudio);
     client.release();
 
-    if (resAudio.rows.length > 0) {
+    if (resAudio.rows.length == 0) {
         throw new Error("Nothing Found")
     }
 
@@ -75,7 +75,7 @@ export async function searchVisualEmbed({ videoID, query }: SearchDBParms): Prom
     let resFrames = await client.query(sqlQueryFrames);
     client.release();
 
-    if (resFrames.rows.length > 0) {
+    if (resFrames.rows.length == 0) {
         throw new Error("Nothing Found")
     }
 
@@ -92,7 +92,7 @@ export async function searchVisualEmbedForImages({ videoID, query }: SearchDBPar
     let resFrames = await client.query(sqlQueryFrames);
     client.release();
 
-    if (resFrames.rows.length > 0) {
+    if (resFrames.rows.length == 0) {
         throw new Error("Nothing Found")
     }
 
