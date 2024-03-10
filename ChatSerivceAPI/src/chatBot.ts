@@ -3,14 +3,16 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import 'dotenv/config'
 
-import { searchDBEmbeddings, convertDBEmbedResultToString, Cite, createCitionList } from "./searchEmbed.ts"
+import { searchAudioEmbed, searchVisualEmbed, convertDBEmbedResultToString, DBEmbedResult } from "./searchEmbed.ts"
 import { LLMSummarize } from "./summarize.ts"
-import { LLMRewriteUserPrompt } from "./rewritePrompt.ts"
 
 export type AIChatMessage = {
     text: string,
     modifyPrompt: string,
-    cite: Cite[]
+    cite: {
+        frames: DBEmbedResult[],
+        audios: DBEmbedResult[]
+    }
 }
 
 export type ChatBotParms = {
@@ -22,7 +24,7 @@ export type ChatBotParms = {
 const GPT = new ChatOpenAI({
     openAIApiKey: process.env.OPENAI_API_KEY,
     modelName: "gpt-3.5-turbo-0125",
-    temperature: 0.0,
+    temperature: 0.7,
     // maxTokens: 250,
     maxConcurrency: 1,
     streaming: false,
@@ -36,8 +38,9 @@ Consider:
 - Integration of information from audio transcript and visual description.
 - Alignment with the user's prompt and intent.
 - Clarity and conciseness in your responses.
+- You maybe given a description of a user created image, use the description of the user created image to figure out what the user wants to do
     
-Your goal is to efficiently utilize resources while maintaining high-quality output. If you cannot answer the user's question, 
+Your goal is to efficiently utilize resources while maintaining high-quality output. Please write your answer in markdwon. If you cannot answer the user's question, 
 say "idk".
 
 Visual Infomation:
@@ -56,11 +59,8 @@ User Current Prompt:
 const answerUserPrompt = chatBotPrompt.pipe(GPT).pipe(new StringOutputParser())
 
 export async function ChatBot({ videoID, userPrompt, chatHistory = [] }: ChatBotParms): Promise<AIChatMessage> {
-    let rewritePrompt = await LLMRewriteUserPrompt.invoke({ userPrompt: userPrompt });
-    let searchDB = await searchDBEmbeddings({ videoID, query: rewritePrompt })
-
-    let audioTextChunk = await LLMSummarize.invoke({ textToSummarize: convertDBEmbedResultToString(searchDB.Audios) })
-    let visualTextChunk = await LLMSummarize.invoke({ textToSummarize: convertDBEmbedResultToString(searchDB.Frames) })
+    let audioInfomation = await searchAudioEmbed({ videoID, query: userPrompt })
+    let visualInfomation = await searchVisualEmbed({ videoID, query: userPrompt })
 
     let msgHistory = "None"
     if (chatHistory.length != 0) {
@@ -68,18 +68,19 @@ export async function ChatBot({ videoID, userPrompt, chatHistory = [] }: ChatBot
     }
 
     let chatMessage = await answerUserPrompt.invoke({
-        visualInfomation: visualTextChunk,
-        audioInfomation: audioTextChunk,
+        visualInfomation: convertDBEmbedResultToString(visualInfomation.Frames),
+        audioInfomation: convertDBEmbedResultToString(audioInfomation.Audios),
         chatHistory: msgHistory,
-        userPrompt: rewritePrompt
+        userPrompt: userPrompt
     })
-
-    let citions = createCitionList(searchDB.Frames.concat(searchDB.Audios))
 
     return {
         text: chatMessage,
-        modifyPrompt: rewritePrompt,
-        cite: citions
+        modifyPrompt: userPrompt,
+        cite: {
+            frames: visualInfomation.Frames,
+            audios: audioInfomation.Audios
+        }
     };
 }
 

@@ -102,7 +102,7 @@ export class WorkerProcess {
             });
 
             // console.log(chunk.frames);
-            let splitTimecodeInfo = visualText.trim().replace(new RegExp("\n\n", 'g'), "**NEWLINE**").trim().split("**NEWLINE**");
+            let splitTimecodeInfo = visualText.trim().replace(new RegExp("\n\n", 'g'), "**NEWLINE**").replace(new RegExp("\n", 'g'), "**NEWLINE**").trim().split("**NEWLINE**");
             // console.log(splitTimecodeInfo)
 
             for (let j = 0; j < splitTimecodeInfo.length; j++) {
