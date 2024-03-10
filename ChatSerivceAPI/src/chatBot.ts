@@ -3,13 +3,16 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import 'dotenv/config'
 
-import { searchAudioEmbed, searchVisualEmbed, convertDBEmbedResultToString } from "./searchEmbed.ts"
+import { searchAudioEmbed, searchVisualEmbed, convertDBEmbedResultToString, DBEmbedResult } from "./searchEmbed.ts"
 import { LLMSummarize } from "./summarize.ts"
 
 export type AIChatMessage = {
     text: string,
     modifyPrompt: string,
-    cite: any
+    cite: {
+        frames: DBEmbedResult[],
+        audios: DBEmbedResult[]
+    }
 }
 
 export type ChatBotParms = {
