@@ -1,15 +1,14 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 
-import { ChatBot, ChatBotParms } from "../chatBot.ts"
-import { SearchDBParms, searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../searchEmbed.ts"
+import { ChatBot } from "../chatBot.ts"
+import { searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../searchEmbed.ts"
 import { LLMRewriteUserPrompt } from "../rewritePrompt.ts"
 import { describeImage } from '../describeImage.ts';
 
 // TODO: Add queue system to and help serivce scale better
 // LOOK AT: https://docs.bullmq.io/guide/queues/auto-removal-of-jobs
 // Add webhooks api system for this project
-// Rewrite to a mix of method calling to be better looking and not a random branch of hell
 export const ApiRouter = express.Router()
 ApiRouter.use(bodyParser.json())
 
