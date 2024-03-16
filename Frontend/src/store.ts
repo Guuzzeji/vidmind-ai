@@ -1,5 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { create } from 'zustand'
+import { inputSlice } from './components/chatbox/inputSlice'
 
-export const store = configureStore({
-    reducer: {},
-})
+export const globalStore = create((...a) => ({
+    ...inputSlice(a),
+}))

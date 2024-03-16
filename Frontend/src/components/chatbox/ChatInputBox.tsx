@@ -1,4 +1,6 @@
 import React from 'react';
+import { globalStore } from '../../store'
+
 import {
     Button,
     Flex,
@@ -8,7 +10,6 @@ import {
     MenuItem,
     Box,
 } from '@chakra-ui/react'
-
 import { ArrowUpIcon } from '@chakra-ui/icons'
 
 function ChatInputBox() {
@@ -20,6 +21,8 @@ function ChatInputBox() {
 
     const [uploadFile, setUploadFile] = React.useState<any>()
     const [isInputed, setInputed] = React.useState(false)
+
+    const input = globalStore((state: any) => state.input)
 
     let handleActionChatBtn = (e: any) => {
         console.log(e)
@@ -34,6 +37,7 @@ function ChatInputBox() {
     }
 
     let handleSendBtn = (e: any) => {
+        console.log(input)
         let prompt = chatBox.current?.innerText.trim()
         if (prompt !== "") {
             setIsSending(true)
