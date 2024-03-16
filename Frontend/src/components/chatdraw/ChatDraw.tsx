@@ -12,9 +12,10 @@ import {
     Text,
     Divider,
     Center,
-    DrawerFooter
+    DrawerFooter,
+    ButtonGroup
 } from '@chakra-ui/react'
-import { HamburgerIcon } from '@chakra-ui/icons'
+import { HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
 
 import ChatHistoryItem from './ChatHistoryItem';
 import AddChatBtn from './AddChatBtn'
@@ -54,7 +55,13 @@ function ChatHistory() {
 
                     <DrawerFooter>
                         <Center p={2}>
-                            <AddChatBtn />
+                            <ButtonGroup size='sm'>
+                                <Button variant="ghost">
+                                    <RepeatIcon />
+                                </Button>
+
+                                <AddChatBtn />
+                            </ButtonGroup>
                         </Center>
                     </DrawerFooter>
 
