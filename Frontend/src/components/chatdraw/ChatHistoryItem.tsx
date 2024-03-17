@@ -15,14 +15,13 @@ function ChatHistoryItem({ title, onClick }: { title: string, onClick: Function 
     }
 
     return (
-        <ListItem>
+        <ListItem style={{ padding: "5px" }}>
             <Button
                 style={{ textAlign: 'left', width: '100%', padding: '5px' }}
                 colorScheme='blackAlpha' variant='ghost' noOfLines={4}
                 onMouseEnter={checkMouseOverTrigger}
                 onMouseLeave={checkMouseOverTrigger}
-                onClick={() => onClick()}
-            >
+                onClick={() => onClick()}>
 
                 <ArrowForwardIcon display={hideArrowIcon} /> {title}
 
