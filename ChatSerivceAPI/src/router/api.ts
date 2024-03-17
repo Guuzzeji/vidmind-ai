@@ -5,6 +5,7 @@ import { ChatBot } from "../chatBot.ts"
 import { searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../searchEmbed.ts"
 import { LLMRewriteUserPrompt } from "../rewritePrompt.ts"
 import { describeImage } from '../describeImage.ts';
+import { searchForVideos } from '../searchForVideos.ts'
 
 // TODO: Add queue system to and help serivce scale better
 // LOOK AT: https://docs.bullmq.io/guide/queues/auto-removal-of-jobs
@@ -15,7 +16,7 @@ ApiRouter.use(bodyParser.json())
 // TODO: Refactor to use less urls, use post type within json
 type GenerateBodyRequest = {
     videoID: string,
-    type: "text" | "img",
+    type: "text" | "image",
     chatHistory: string[],
     prompt: string,
     imgBase64: string | undefined,
@@ -28,7 +29,7 @@ ApiRouter.post("/generate", async function (req, res) {
 
         if (parms.type == "text") {
             userPrompt = await LLMRewriteUserPrompt.invoke({ userPrompt: parms.prompt })
-        } else if (parms.type == "img") {
+        } else if (parms.type == "image") {
             userPrompt = await describeImage(parms.imgBase64)
         }
 
@@ -86,5 +87,18 @@ ApiRouter.post("/search", async function (req, res) {
         })
     }
 })
+
+ApiRouter.get("/videos", async function (req, res) {
+    try {
+        let videos = await searchForVideos();
+        res.send(videos)
+
+    } catch (error) {
+        res.send({
+            error: error.message
+        })
+    }
+})
+
 
 
