@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, } from '@chakra-ui/react'
+import { Flex, Text } from '@chakra-ui/react'
 
 function HumanChatMsg({ message }: { message: string }) {
 
@@ -7,7 +7,9 @@ function HumanChatMsg({ message }: { message: string }) {
         <div style={{ width: "100%", height: "auto" }}>
             <b>You</b>
             <Flex p={5}>
-                {message}
+                <Text style={{ whiteSpace: "pre-line" }}>
+                    {message}
+                </Text>
             </Flex>
         </div>
     );

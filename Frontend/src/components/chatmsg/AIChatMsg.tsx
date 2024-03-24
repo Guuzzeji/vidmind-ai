@@ -8,18 +8,21 @@ import {
     Box,
     Flex,
     UnorderedList,
+    Text
 } from '@chakra-ui/react'
 
 import CiteAudioItem from './CiteAudioItem';
 import CiteImageItem from './CiteImageItem';
 
-function AIChatMsg({ message }: { message: string }) {
+function AIChatMsg({ message, audioCite, imageCite }: { message: string, audioCite: any[], imageCite: any[] }) {
 
     return (
         <div style={{ width: "100%", height: "auto" }}>
             <b>AI Message</b>
             <Flex p={5}>
-                {message}
+                <Text style={{ whiteSpace: "pre-line" }}>
+                    {message}
+                </Text>
             </Flex>
             {/**Can check if user to hide this */}
             <Accordion allowToggle>
@@ -35,7 +38,11 @@ function AIChatMsg({ message }: { message: string }) {
                     <AccordionPanel pb={4}>
                         <UnorderedList>
 
-                            {/** Impliement list loop */}
+                            {audioCite?.map((item: any, i: number) => {
+                                return (
+                                    <CiteAudioItem key={i} text={item.rawText} start={item.starttime + ''} end={item.endtime + ''} />
+                                )
+                            })}
 
                         </UnorderedList>
                     </AccordionPanel>
@@ -53,7 +60,11 @@ function AIChatMsg({ message }: { message: string }) {
                     <AccordionPanel pb={4}>
                         <UnorderedList>
 
-                            {/** Impliement list loop */}
+                            {imageCite?.map((item: any, i: number) => {
+                                return (
+                                    <CiteImageItem key={i} imgUrl={item.imgurl} start={item.starttime + ''} end={item.endtime + ''} />
+                                )
+                            })}
 
                         </UnorderedList>
                     </AccordionPanel>

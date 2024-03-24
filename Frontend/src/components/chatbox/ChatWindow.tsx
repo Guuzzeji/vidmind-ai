@@ -13,7 +13,7 @@ function ChatWindow() {
     return (
         <div style={{ width: "100%", height: "auto", overflowX: 'hidden', overflowY: "scroll" }}>
             {chatMessages.map((message: any, i: number) => {
-                console.log(message)
+                // console.log(message.data.message)
                 if (message.sender === "human") {
                     return (
                         <HumanChatMsg key={i} message={message.data.prompt} />
@@ -22,7 +22,7 @@ function ChatWindow() {
 
                 return (
                     <div>
-                        <AIChatMsg key={i} message={message.data.message.text} />
+                        <AIChatMsg audioCite={message.data.message.cite.audios} imageCite={message.data.context.Frames} key={i} message={message.data.message.text} />
                         <br />
                     </div>
                 )
