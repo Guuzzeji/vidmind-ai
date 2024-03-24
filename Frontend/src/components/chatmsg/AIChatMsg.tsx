@@ -16,7 +16,7 @@ import CiteImageItem from './CiteImageItem';
 function AIChatMsg({ message }: { message: string }) {
 
     return (
-        <div style={{ width: "100%", height: "auto", padding: "10px", margin: "10px" }}>
+        <div style={{ width: "100%", height: "auto" }}>
             <b>AI Message</b>
             <Flex p={5}>
                 {message}

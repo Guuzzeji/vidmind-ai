@@ -19,22 +19,22 @@ import { HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
 
 import ChatHistoryItem from './ChatHistoryItem';
 import AddChatBtn from './AddChatBtn'
-import { globalStore } from '../../store'
+
+import { useSelector, useDispatch } from 'react-redux'
+import { ThunkDispatch } from '@reduxjs/toolkit'
+import { setCurrentVideo, fetchVideoList } from './chatHistorySlice'
 
 function ChatHistory() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef() as React.RefObject<HTMLButtonElement>;
 
-    const getListOfVideos = globalStore((state: any) => state.getListOfVideos)
-    const setCurrentVideo = globalStore((state: any) => state.setCurrentVideo)
-    const list = globalStore((state: any) => state.chatHistoryList)
-
-    React.useEffect(() => { }, [list])
+    const videoList = useSelector((state: any) => { console.log(state.chatvideos.videoList); return state.chatvideos.videoList })
+    const dispatch = useDispatch<ThunkDispatch<any, any, any>>()
 
     return (
         <>
             {/**Drawer btn */}
-            <Button variant={"outline"} ref={btnRef} colorScheme='teal' onClick={() => { onOpen(); getListOfVideos(); }}>
+            <Button variant={"outline"} ref={btnRef} colorScheme='teal' onClick={() => { onOpen(); dispatch(fetchVideoList()); }}>
                 <HamburgerIcon />
             </Button>
 
@@ -49,13 +49,13 @@ function ChatHistory() {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader>
-                        <Text style={{ userSelect: "none" }} fontSize={"4xl"}>Chat History</Text>
+                        <Text style={{ userSelect: "none" }} fontSize={"4xl"}>Chats</Text>
                         <Divider p={1} />
                     </DrawerHeader>
 
                     <DrawerBody>
                         <List style={{ width: '400px', overflowY: 'scroll' }}>
-                            {list.map((item: any, i: number) => <ChatHistoryItem key={i} title={item.title} onClick={() => { setCurrentVideo(i); onClose(); }} />)}
+                            {videoList?.map((item: any, i: number) => <ChatHistoryItem key={i} title={item.title} onClick={() => { dispatch(setCurrentVideo(i)); onClose(); }} />)}
                         </List>
                     </DrawerBody>
 
@@ -63,7 +63,7 @@ function ChatHistory() {
                         <Center p={2}>
                             <ButtonGroup size='sm'>
 
-                                <Button onClick={getListOfVideos} variant="ghost">
+                                <Button onClick={fetchVideoList} variant="ghost">
                                     <RepeatIcon />
                                 </Button>
 

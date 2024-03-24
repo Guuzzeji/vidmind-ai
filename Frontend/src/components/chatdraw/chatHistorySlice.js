@@ -1,22 +1,37 @@
 import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-export const chatHistory = (set) => ({
-    chatHistoryIsLoading: false,
-    chatHistoryIsError: false,
-    chatHistoryList: [],
-    chatHistoryCurrentVideoIndex: -1,
-    getListOfVideos: async () => {
-        // console.log(set)
-        set(({ isLoading: true }));
-        const res = await axios.get('http://localhost:4200/API/videos');
-        // console.log(res.data);
-
-        set({ chatHistoryList: res.data, chatHistoryIsLoading: true });
-        // set((state) => (console.log(state)));
-    },
-    setCurrentVideo: (itemListId) => {
-        set({ chatHistoryCurrentVideoIndex: itemListId });
-    }
+export const fetchVideoList = createAsyncThunk("users/fetchByIdStatus", async () => {
+    const res = await axios.get('http://localhost:4200/API/videos');
+    console.log(res.data);
+    return res.data;
 });
 
-export default chatHistory;
+export const chatVideoSlice = createSlice({
+    name: 'chatvideos',
+    initialState: {
+        chatHistoryIsLoading: false,
+        videoList: [],
+        currentVideoIndex: -1,
+    },
+    reducers: {
+        setCurrentVideo: (state, action) => {
+            state.currentVideoIndex = action.payload;
+            return state;
+        }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchVideoList.fulfilled, (state, action) => {
+            console.log(action);
+            state.videoList = action.payload;
+            return state;
+        });
+    },
+});
+
+// Action creators are generated for each case reducer function
+export const { setCurrentVideo } = chatVideoSlice.actions;
+
+export default chatVideoSlice.reducer;
+
+

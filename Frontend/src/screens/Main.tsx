@@ -5,17 +5,27 @@ import ChatInputBox from '../components/chatbox/ChatInputBox';
 import ChatHistory from '../components/chatdraw/ChatDraw';
 import ChatWindow from '../components/chatbox/ChatWindow';
 
-import { globalStore } from '../store';
+import { useSelector } from 'react-redux'
 
 function Main() {
-    const videoTitle = globalStore((state: any) => {
-        if (state.chatHistoryCurrentVideoIndex === -1) {
-            return null;
+    // TODO: https://github.com/pmndrs/zustand/issues/116
+    // TODO: https://zustand-demo.pmnd.rs/
+
+    const videoTitle = useSelector((state: any) => {
+        let videoList = state.chatvideos.videoList;
+        let currentVideoIndex = state.chatvideos.currentVideoIndex;
+
+        console.log(videoList, currentVideoIndex);
+
+        if (currentVideoIndex !== -1 && videoList !== undefined) {
+            return videoList[currentVideoIndex].title.length > 40 ?
+                videoList[currentVideoIndex].title.slice(0, 40) + "..."
+                : videoList[currentVideoIndex].title
         }
 
-        let title = state.chatHistoryList[state.chatHistoryCurrentVideoIndex].title;
-        return (title.length > 35) ? title.slice(0, 35) + "..." : title;
+        return null
     })
+
 
     return (
         <ChakraProvider>
