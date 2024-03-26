@@ -48,6 +48,17 @@ export const chatSenderSlice = createSlice({
                     context: action.payload.images,
                 }
             });
+            state.inputProcessingIsLoading = false;
+        });
+
+        builder.addCase(sendMessage.pending, (state) => {
+            state.inputProcessingIsLoading = true;
+            state.inputProcessingIsError = false;
+        });
+
+        builder.addCase(sendMessage.rejected, (state) => {
+            state.inputProcessingIsError = true;
+            state.inputProcessingIsLoading = false;
         });
     },
 });

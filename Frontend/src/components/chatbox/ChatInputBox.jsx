@@ -14,12 +14,26 @@ import { ArrowUpIcon } from '@chakra-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { sendMessage } from './inputSlice';
 
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+            if ((encoded.length % 4) > 0) {
+                encoded += '='.repeat(4 - (encoded.length % 4));
+            }
+            resolve(encoded);
+        };
+        reader.onerror = error => reject(error);
+    });
+}
+
 function ChatInputBox() {
     const hiddenFileInput = React.useRef();
     const chatBox = React.useRef();
 
     const [chatAction, setChatAction] = React.useState("Chat");
-    const [isSending, setIsSending] = React.useState(false);
 
     const [uploadFile, setUploadFile] = React.useState();
     const [isInputed, setInputed] = React.useState(false);
@@ -34,6 +48,8 @@ function ChatInputBox() {
 
         return state.chatvideos.videoList[state.chatvideos.currentVideoIndex].id;
     });
+
+    const inputProcessingIsLoading = useSelector((state) => state.chatsender.inputProcessingIsLoading);
 
 
     let handleActionChatBtn = (e) => {
@@ -51,14 +67,21 @@ function ChatInputBox() {
     let handleSendBtn = async (e) => {
         let prompt = chatBox.current?.innerText.trim();
         if (prompt !== "" && videoid !== null) {
-            setIsSending(true);
-            dispatch(sendMessage({
-                videoID: videoid,
-                type: "text",
-                chatHistory: [],
-                prompt: prompt,
-            }));
-            console.log(isSending);
+            if (chatAction === "Chat") {
+                dispatch(sendMessage({
+                    videoID: videoid,
+                    type: "text",
+                    chatHistory: [],
+                    prompt: prompt,
+                }));
+            } else if (chatAction === "Picture" && uploadFile != null) {
+                dispatch(sendMessage({
+                    videoID: videoid,
+                    type: "image",
+                    chatHistory: [],
+                    imgBase64: await getBase64(uploadFile),
+                }));
+            }
         }
     };
 
@@ -71,7 +94,7 @@ function ChatInputBox() {
     return (
         <div style={{ borderStyle: "solid", padding: "5px", width: "100%", borderRadius: "10px", borderWidth: "1px", height: "auto", justifyItems: "center" }}>
 
-            <input accept="image/*"
+            <input accept="image/png"
                 ref={hiddenFileInput}
                 onChange={handleFileUpload}
                 type="file" style={{ display: 'none' }} />
@@ -80,16 +103,14 @@ function ChatInputBox() {
                 <Box w='80%'>
                     <div
                         style={{ outline: "none", borderStyle: "none", overflowY: "scroll", overflowX: "hidden", resize: "none", boxShadow: "none", minHeight: "45px", maxHeight: "150px", width: "100%", padding: "10px" }}
-                        // isDisabled={false}
-                        contentEditable={isSending || isInputed ? false : true}
-                        // data-text='Message Popcorn GPT VLS...'
+                        contentEditable={inputProcessingIsLoading || isInputed ? false : true}
                         ref={chatBox}>
                         {uploadFile ? uploadFile.name : null}
                     </div>
                 </Box>
                 <Box style={{ padding: "5px" }}>
                     <Menu>
-                        <MenuButton isDisabled={isSending} colorScheme='teal' variant='ghost' style={{ height: "100%" }} as={Button}>
+                        <MenuButton isDisabled={inputProcessingIsLoading} colorScheme='teal' variant='ghost' style={{ height: "100%" }} as={Button}>
                             {chatAction}
                         </MenuButton>
                         <MenuList>
@@ -99,7 +120,7 @@ function ChatInputBox() {
                     </Menu>
                 </Box>
                 <Box style={{ padding: "5px" }}>
-                    <Button isLoading={isSending} onClick={handleSendBtn} colorScheme='teal' variant='solid' style={{ height: "100%" }}><ArrowUpIcon /></Button>
+                    <Button isLoading={inputProcessingIsLoading} onClick={handleSendBtn} colorScheme='teal' variant='solid' style={{ height: "100%" }}><ArrowUpIcon /></Button>
                 </Box>
             </Flex>
         </div>

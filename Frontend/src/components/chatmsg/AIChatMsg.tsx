@@ -30,47 +30,61 @@ function AIChatMsg({ message, audioCite, imageCite }: { message: string, audioCi
                     <h2>
                         <AccordionButton>
                             <Box as="span" flex='1' textAlign='left'>
-                                Audio Cite
+                                Video Citation
                             </Box>
                             <AccordionIcon />
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
-                        <UnorderedList>
+                        <Accordion allowToggle>
+                            <AccordionItem>
+                                <h2>
+                                    <AccordionButton>
+                                        <Box as="span" flex='1' textAlign='left'>
+                                            Audio
+                                        </Box>
+                                        <AccordionIcon />
+                                    </AccordionButton>
+                                </h2>
+                                <AccordionPanel pb={4}>
+                                    <UnorderedList>
 
-                            {audioCite?.map((item: any, i: number) => {
-                                return (
-                                    <CiteAudioItem key={i} text={item.rawText} start={item.starttime + ''} end={item.endtime + ''} />
-                                )
-                            })}
+                                        {audioCite?.map((item: any, i: number) => {
+                                            return (
+                                                <CiteAudioItem key={i} text={item.rawtext} />
+                                            )
+                                        })}
 
-                        </UnorderedList>
+                                    </UnorderedList>
+                                </AccordionPanel>
+                            </AccordionItem>
+
+                            <AccordionItem>
+                                <h2>
+                                    <AccordionButton>
+                                        <Box as="span" flex='1' textAlign='left'>
+                                            Picture
+                                        </Box>
+                                        <AccordionIcon />
+                                    </AccordionButton>
+                                </h2>
+                                <AccordionPanel pb={4}>
+                                    <UnorderedList>
+
+                                        {imageCite?.map((item: any, i: number) => {
+                                            return (
+                                                <CiteImageItem key={i} imgUrl={item.imgurl} start={item.starttime + ''} end={item.endtime + ''} />
+                                            )
+                                        })}
+
+                                    </UnorderedList>
+                                </AccordionPanel>
+                            </AccordionItem>
+                        </Accordion>
                     </AccordionPanel>
                 </AccordionItem>
-
-                <AccordionItem>
-                    <h2>
-                        <AccordionButton>
-                            <Box as="span" flex='1' textAlign='left'>
-                                Picture Cite
-                            </Box>
-                            <AccordionIcon />
-                        </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
-                        <UnorderedList>
-
-                            {imageCite?.map((item: any, i: number) => {
-                                return (
-                                    <CiteImageItem key={i} imgUrl={item.imgurl} start={item.starttime + ''} end={item.endtime + ''} />
-                                )
-                            })}
-
-                        </UnorderedList>
-                    </AccordionPanel>
-                </AccordionItem>
-
             </Accordion>
+
         </div>
     );
 }

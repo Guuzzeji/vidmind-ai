@@ -6,9 +6,7 @@ import HumanChatMsg from '../chatmsg/HumanChatMsg';
 import { useSelector } from 'react-redux';
 
 function ChatWindow() {
-
     const chatMessages = useSelector((state: any) => state.chatsender.messages);
-
 
     return (
         <div style={{ width: "100%", height: "auto", overflowX: 'hidden', overflowY: "scroll" }}>
@@ -16,7 +14,7 @@ function ChatWindow() {
                 // console.log(message.data.message)
                 if (message.sender === "human") {
                     return (
-                        <HumanChatMsg key={i} message={message.data.prompt} />
+                        <HumanChatMsg key={i} message={message.data.prompt} image64={message.data.imgBase64} />
                     )
                 }
 

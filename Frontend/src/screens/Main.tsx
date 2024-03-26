@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { LegacyRef, RefObject, useEffect } from 'react';
 import { Box, ChakraProvider, Container, Flex, Text, } from '@chakra-ui/react'
 
 import ChatInputBox from '../components/chatbox/ChatInputBox';
@@ -8,9 +8,6 @@ import ChatWindow from '../components/chatbox/ChatWindow';
 import { useSelector } from 'react-redux'
 
 function Main() {
-    // TODO: https://github.com/pmndrs/zustand/issues/116
-    // TODO: https://zustand-demo.pmnd.rs/
-
     const videoTitle = useSelector((state: any) => {
         let videoList = state.chatvideos.videoList;
         let currentVideoIndex = state.chatvideos.currentVideoIndex;
@@ -26,6 +23,13 @@ function Main() {
         return null
     })
 
+    const chatMessages = useSelector((state: any) => state.chatsender.messages)
+    const chatWindow = React.useRef() as RefObject<HTMLDivElement>
+
+    useEffect(() => {
+        chatWindow.current?.scroll(0, chatWindow.current?.scrollHeight)
+    }, [chatMessages])
+
 
     return (
         <ChakraProvider>
@@ -37,7 +41,7 @@ function Main() {
                     <Text style={{ writingMode: 'sideways-lr', textAlign: 'center', userSelect: "none" }} fontSize='3xl'>{videoTitle === null ? "" : videoTitle}</Text>
                 </Container>
                 <Container maxWidth={"45vw"} alignSelf={"center"} p={5}>
-                    <Box style={{ overflow: 'auto', maskImage: "linear-gradient(0deg, #000 85%, transparent )", }} maxHeight="88vh" height="88vh" minHeight="50h" p={5}>
+                    <Box ref={chatWindow} style={{ overflow: 'auto', maskImage: "linear-gradient(0deg, #000 95%, transparent)", }} maxHeight="88vh" height="88vh" minHeight="50h" p={5}>
                         <ChatWindow />
                     </Box>
                     <ChatInputBox />
