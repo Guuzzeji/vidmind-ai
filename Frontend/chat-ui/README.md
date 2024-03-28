@@ -1,5 +1,14 @@
 # Getting Started with Create React App
 
+## !!!IMPORTANT!!! Need to setup .env for API endpoints to work with ui
+
+Put `.env` file in root of this project and add the following items to `.env`
+
+```env
+REACT_APP_CHAT_API_URL=something
+REACT_APP_UPLOAD_API_URL=something
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
