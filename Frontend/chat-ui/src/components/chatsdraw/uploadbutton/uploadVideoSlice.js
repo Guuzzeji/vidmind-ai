@@ -56,9 +56,6 @@ export const uploadVideoSlice = createSlice({
     },
 });
 
-// Action creators are generated for each case reducer function
-// export const { setCurrentVideo } = chatVideoSlice.actions;
-
 export default uploadVideoSlice.reducer;
 
 
