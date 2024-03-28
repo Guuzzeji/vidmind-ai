@@ -27,6 +27,7 @@ import ChatHistoryItem from './ChatHistoryItem';
 import UploadButton from './uploadbutton/UploadButton';
 
 import { setCurrentVideo, getVideoChats } from './chatHistorySlice';
+import { clearMessages } from '../inputbox/chatInputSlice';
 
 function ChatHistory() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -68,7 +69,11 @@ function ChatHistory() {
                         <List style={{ width: '400px', overflowY: 'scroll' }}>
                             {videos?.map((item, i) =>
                                 <ChatHistoryItem key={i} title={item.title}
-                                    onClick={() => { dispatch(setCurrentVideo(i)); onClose(); }} />)}
+                                    onClick={() => {
+                                        dispatch(setCurrentVideo(i));
+                                        dispatch(clearMessages());
+                                        onClose();
+                                    }} />)}
                         </List>
                     </DrawerBody>
 

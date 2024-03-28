@@ -49,7 +49,9 @@ export const chatInputSlice = createSlice({
         isError: false,
         messages: [],
     },
-    reducers: {},
+    reducers: {
+        clearMessages: (state) => { state.messages = []; }
+    },
     extraReducers: (builder) => {
         builder.addCase(sendMessage.fulfilled, (state, action) => {
             console.log(action);
@@ -78,5 +80,7 @@ export const chatInputSlice = createSlice({
         });
     },
 });
+
+export const { clearMessages } = chatInputSlice.actions;
 
 export default chatInputSlice.reducer;
