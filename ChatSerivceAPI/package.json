@@ -1,10 +1,11 @@
 {
-  "name": "ChatSerivceAPI",
+  "name": "chatserivceapi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon server.ts ",
+    "dev": "npx nodemon server.ts",
+    "start": "npx ts-node server.ts",
     "build": "tsc ",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix"
@@ -28,6 +29,7 @@
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "langchain": "^0.1.20",
+    "morgan": "^1.10.0",
     "pg": "^8.11.3"
   }
 }
