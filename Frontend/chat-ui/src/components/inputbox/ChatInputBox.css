@@ -1,0 +1,22 @@
+.BoxBoarder {
+    border-style: "solid";
+    padding: 5px;
+    width: 100%;
+    border-radius: 10px;
+    border-width: 1px;
+    height: auto;
+    justify-items: center;
+}
+
+.TextInput {
+    outline: none;
+    border-style: none;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    resize: none;
+    box-shadow: none;
+    min-height: 45px;
+    max-height: 150px;
+    width: 100%;
+    padding: 10px;
+}

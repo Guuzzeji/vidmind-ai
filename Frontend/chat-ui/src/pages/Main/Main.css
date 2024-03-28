@@ -1,0 +1,42 @@
+.SideBarTitle {
+    writing-mode: sideways-lr;
+    text-align: center;
+    user-select: none;
+    color: lightgray
+}
+
+.ChatWindowArea {
+    overflow: auto;
+    mask-image: linear-gradient(0deg, #000 95%, transparent);
+    max-height: 88vh;
+    height: 88vh;
+    min-height: 50vh;
+    padding: 5px;
+    scroll-behavior: smooth;
+}
+
+.ChatWindowContainer {
+    max-width: 45vw;
+    align-self: center;
+    padding: 5px;
+}
+
+/* width */
+.ChatWindowArea::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.ChatWindowArea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.ChatWindowArea::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+.ChatWindowArea::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
