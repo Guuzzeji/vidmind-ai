@@ -8,7 +8,7 @@ export const sendVideo = createAsyncThunk("user/UploadVideo", async ({ title, vi
 
     // console.log("THE VIDEO,", title);
 
-    const res = await axios.post('http://localhost:8080/API/upload_video', formData, {
+    const res = await axios.post(process.env.REACT_APP_UPLOAD_API_URL + '/upload_video', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

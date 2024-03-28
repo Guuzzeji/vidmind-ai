@@ -26,8 +26,8 @@ export function createBase64File(file) {
 }
 
 export const sendMessage = createAsyncThunk("user/SendChatMessage", async ({ type, videoID, prompt, imgBase64 }, thunkAPI) => {
-    const aiMessageRes = await axios.post('http://localhost:4200/API/generate', { type, videoID, prompt, imgBase64 });
-    const embedSearchRes = await axios.post('http://localhost:4200/API/search', {
+    const aiMessageRes = await axios.post(process.env.REACT_APP_CHAT_API_URL + '/generate', { type, videoID, prompt, imgBase64 });
+    const embedSearchRes = await axios.post(process.env.REACT_APP_CHAT_API_URL + '/search', {
         searchFor: "image",
         searchBy: type,
         videoID: videoID,

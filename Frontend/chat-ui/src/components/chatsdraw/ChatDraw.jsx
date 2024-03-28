@@ -44,7 +44,7 @@ function ChatHistory() {
             <Button
                 variant={"outline"}
                 ref={drawerBtnRef}
-                olorScheme='teal'
+                colorScheme='teal'
                 onClick={() => { onOpen(); dispatch(getVideoChats()); }}>
                 <HamburgerIcon />
             </Button>

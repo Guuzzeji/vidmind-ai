@@ -92,7 +92,7 @@ function UploadButton() {
                 <PopoverBody>
                     <div
                         ref={fileNameInput} c
-                        ontentEditable={isInputed && !isUploading}>
+                        contentEditable={isInputed && !isUploading}>
                         {uploadFile != null ? uploadFile.name : 'Video name...'}
                     </div>
                 </PopoverBody>

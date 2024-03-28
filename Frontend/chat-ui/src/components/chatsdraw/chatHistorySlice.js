@@ -2,7 +2,7 @@ import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const getVideoChats = createAsyncThunk("user/GetVideoChats", async () => {
-    const res = await axios.get('http://localhost:4200/API/videos');
+    const res = await axios.get(process.env.REACT_APP_CHAT_API_URL + '/videos');
     // console.log(res.data);
     return res.data;
 });
@@ -23,7 +23,7 @@ export const chatHistorySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getVideoChats.fulfilled, (state, action) => {
-            console.log(action);
+            // console.log(action);
             state.videos = action.payload;
             return state;
         });

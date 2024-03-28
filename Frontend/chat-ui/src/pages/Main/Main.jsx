@@ -14,16 +14,6 @@ import ChatWindow from '../../components/messages/window/ChatWindow';
 
 import { useSelector } from 'react-redux';
 
-// TODO: Clean up file strucutre [x]
-// TODO: Clean up ui window to scroll smmothly [x]
-// TODO: Move some css stuff into there own file [x]
-// TODO: Move all files in a seperate project folder called `chat-ui`
-// TODO: Clean up slice / redux code to look better and read better as well [x]
-// TODO: Add light docs to redux code and ui code [x]
-// TODO: Make chat window scroll bar thinner and hide backdrop of scrollbar [x]
-// TODO: Remove url for part and replace them with .env setup
-// TODO: Make ui scale for different divices, use chatgpt for this job [x]
-
 function Main() {
     const videoTitle = useSelector((state) => {
         let videoList = state.ChatHistory.videos;

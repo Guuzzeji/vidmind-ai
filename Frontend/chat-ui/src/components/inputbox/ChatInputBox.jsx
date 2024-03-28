@@ -92,7 +92,7 @@ function ChatInputBox() {
                         className='TextInput'
                         contentEditable={isLoading || isInputed ? false : true}
                         ref={chatBox}>
-                        {uploadFile ? uploadFile.name : null}
+                        {uploadFile ? uploadFile.name : ""}
                     </div>
                 </Box>
                 <Box style={{ padding: "5px" }}>
