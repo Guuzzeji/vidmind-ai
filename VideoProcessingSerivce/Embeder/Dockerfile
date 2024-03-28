@@ -1,0 +1,19 @@
+FROM node:21.2.0-alpine
+
+ENV OPENAI_API_KEY=
+ENV DB_HOST=
+ENV DB_PORT=
+ENV DB_USER=
+ENV DB_PWD=
+ENV DB_DATABASE_NAME=
+ENV REDIS_HOST=
+ENV REDIS_PORT=
+ENV REDIS_QUEUE_NAME=
+
+COPY . ./app
+WORKDIR /app
+
+RUN npm install -g pnpm
+RUN pnpm install
+
+CMD pnpm run start

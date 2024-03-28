@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon server.ts",
+    "start": "npx ts-node server.ts",
     "build": "tsc ",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix"
