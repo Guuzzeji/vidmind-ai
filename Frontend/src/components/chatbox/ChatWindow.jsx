@@ -6,24 +6,26 @@ import HumanChatMsg from '../chatmsg/HumanChatMsg';
 import { useSelector } from 'react-redux';
 
 function ChatWindow() {
-    const chatMessages = useSelector((state: any) => state.chatsender.messages);
+    const chatMessages = useSelector((state) => state.chatsender.messages);
 
     return (
         <div style={{ width: "100%", height: "auto", overflowX: 'hidden', overflowY: "scroll" }}>
-            {chatMessages.map((message: any, i: number) => {
+            {chatMessages.map((message, i) => {
                 // console.log(message.data.message)
                 if (message.sender === "human") {
                     return (
-                        <HumanChatMsg key={i} message={message.data.prompt} image64={message.data.imgBase64} />
-                    )
+                        <>
+                            <HumanChatMsg key={i} message={message.data.prompt} image64={message.data.imgBase64} />
+                        </>
+                    );
                 }
 
                 return (
-                    <div>
+                    <>
                         <AIChatMsg audioCite={message.data.message.cite.audios} imageCite={message.data.context.Frames} key={i} message={message.data.message.text} />
                         <br />
-                    </div>
-                )
+                    </>
+                );
             })}
         </div>
     );

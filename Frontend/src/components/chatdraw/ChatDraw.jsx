@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
     Drawer,
     DrawerBody,
@@ -14,22 +14,21 @@ import {
     Center,
     DrawerFooter,
     ButtonGroup
-} from '@chakra-ui/react'
-import { HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
+} from '@chakra-ui/react';
+import { HamburgerIcon, RepeatIcon } from '@chakra-ui/icons';
 
 import ChatHistoryItem from './ChatHistoryItem';
-import AddChatBtn from './AddChatBtn'
+import AddChatBtn from './AddChatBtn';
 
-import { useSelector, useDispatch } from 'react-redux'
-import { ThunkDispatch } from '@reduxjs/toolkit'
-import { setCurrentVideo, fetchVideoList } from './chatHistorySlice'
+import { useSelector, useDispatch } from 'react-redux';
+import { setCurrentVideo, fetchVideoList } from './chatHistorySlice';
 
 function ChatHistory() {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const btnRef = React.useRef() as React.RefObject<HTMLButtonElement>;
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const btnRef = React.useRef();
 
-    const videoList = useSelector((state: any) => { console.log(state.chatvideos.videoList); return state.chatvideos.videoList })
-    const dispatch = useDispatch<ThunkDispatch<any, any, any>>()
+    const videoList = useSelector((state) => { console.log(state.chatvideos.videoList); return state.chatvideos.videoList; });
+    const dispatch = useDispatch();
 
     return (
         <>
@@ -55,7 +54,7 @@ function ChatHistory() {
 
                     <DrawerBody>
                         <List style={{ width: '400px', overflowY: 'scroll' }}>
-                            {videoList?.map((item: any, i: number) => <ChatHistoryItem key={i} title={item.title} onClick={() => { dispatch(setCurrentVideo(i)); onClose(); }} />)}
+                            {videoList?.map((item, i) => <ChatHistoryItem key={i} title={item.title} onClick={() => { dispatch(setCurrentVideo(i)); onClose(); }} />)}
                         </List>
                     </DrawerBody>
 
@@ -76,7 +75,7 @@ function ChatHistory() {
                 </DrawerContent>
             </Drawer>
         </>
-    )
+    );
 }
 
 export default ChatHistory;

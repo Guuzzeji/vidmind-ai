@@ -1,18 +1,18 @@
-import React from 'react'
-import { Button, ListItem } from '@chakra-ui/react'
-import { ArrowForwardIcon } from '@chakra-ui/icons'
+import React from 'react';
+import { Button, ListItem } from '@chakra-ui/react';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 
 
-function ChatHistoryItem({ title, onClick }: { title: string, onClick: Function }) {
-    const [hideArrowIcon, setArrowIcon] = React.useState("none")
+function ChatHistoryItem({ title, onClick }) {
+    const [hideArrowIcon, setArrowIcon] = React.useState("none");
 
-    let checkMouseOverTrigger = (e: any) => {
+    let checkMouseOverTrigger = (e) => {
         if (hideArrowIcon === "none") {
-            setArrowIcon("inline")
+            setArrowIcon("inline");
         } else {
-            setArrowIcon("none")
+            setArrowIcon("none");
         }
-    }
+    };
 
     return (
         <ListItem style={{ padding: "5px" }}>
@@ -27,7 +27,7 @@ function ChatHistoryItem({ title, onClick }: { title: string, onClick: Function 
 
             </Button>
         </ListItem>
-    )
+    );
 }
 
 export default ChatHistoryItem;

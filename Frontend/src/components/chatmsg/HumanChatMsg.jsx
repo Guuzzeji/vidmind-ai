@@ -1,7 +1,7 @@
 import React from 'react';
-import { Flex, Image, Text } from '@chakra-ui/react'
+import { Flex, Image, Text } from '@chakra-ui/react';
 
-function HumanChatMsg({ message, image64 }: { message: string | null, image64: string | null }) {
+function HumanChatMsg({ message, image64 }) {
 
     return (
         <div style={{ width: "100%", height: "auto" }}>

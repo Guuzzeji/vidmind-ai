@@ -9,12 +9,12 @@ import {
     Flex,
     UnorderedList,
     Text
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
 import CiteAudioItem from './CiteAudioItem';
 import CiteImageItem from './CiteImageItem';
 
-function AIChatMsg({ message, audioCite, imageCite }: { message: string, audioCite: any[], imageCite: any[] }) {
+function AIChatMsg({ message, audioCite, imageCite }) {
 
     return (
         <div style={{ width: "100%", height: "auto" }}>
@@ -25,18 +25,18 @@ function AIChatMsg({ message, audioCite, imageCite }: { message: string, audioCi
                 </Text>
             </Flex>
             {/**Can check if user to hide this */}
-            <Accordion allowToggle>
+            <Accordion allowToggle style={{ borderStyle: "solid", borderTopColor: "white" }}>
                 <AccordionItem>
                     <h2>
                         <AccordionButton>
                             <Box as="span" flex='1' textAlign='left'>
-                                Video Citation
+                                <i>Video Citation</i>
                             </Box>
                             <AccordionIcon />
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
-                        <Accordion allowToggle>
+                        <Accordion allowToggle style={{ borderWidth: "5px", borderStyle: "solid", borderColor: "white" }}>
                             <AccordionItem>
                                 <h2>
                                     <AccordionButton>
@@ -49,10 +49,10 @@ function AIChatMsg({ message, audioCite, imageCite }: { message: string, audioCi
                                 <AccordionPanel pb={4}>
                                     <UnorderedList>
 
-                                        {audioCite?.map((item: any, i: number) => {
+                                        {audioCite?.map((item, i) => {
                                             return (
                                                 <CiteAudioItem key={i} text={item.rawtext} />
-                                            )
+                                            );
                                         })}
 
                                     </UnorderedList>
@@ -71,10 +71,10 @@ function AIChatMsg({ message, audioCite, imageCite }: { message: string, audioCi
                                 <AccordionPanel pb={4}>
                                     <UnorderedList>
 
-                                        {imageCite?.map((item: any, i: number) => {
+                                        {imageCite?.map((item, i) => {
                                             return (
                                                 <CiteImageItem key={i} imgUrl={item.imgurl} start={item.starttime + ''} end={item.endtime + ''} />
-                                            )
+                                            );
                                         })}
 
                                     </UnorderedList>
