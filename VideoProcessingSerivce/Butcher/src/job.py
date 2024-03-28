@@ -1,8 +1,6 @@
 import config
 from src import s3_client
 from src.video.ContentExtractor import ContentExtractor
-import asyncio
-import concurrent.futures
 import os
 import logging
 from bullmq import Queue
@@ -17,18 +15,8 @@ queue = Queue(
         "connection": "redis://" + config.REDIS_HOST+":" + config.REDIS_PORT
     })
 
-worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
 
-
-def worker_run_task(file_id: str, title: str, video_path: str):
-
-    def run():
-        asyncio.run(worker(file_id, title, video_path))
-
-    worker_pool.submit(run)
-
-
-async def worker(video_id: str, title: str, video_path: str):
+async def run_job(video_id: str, title: str, video_path: str):
 
     video_breakdown = ContentExtractor(video_path, video_id)
     video_breakdown.get_content()

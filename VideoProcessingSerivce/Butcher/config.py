@@ -2,7 +2,8 @@ import os
 import sys
 from dotenv import load_dotenv
 
-load_dotenv(sys.argv[1])
+if sys.argv[1] != None:
+    load_dotenv(sys.argv[1])
 
 CURRENT_PATH = os.getcwd()
 WORKING_DIR = os.getenv('WORKING_DIR')
