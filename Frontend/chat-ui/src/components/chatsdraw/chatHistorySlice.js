@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-export const getVideoChats = createAsyncThunk("user/GetVideoChats", async () => {
+export const getVideoChats = createAsyncThunk("user/GetChatHistory", async () => {
     const res = await axios.get(process.env.REACT_APP_CHAT_API_URL + '/videos');
     // console.log(res.data);
     return res.data;
