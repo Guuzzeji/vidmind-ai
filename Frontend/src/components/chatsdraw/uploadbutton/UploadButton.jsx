@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector, useDispatch } from 'react-redux';
+
 import {
     Button,
     ButtonGroup,
@@ -13,11 +15,10 @@ import {
     useToast
 } from "@chakra-ui/react";
 
-import { useSelector, useDispatch } from 'react-redux';
-import { uploadVideoPost } from './uploadVideoSlice';
+import { sendVideo } from './uploadVideoSlice';
 
 
-function AddChatBtn() {
+function UploadButton() {
     const sentToast = useToast();
 
     const initialFocusRef = React.useRef();
@@ -27,7 +28,7 @@ function AddChatBtn() {
     const [uploadFile, setUploadFile] = React.useState();
     const [isInputed, setInputed] = React.useState(false);
 
-    const isUploading = useSelector((state) => state.uploadvideo.isUploading);
+    const isUploading = useSelector((state) => state.UploadVideo.isUploading);
     const dispatch = useDispatch();
 
     let handleFileUpload = (e) => {
@@ -44,7 +45,7 @@ function AddChatBtn() {
         console.log("send to API");
         console.log(uploadFile);
 
-        dispatch(uploadVideoPost({
+        dispatch(sendVideo({
             title: fileNameInput?.current.innerText.trim(),
             videoFile: uploadFile
         }));
@@ -79,7 +80,8 @@ function AddChatBtn() {
                 <input accept="video/mp4, video/mkv"
                     ref={hiddenFileInput}
                     onChange={handleFileUpload}
-                    type="file" style={{ display: 'none' }} />
+                    type="file"
+                    style={{ display: 'none' }} />
 
                 <PopoverHeader pt={4} fontWeight='bold' border='0'>
                     Upload Video
@@ -88,15 +90,26 @@ function AddChatBtn() {
                 <PopoverCloseButton />
 
                 <PopoverBody>
-                    <div ref={fileNameInput} contentEditable={isInputed && !isUploading}>{uploadFile != null ? uploadFile.name : 'Video name...'}</div>
+                    <div
+                        ref={fileNameInput} c
+                        ontentEditable={isInputed && !isUploading}>
+                        {uploadFile != null ? uploadFile.name : 'Video name...'}
+                    </div>
                 </PopoverBody>
-                <PopoverFooter
-                    border='0'
-                    pb={4}>
+                <PopoverFooter border='0' pb={4}>
                     <Center>
                         <ButtonGroup size='sm'>
-                            <Button colorScheme='teal' isDisabled={isUploading} onClick={handleFileClick}>File</Button>
-                            <Button colorScheme='teal' isDisabled={isInputed | isUploading ? false : true} onClick={handleSendToAPI}>Send to AI</Button>
+                            <Button colorScheme='teal'
+                                isDisabled={isUploading}
+                                onClick={handleFileClick}>
+                                File
+                            </Button>
+                            <Button
+                                colorScheme='teal'
+                                isDisabled={isInputed | isUploading ? false : true}
+                                onClick={handleSendToAPI}>
+                                Send to AI
+                            </Button>
                         </ButtonGroup>
 
                     </Center>
@@ -107,4 +120,4 @@ function AddChatBtn() {
     );
 }
 
-export default AddChatBtn;
+export default UploadButton;

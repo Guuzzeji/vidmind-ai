@@ -1,7 +1,7 @@
 import React from 'react';
+
 import { Button, ListItem } from '@chakra-ui/react';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
-
 
 function ChatHistoryItem({ title, onClick }) {
     const [hideArrowIcon, setArrowIcon] = React.useState("none");

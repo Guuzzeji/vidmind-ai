@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
     Accordion,
     AccordionButton,
@@ -14,7 +15,7 @@ import {
 import CiteAudioItem from './CiteAudioItem';
 import CiteImageItem from './CiteImageItem';
 
-function AIChatMsg({ message, audioCite, imageCite }) {
+function AIMessage({ message, audioCite, imageCite }) {
 
     return (
         <div style={{ width: "100%", height: "auto" }}>
@@ -89,4 +90,4 @@ function AIChatMsg({ message, audioCite, imageCite }) {
     );
 }
 
-export default AIChatMsg;
+export default AIMessage;

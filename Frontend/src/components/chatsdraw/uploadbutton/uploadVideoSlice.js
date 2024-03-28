@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-export const uploadVideoPost = createAsyncThunk("users/uploadvideo", async ({ title, videoFile }, thunkAPI) => {
+export const sendVideo = createAsyncThunk("user/UploadVideo", async ({ title, videoFile }, thunkAPI) => {
     let formData = new FormData();
     formData.append("title", title);
     formData.append("file", videoFile);
 
-    console.log("THE VIDEO,", title);
+    // console.log("THE VIDEO,", title);
 
     const res = await axios.post('http://localhost:8080/API/upload_video', formData, {
         headers: {
@@ -14,12 +14,13 @@ export const uploadVideoPost = createAsyncThunk("users/uploadvideo", async ({ ti
         }
     });
 
-    console.log(res.data);
+    // console.log(res.data);
+    // This should be a json that is either ok = true or error = true
     return res.data;
 });
 
 export const uploadVideoSlice = createSlice({
-    name: 'uploadvideo',
+    name: 'UploadVideo',
     initialState: {
         isUploading: false,
         isError: false,
@@ -27,8 +28,8 @@ export const uploadVideoSlice = createSlice({
     },
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(uploadVideoPost.fulfilled, (state, action) => {
-            console.log(action);
+        builder.addCase(sendVideo.fulfilled, (state, action) => {
+            // console.log(action);
             if (action.payload.ok) {
                 state.isError = false;
                 state.isOk = true;
@@ -41,13 +42,13 @@ export const uploadVideoSlice = createSlice({
             }
         });
 
-        builder.addCase(uploadVideoPost.rejected, (state) => {
+        builder.addCase(sendVideo.rejected, (state) => {
             state.isError = true;
             state.isOk = false;
             state.isUploading = false;
         });
 
-        builder.addCase(uploadVideoPost.pending, (state) => {
+        builder.addCase(sendVideo.pending, (state) => {
             state.isError = false;
             state.isOk = false;
             state.isUploading = true;

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
 import {
     Drawer,
     DrawerBody,
@@ -15,25 +17,35 @@ import {
     DrawerFooter,
     ButtonGroup
 } from '@chakra-ui/react';
-import { HamburgerIcon, RepeatIcon } from '@chakra-ui/icons';
+
+import {
+    HamburgerIcon,
+    RepeatIcon
+} from '@chakra-ui/icons';
 
 import ChatHistoryItem from './ChatHistoryItem';
-import AddChatBtn from './AddChatBtn';
+import UploadButton from './uploadbutton/UploadButton';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentVideo, fetchVideoList } from './chatHistorySlice';
+import { setCurrentVideo, getVideoChats } from './chatHistorySlice';
 
 function ChatHistory() {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const btnRef = React.useRef();
+    const drawerBtnRef = React.useRef();
 
-    const videoList = useSelector((state) => { console.log(state.chatvideos.videoList); return state.chatvideos.videoList; });
     const dispatch = useDispatch();
+    const videos = useSelector((state) => {
+        // console.log(state.ChatHistory.videos);
+        return state.ChatHistory.videos;
+    });
 
     return (
         <>
             {/**Drawer btn */}
-            <Button variant={"outline"} ref={btnRef} colorScheme='teal' onClick={() => { onOpen(); dispatch(fetchVideoList()); }}>
+            <Button
+                variant={"outline"}
+                ref={drawerBtnRef}
+                olorScheme='teal'
+                onClick={() => { onOpen(); dispatch(getVideoChats()); }}>
                 <HamburgerIcon />
             </Button>
 
@@ -43,7 +55,7 @@ function ChatHistory() {
                 placement='left'
                 onClose={onClose}
                 size={"sm"}
-                finalFocusRef={btnRef}>
+                finalFocusRef={drawerBtnRef}>
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
@@ -54,7 +66,9 @@ function ChatHistory() {
 
                     <DrawerBody>
                         <List style={{ width: '400px', overflowY: 'scroll' }}>
-                            {videoList?.map((item, i) => <ChatHistoryItem key={i} title={item.title} onClick={() => { dispatch(setCurrentVideo(i)); onClose(); }} />)}
+                            {videos?.map((item, i) =>
+                                <ChatHistoryItem key={i} title={item.title}
+                                    onClick={() => { dispatch(setCurrentVideo(i)); onClose(); }} />)}
                         </List>
                     </DrawerBody>
 
@@ -62,11 +76,11 @@ function ChatHistory() {
                         <Center p={2}>
                             <ButtonGroup size='sm'>
 
-                                <Button onClick={fetchVideoList} variant="ghost">
+                                <Button onClick={() => { dispatch(getVideoChats()); }} variant="ghost">
                                     <RepeatIcon />
                                 </Button>
 
-                                <AddChatBtn />
+                                <UploadButton />
 
                             </ButtonGroup>
                         </Center>

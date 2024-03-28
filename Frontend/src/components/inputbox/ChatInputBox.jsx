@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
     Button,
@@ -11,23 +12,9 @@ import {
 } from '@chakra-ui/react';
 import { ArrowUpIcon } from '@chakra-ui/icons';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { sendMessage } from './inputSlice';
+import './ChatInputBox.css';
 
-function getBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
-            if ((encoded.length % 4) > 0) {
-                encoded += '='.repeat(4 - (encoded.length % 4));
-            }
-            resolve(encoded);
-        };
-        reader.onerror = error => reject(error);
-    });
-}
+import { sendMessage, createBase64File } from './chatInputSlice';
 
 function ChatInputBox() {
     const hiddenFileInput = React.useRef();
@@ -40,17 +27,17 @@ function ChatInputBox() {
 
     const dispatch = useDispatch();
     const videoid = useSelector((state) => {
-        console.log(state.chatvideos.currentVideoIndex);
+        // console.log(state.chatvideos.currentVideoIndex);
+        let index = state.ChatHistory.currentIndex;
+        let videoList = state.ChatHistory.videos;
 
-        if (state.chatvideos.currentVideoIndex === -1 && state.chatvideos.videoList !== undefined) {
+        if (index === -1 || videoList.length === 0) {
             return null;
         }
-
-        return state.chatvideos.videoList[state.chatvideos.currentVideoIndex].id;
+        return videoList[index].id;
     });
 
-    const inputProcessingIsLoading = useSelector((state) => state.chatsender.inputProcessingIsLoading);
-
+    const isLoading = useSelector((state) => state.ChatInput.isLoading);
 
     let handleActionChatBtn = (e) => {
         console.log(e);
@@ -79,7 +66,7 @@ function ChatInputBox() {
                     videoID: videoid,
                     type: "image",
                     chatHistory: [],
-                    imgBase64: await getBase64(uploadFile),
+                    imgBase64: await createBase64File(uploadFile),
                 }));
             }
         }
@@ -92,7 +79,7 @@ function ChatInputBox() {
     };
 
     return (
-        <div style={{ borderStyle: "solid", padding: "5px", width: "100%", borderRadius: "10px", borderWidth: "1px", height: "auto", justifyItems: "center" }}>
+        <div className='BoxBoarder'>
 
             <input accept="image/png"
                 ref={hiddenFileInput}
@@ -102,15 +89,20 @@ function ChatInputBox() {
             <Flex>
                 <Box w='80%'>
                     <div
-                        style={{ outline: "none", borderStyle: "none", overflowY: "scroll", overflowX: "hidden", resize: "none", boxShadow: "none", minHeight: "45px", maxHeight: "150px", width: "100%", padding: "10px" }}
-                        contentEditable={inputProcessingIsLoading || isInputed ? false : true}
+                        className='TextInput'
+                        contentEditable={isLoading || isInputed ? false : true}
                         ref={chatBox}>
                         {uploadFile ? uploadFile.name : null}
                     </div>
                 </Box>
                 <Box style={{ padding: "5px" }}>
                     <Menu>
-                        <MenuButton isDisabled={inputProcessingIsLoading} colorScheme='teal' variant='ghost' style={{ height: "100%" }} as={Button}>
+                        <MenuButton
+                            isDisabled={isLoading}
+                            colorScheme='teal'
+                            variant='ghost'
+                            style={{ height: "100%" }}
+                            as={Button}>
                             {chatAction}
                         </MenuButton>
                         <MenuList>
@@ -120,7 +112,14 @@ function ChatInputBox() {
                     </Menu>
                 </Box>
                 <Box style={{ padding: "5px" }}>
-                    <Button isLoading={inputProcessingIsLoading} onClick={handleSendBtn} colorScheme='teal' variant='solid' style={{ height: "100%" }}><ArrowUpIcon /></Button>
+                    <Button
+                        isLoading={isLoading}
+                        onClick={handleSendBtn}
+                        colorScheme='teal'
+                        variant='solid'
+                        style={{ height: "100%" }}>
+                        <ArrowUpIcon />
+                    </Button>
                 </Box>
             </Flex>
         </div>
