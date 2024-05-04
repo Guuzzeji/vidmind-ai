@@ -20,3 +20,11 @@
     width: 100%;
     padding: 10px;
 }
+
+.TextInput[contentEditable=true]::before {
+    color: grey;
+}
+
+.TextInput[contentEditable=true]:empty::before {
+    content: attr(data-placeholder);
+}
