@@ -1,5 +1,5 @@
 import OpenAI, { toFile } from 'openai';
-import encode from 'gpt-tokenizer';
+import { encode } from 'gpt-tokenizer/cjs/model/gpt-4-32k-0314';
 import 'dotenv/config';
 
 const openai = new OpenAI({
