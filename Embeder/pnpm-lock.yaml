@@ -12,7 +12,7 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30(ioredis@5.3.2)(lodash@4.17.21)(pg@8.11.3)
       '@langchain/core':
-        specifier: ^0.1.30
+        specifier: ^0.1.33
         version: 0.1.33
       '@langchain/openai':
         specifier: ^0.0.14
@@ -45,7 +45,7 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1
       openai:
-        specifier: ^4.26.0
+        specifier: ^4.26.1
         version: 4.26.1
       pg:
         specifier: ^8.11.3
