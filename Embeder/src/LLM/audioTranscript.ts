@@ -1,9 +1,9 @@
 import OpenAI, { toFile } from 'openai';
-import { encode } from 'gpt-tokenizer';
+import encode from 'gpt-tokenizer';
 import 'dotenv/config';
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEYs
 });
 
 export async function createTranscriptFromAudio(fileBase64: string): Promise<string> {
