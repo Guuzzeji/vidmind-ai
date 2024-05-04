@@ -4,7 +4,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import 'dotenv/config'
 
 import { LLMSummarize } from './summarize.ts'
-import { getBase64, secondsToTimestamp } from "./utils.ts";
+import { getBase64, secondsToTimestamp } from "../utils.ts";
 
 type Images = {
     start: number,

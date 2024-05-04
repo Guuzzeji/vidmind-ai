@@ -9,4 +9,4 @@ RUN apt install ffmpeg -y
 RUN pip install gunicorn
 RUN pip install -r requirements.txt
 
-CMD gunicorn -w 3 'src.router.api:app'
+CMD gunicorn -w 3 'app:app'

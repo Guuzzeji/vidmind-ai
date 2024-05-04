@@ -1,35 +1,33 @@
-import shutil
-import config
-from src.job import run_job
 from werkzeug.utils import secure_filename
-from flask import request
-from flask import Flask
+from flask import Blueprint, request
+import shutil
 import uuid
 import os
+
+import config_env
+
+from src.job import run_job
+
 import logging
-
-
-logging.basicConfig(format='%(asctime)s - %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
-path_to_workdir = os.path.join(config.CURRENT_PATH, config.WORKING_DIR)
+path_to_workdir = os.path.join(config_env.CURRENT_PATH, config_env.WORKING_DIR)
 if os.path.exists(path_to_workdir):
     shutil.rmtree(path_to_workdir)
 
 os.mkdir(path_to_workdir)
 
+API = Blueprint("api", __name__, url_prefix="/API")
+
+
 ALLOWED_EXTENSIONS = {'mp4', 'mkv'}
-
-app = Flask(__name__)
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/API/upload", methods=["POST"])
+@API.route("/upload", methods=["POST"])
 def handle_video_dl():
     if request.method == "POST":
         if 'file' not in request.files:
@@ -57,7 +55,7 @@ def handle_video_dl():
 
             # Creating working folder
             file_path = os.path.join(
-                config.CURRENT_PATH, config.WORKING_DIR, file_id)
+                config_env.CURRENT_PATH, config_env.WORKING_DIR, file_id)
             os.mkdir(file_path)
 
             logging.info("File Download to Server - "

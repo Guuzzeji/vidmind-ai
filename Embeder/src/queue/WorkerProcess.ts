@@ -1,9 +1,9 @@
-import { VisualTranscrpitVLM } from './VisualTranscrpitVLM.ts';
-import { InsertDataToDB } from './InsertIntoDB.ts';
-import { createTranscriptFromAudio } from './audioTranscript.ts';
-import { embedText } from './embed.ts';
+import { VisualTranscrpitVLM } from '../LLM/VisualTranscrpitVLM.ts';
+import { InsertDataToDB } from '../db/InsertIntoDB.ts';
+import { createTranscriptFromAudio } from '../LLM/audioTranscript.ts';
+import { embedText } from '../LLM/embed.ts';
 
-import { secondsToTimestamp, getBase64 } from './utils.ts';
+import { secondsToTimestamp, getBase64 } from '../utils.ts';
 import * as log from 'npmlog';
 
 type ClipChunk = {
