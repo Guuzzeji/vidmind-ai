@@ -150,7 +150,7 @@ class ContentExtractor:
         for img_path in img_list:
             full_path = os.path.join(save_folder_path, img_path)
             img = Image.open(full_path)
-            img.thumbnail((1280, 720), Image.ANTIALIAS)
+            img.thumbnail((1280, 720), Image.Resampling.LANCZOS)
             mask = img.getbbox()
             cropped = img.crop(mask)
             cropped.save(full_path)

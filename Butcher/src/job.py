@@ -19,7 +19,12 @@ worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
 def run_job(file_id: str, title: str, video_path: str):
     def run():
         asyncio.run(job(file_id, title, video_path))
-    worker_pool.submit(run)
+
+    if config_env.DEBUG is not True:
+        worker_pool.submit(run)
+        return
+    
+    run()
 
 
 async def job(video_id: str, title: str, video_path: str):
