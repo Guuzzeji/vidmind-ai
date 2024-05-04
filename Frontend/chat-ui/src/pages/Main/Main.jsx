@@ -52,7 +52,9 @@ function Main() {
                 <Box ref={chatWindow} className='ChatWindowArea'>
                     <ChatWindow />
                 </Box>
-                <ChatInputBox />
+                <Box width="65%" pos="fixed" bottom="10" left="50%" transform="translateX(-50%)">
+                    <ChatInputBox />
+                </Box>
             </Container>
             <Container flex='1'>
             </Container>
