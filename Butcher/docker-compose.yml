@@ -13,9 +13,7 @@ services:
       S3_PWD: ${S3_PWD}
       S3_DEV_MODE: YES
       S3_BUCKET_NAME: video-files
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_QUEUE_NAME: embed_tickets
+      EMBED_QUEUE_URL: http://embeder:4040/API/add-to-queue
     ports:
       - '3030:3030'
     networks:
