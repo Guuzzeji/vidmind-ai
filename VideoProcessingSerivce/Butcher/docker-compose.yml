@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  butcher:
+    build: .
+    container_name: butcher
+    environment:
+      WORKING_DIR: WORKSPACE
+      PORT: 3030
+      DEBUG: NO
+      S3_HOST: s3-bucket:9000
+      S3_KEY: ${S3_KEY}
+      S3_PWD: ${S3_PWD}
+      S3_DEV_MODE: YES
+      S3_BUCKET_NAME: video-files
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_QUEUE_NAME: embed_tickets
+    ports:
+      - '3030:3030'
+    networks:
+      -  db_backend-net
+
+networks:
+  db_backend-net:
+    external: true

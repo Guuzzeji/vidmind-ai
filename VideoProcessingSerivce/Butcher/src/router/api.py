@@ -1,3 +1,4 @@
+import shutil
 import config
 from src.job import run_job
 from werkzeug.utils import secure_filename
@@ -12,6 +13,11 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
+path_to_workdir = os.path.join(config.CURRENT_PATH, config.WORKING_DIR)
+if os.path.exists(path_to_workdir):
+    shutil.rmtree(path_to_workdir)
+
+os.mkdir(path_to_workdir)
 
 ALLOWED_EXTENSIONS = {'mp4', 'mkv'}
 
