@@ -1,6 +1,6 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
-import { queue } from './queue';
+import { queue } from '../queue';
 
 export const API_ROUTER = express.Router();
 API_ROUTER.use(bodyParser.json())

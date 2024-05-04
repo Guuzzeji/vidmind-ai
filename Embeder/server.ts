@@ -2,7 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import 'dotenv/config'
 
-import { API_ROUTER } from './src/api';
+import { API_ROUTER } from './src/router/api';
 
 const app = express();
 app.use(morgan('tiny'))
