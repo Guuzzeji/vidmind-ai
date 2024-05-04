@@ -1,13 +1,15 @@
-from src.video.ffprobe import ffprobe
-from PIL import Image
 from scenedetect import open_video, SceneManager, ContentDetector, save_images
 from ffmpeg import FFmpeg
+from PIL import Image
 import os
 import shutil
 from pathlib import Path
-import config
-import logging
 
+import config_env
+
+from src.video.ffprobe import ffprobe
+
+import logging
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
@@ -24,8 +26,8 @@ class ContentExtractor:
     #! == PRIVATE ==
 
     def __create_work_folders(self, id_file: str) -> dict[str, str]:
-        vid_path = os.path.join(config.CURRENT_PATH,
-                                config.WORKING_DIR, id_file)
+        vid_path = os.path.join(config_env.CURRENT_PATH,
+                                config_env.WORKING_DIR, id_file)
 
         # Creating working folders to store clips and frames
         clips_path = os.path.join(vid_path, "clips")

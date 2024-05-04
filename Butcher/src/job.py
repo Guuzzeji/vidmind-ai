@@ -1,13 +1,14 @@
-import config
-from src import s3_client
-from src.video.ContentExtractor import ContentExtractor
 import os
 import requests
 import asyncio
 import concurrent.futures
-import logging
-import logging
 
+import config_env
+
+from src import s3_client
+from src.video.ContentExtractor import ContentExtractor
+
+import logging
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
@@ -74,7 +75,7 @@ async def job(video_id: str, title: str, video_path: str):
     }
 
     logging.info("Sending Ticket to Embeder Video Id:" + video_id)
-    requests.post(config.EMBED_QUEUE_URL, json=package_msg)
+    requests.post(config_env.EMBED_QUEUE_URL, json=package_msg)
 
     # print(x.text)
     # return package_msg

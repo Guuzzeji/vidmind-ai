@@ -4,14 +4,14 @@ import os
 from minio import Minio
 from minio.error import S3Error
 
-import config
+import config_env
 
-BUCKET_NAME = config.S3_BUCKET_NAME
-BASE_URL_S3 = "http://" + config.S3_HOST + "/"
-client = Minio(config.S3_HOST,
-               access_key=config.S3_KEY,
-               secret_key=config.S3_PWD,
-               secure=config.S3_SECURE  # Set to false to disable SSL and work on devloper server
+BUCKET_NAME = config_env.S3_BUCKET_NAME
+BASE_URL_S3 = "http://" + config_env.S3_HOST + "/"
+client = Minio(config_env.S3_HOST,
+               access_key=config_env.S3_KEY,
+               secret_key=config_env.S3_PWD,
+               secure=config_env.S3_SECURE  # Set to false to disable SSL and work on devloper server
                )
 
 # From: https://min.io/docs/minio/linux/developers/python/API.html#set_bucket_policy
