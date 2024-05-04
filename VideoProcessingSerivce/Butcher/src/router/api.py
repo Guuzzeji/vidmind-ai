@@ -1,5 +1,6 @@
+import shutil
 import config
-from src.worker import worker_run_task
+from src.job import run_job
 from werkzeug.utils import secure_filename
 from flask import request
 from flask import Flask
@@ -12,6 +13,11 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
+path_to_workdir = os.path.join(config.CURRENT_PATH, config.WORKING_DIR)
+if os.path.exists(path_to_workdir):
+    shutil.rmtree(path_to_workdir)
+
+os.mkdir(path_to_workdir)
 
 ALLOWED_EXTENSIONS = {'mp4', 'mkv'}
 
@@ -23,7 +29,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/API/upload_video", methods=["POST"])
+@app.route("/API/upload", methods=["POST"])
 def handle_video_dl():
     if request.method == "POST":
         if 'file' not in request.files:
@@ -63,7 +69,7 @@ def handle_video_dl():
             logging.info("Chopping Video - "
                          + "File ID:" + file_id
                          + " Filename:" + filename)
-            worker_run_task(file_id, title, video_path)
+            run_job(file_id, title, video_path)
 
             return {
                 "ok": True,

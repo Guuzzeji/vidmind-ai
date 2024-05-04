@@ -16,9 +16,5 @@ export async function searchForVideos(): Promise<{ id: string, title: string }[]
     let res = await client.query(sqlQueryVideoSearch);
     client.release();
 
-    if (res.rows.length == 0) {
-        throw new Error("Nothing Found")
-    }
-
     return res.rows;
 }

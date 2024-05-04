@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  chatapi:
+    build: .
+    container_name: chatapi
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PWD: ${DB_PWD}
+      DB_DATABASE_NAME: VIDEO_INFOMATION
+      PORT: 5050
+    ports:
+      - '5050:5050'
+    networks:
+      -  db_backend-net
+
+networks:
+  db_backend-net:
+    external: true

@@ -67,7 +67,7 @@ ApiRouter.post("/search", async function (req, res) {
 
         if (parms.searchFor == 'image') {
             let videoContent = await searchVisualEmbedForImages({ videoID: parms.videoID, query: searchQuery });
-            console.log(videoContent)
+            // console.log(videoContent)
             res.send(videoContent)
 
         } else if (parms.searchFor == 'audio') {

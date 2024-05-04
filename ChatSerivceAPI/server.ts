@@ -1,4 +1,6 @@
 import express from 'express';
+import morgan from 'morgan';
+import 'dotenv/config'
 
 /**
  * Notes
@@ -8,6 +10,8 @@ import express from 'express';
 import { ApiRouter } from './src/router/api.ts';
 
 const app = express();
+
+app.use(morgan('tiny'))
 app.use('/API', ApiRouter);
 
 app.listen(process.env.PORT);

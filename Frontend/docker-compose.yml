@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    container_name: frontend
+    environment:
+      - PORT=8080
+      - REACT_APP_CHAT_API_URL=http://chatapi/API
+      - REACT_APP_UPLOAD_API_URL=http://butcher/API
+    ports:
+      - '8080:8080'
+    networks:
+      -  db_backend-net
+
+networks:
+  db_backend-net:
+    external: true

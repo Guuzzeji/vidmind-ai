@@ -2,7 +2,8 @@ import os
 import sys
 from dotenv import load_dotenv
 
-load_dotenv(sys.argv[1])
+if sys.argv[1] != None:
+    load_dotenv(sys.argv[1])
 
 CURRENT_PATH = os.getcwd()
 WORKING_DIR = os.getenv('WORKING_DIR')
@@ -16,9 +17,7 @@ S3_PWD = os.getenv('S3_PWD')
 S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
 S3_SECURE = True
 
-REDIS_HOST = os.getenv('REDIS_HOST')
-REDIS_PORT = os.getenv('REDIS_PORT')
-REDIS_QUEUE_NAME = os.getenv('REDIS_QUEUE_NAME')
+EMBED_QUEUE_URL = os.getenv('EMBED_QUEUE_URL')
 
 if os.getenv('S3_DEV_MODE') == 'YES':
     S3_SECURE = False

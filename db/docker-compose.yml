@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    # restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - backend-net
+    # Have to set memory size of redis for BullMQ to work properly
+    # From: https://peterkellner.net/2023/09/24/Managing-Redis-Memory-Limits-with-Docker-Compose/ 
+    command: redis-server --save 20 1  --maxmemory 1GB --maxmemory-policy noeviction --loglevel warning 
+    volumes: 
+      - redis:/data
+  
+  db:
+    container_name: db
+    image: ankane/pgvector
+    ports:
+      - '5432:5432'
+    networks:
+      - backend-net
+    # restart: always
+    environment:
+      POSTGRES_DB: VIDEO_INFOMATION
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    depends_on:
+      - s3-bucket
+
+  s3-bucket:
+    image: docker.io/bitnami/minio:2022
+    container_name: s3-bucket
+    ports:
+      - '9000:9000'
+      - '9001:9001' # This is used for webpage
+    networks:
+      - backend-net
+    volumes:
+      - 'minio_data:/data'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD} # pwd should be at least 8 char long
+      MINIO_DEFAULT_BUCKETS: video-files
+
+volumes:
+  redis:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  backend-net:
+    driver: bridge
+

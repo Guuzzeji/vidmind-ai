@@ -1,35 +1,27 @@
 import config
 from src import s3_client
 from src.video.ContentExtractor import ContentExtractor
+import os
+import requests
 import asyncio
 import concurrent.futures
-import os
 import logging
-from bullmq import Queue
 import logging
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
-queue = Queue(
-    config.REDIS_QUEUE_NAME, {
-        "connection": "redis://" + config.REDIS_HOST+":" + config.REDIS_PORT
-    })
-
 worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
 
 
-def worker_run_task(file_id: str, title: str, video_path: str):
-
+def run_job(file_id: str, title: str, video_path: str):
     def run():
-        asyncio.run(worker(file_id, title, video_path))
-
+        asyncio.run(job(file_id, title, video_path))
     worker_pool.submit(run)
 
 
-async def worker(video_id: str, title: str, video_path: str):
-
+async def job(video_id: str, title: str, video_path: str):
     video_breakdown = ContentExtractor(video_path, video_id)
     video_breakdown.get_content()
 
@@ -82,6 +74,7 @@ async def worker(video_id: str, title: str, video_path: str):
     }
 
     logging.info("Sending Ticket to Embeder Video Id:" + video_id)
-    await queue.add(video_id, package_msg)
+    requests.post(config.EMBED_QUEUE_URL, json=package_msg)
 
+    # print(x.text)
     # return package_msg
