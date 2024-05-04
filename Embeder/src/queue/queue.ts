@@ -13,15 +13,15 @@ export const queue = new Queue(process.env.REDIS_QUEUE_NAME,
 // Job name = store id of video
 // Job data = data of job
 queue.process(async function (job, done) {
-    log.info("Job Given - ", "ID:", job.name, "Data:", JSON.stringify(job.data))
+    log.info("Job Given - ", "ID:", job.id, "Data:", JSON.stringify(job.data))
     try {
-        log.info("Running job for ...", "ID:", job.name)
+        log.info("Running job for ...", "ID:", job.id)
         let WorkerInstance = await WorkerProcess.initialize(job.data);
-        await WorkerInstance.doJob()
+        // await WorkerInstance.doJob()
 
         done(null, {
             ok: true,
-            id: job.name
+            id: job.id
         })
 
     } catch (err) {
