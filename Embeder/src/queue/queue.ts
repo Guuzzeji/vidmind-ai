@@ -17,7 +17,11 @@ queue.process(async function (job, done) {
     try {
         log.info("Running job for ...", "ID:", job.id)
         let WorkerInstance = await WorkerProcess.initialize(job.data);
-        // await WorkerInstance.doJob()
+
+        // Use for just debug queue without running OpenAI job
+        if (String(process.env.SHOULD_RUN_JOB).toLocaleLowerCase() == "true") {
+            await WorkerInstance.doJob()
+        }
 
         done(null, {
             ok: true,
