@@ -6,8 +6,6 @@ services:
     container_name: frontend
     environment:
       - PORT=8080
-      - REACT_APP_CHAT_API_URL=http://chatapi:5050/API
-      - REACT_APP_UPLOAD_API_URL=http://butcher:3030/API
     ports:
       - '8080:8080'
     networks:
