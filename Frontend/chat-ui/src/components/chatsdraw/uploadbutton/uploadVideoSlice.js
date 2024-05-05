@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const API_UPLOAD_URL = (process.env.REACT_APP_DEBUG === null || String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_UPLOAD_API_URL : '/API/upload';
+const API_UPLOAD_URL = (String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_UPLOAD_API_URL : '/API/upload';
 
 export const sendVideo = createAsyncThunk("user/UploadVideo", async ({ title, videoFile }, thunkAPI) => {
     let formData = new FormData();

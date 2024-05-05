@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const API_GET_VIDEOS_URL = (process.env.REACT_APP_DEBUG === null || String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_API_GET_VIDEOS_URL : '/API/videos';
+const API_GET_VIDEOS_URL = (String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_API_GET_VIDEOS_URL : '/API/videos';
 
 export const getVideoChats = createAsyncThunk("user/GetChatHistory", async () => {
     const res = await axios.get(API_GET_VIDEOS_URL);
