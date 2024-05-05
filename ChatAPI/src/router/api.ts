@@ -1,11 +1,11 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 
-import { ChatBot } from "../chatBot.ts"
-import { searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../searchEmbed.ts"
-import { LLMRewriteUserPrompt } from "../rewritePrompt.ts"
-import { describeImage } from '../describeImage.ts';
-import { searchForVideos } from '../searchForVideos.ts'
+import { ChatBot } from "../LLM/chatBot.ts"
+import { searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../LLM/searchEmbed.ts"
+import { LLMRewriteUserPrompt } from "../LLM/rewritePrompt.ts"
+import { describeImage } from '../LLM/describeImage.ts';
+import { searchForVideos } from '../db/searchForVideos.ts'
 
 // TODO: Add queue system to and help serivce scale better
 // LOOK AT: https://docs.bullmq.io/guide/queues/auto-removal-of-jobs

@@ -91,6 +91,7 @@ function ChatInputBox() {
                     <div
                         className='TextInput'
                         contentEditable={isLoading || isInputed ? false : true}
+                        data-placeholder="Prompt...."
                         ref={chatBox}>
                         {uploadFile ? uploadFile.name : ""}
                     </div>

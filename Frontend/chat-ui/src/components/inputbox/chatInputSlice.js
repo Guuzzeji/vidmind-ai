@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+const API_GENERATE_URL = (String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_API_GENERATE_URL : '/API/generate';
+const API_SEARCH_URL = (String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_API_SEARCH_URL : '/API/search';
+
 // ! What user should send to server for chat message
 // UserMessage = {
 //     videoID: string,
@@ -26,8 +29,8 @@ export function createBase64File(file) {
 }
 
 export const sendMessage = createAsyncThunk("user/SendChatMessage", async ({ type, videoID, prompt, imgBase64 }, thunkAPI) => {
-    const aiMessageRes = await axios.post(process.env.REACT_APP_CHAT_API_URL + '/generate', { type, videoID, prompt, imgBase64 });
-    const embedSearchRes = await axios.post(process.env.REACT_APP_CHAT_API_URL + '/search', {
+    const aiMessageRes = await axios.post(API_GENERATE_URL, { type, videoID, prompt, imgBase64 });
+    const embedSearchRes = await axios.post(API_SEARCH_URL, {
         searchFor: "image",
         searchBy: type,
         videoID: videoID,
