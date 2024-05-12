@@ -12,6 +12,7 @@ services:
       DB_PWD: ${DB_PWD}
       DB_DATABASE_NAME: VIDEO_INFOMATION
       PORT: 5050
+    command: ["pnpm", "run", "start"]
     ports:
       - '5050:5050'
     networks:
