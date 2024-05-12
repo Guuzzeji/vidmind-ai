@@ -14,5 +14,5 @@ app.register_blueprint(API)
 if __name__ == '__main__':
     logging.info("Running Server -- "
                  + "Host:" + config_env.HOST
-                 + "Port:" + config_env.PORT)
+                 + ":" + config_env.PORT)
     app.run(host=config_env.HOST, port=config_env.PORT, debug=config_env.DEBUG)

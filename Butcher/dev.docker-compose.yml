@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  butcher-dev:
+    build: .
+    container_name: butcher
+    environment:
+      WORKING_DIR: WORKSPACE
+      HOST: 127.0.0.1
+      PORT: 3030
+      DEBUG: YES
+      S3_HOST: s3-bucket:9000
+      S3_KEY: ${S3_KEY}
+      S3_PWD: ${S3_PWD}
+      S3_DEV_MODE: YES
+      S3_BUCKET_NAME: video-files
+      EMBED_QUEUE_URL: http://embeder:4040/API/add-to-queue
+
+    # Dev stuff
+    stdin_open: true
+    tty: true
+    develop:
+      watch: 
+        # sync static content
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - venv/
+            - WORKSPACE/
+            - dev.docker-compose.yml
+            - prod.docker-compose.yml
+            - .env.*
+            - .env
+            - Dockerfile
+            - .dockerignore
+    command: ["python", "app.py"]
+
+    ports:
+      - '3030:3030'
+    networks:
+      -  db_backend-net
+
+networks:
+  db_backend-net:
+    external: true

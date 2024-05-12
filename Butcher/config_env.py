@@ -2,8 +2,11 @@ import os
 import sys
 from dotenv import load_dotenv
 
-if sys.argv[1] != None:
+if len(sys.argv) == 2 and sys.argv[1] != None:
     load_dotenv(sys.argv[1])
+else:
+    # Load whatever defualt .env is for the machine
+    load_dotenv()
 
 CURRENT_PATH = os.getcwd()
 WORKING_DIR = os.getenv('WORKING_DIR')
