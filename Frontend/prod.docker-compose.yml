@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  frontend:
+  frontend-prod:
     build: .
     container_name: frontend
     environment:

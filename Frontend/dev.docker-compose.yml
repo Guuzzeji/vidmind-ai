@@ -1,0 +1,35 @@
+# Look at this https://docs.docker.com/compose/compose-file/develop/
+# https://docs.docker.com/compose/file-watch/
+# TODO [ ] Maybe put them into a .docker folder and clean them up
+# TODO [ ] Rewrite Dockerfile to not run a command at the end, instead run the command in docker compose file
+# TODO [ ] Create docker compose file for development
+
+services:
+  frontend-dev:
+    build: 
+      context: .
+      dockerfile: ./dev.Dockerfile
+    container_name: frontend
+    stdin_open: true
+    tty: true
+    develop:
+      watch: 
+        # sync static content
+        - action: sync
+          path: ./chat-ui
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./chat-ui/package.json
+          
+    environment:
+      - PORT=8080
+    ports:
+      - '8080:8080'
+    networks:
+      -  db_backend-net
+
+networks:
+  db_backend-net:
+    external: true
