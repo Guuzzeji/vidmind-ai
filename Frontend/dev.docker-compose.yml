@@ -1,8 +1,5 @@
 # Look at this https://docs.docker.com/compose/compose-file/develop/
 # https://docs.docker.com/compose/file-watch/
-# TODO [ ] Maybe put them into a .docker folder and clean them up
-# TODO [ ] Rewrite Dockerfile to not run a command at the end, instead run the command in docker compose file
-# TODO [ ] Create docker compose file for development
 
 services:
   frontend-dev:
