@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const API_GENERATE_URL = (String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_API_GENERATE_URL : '/API/generate';
-const API_SEARCH_URL = (String(process.env.REACT_APP_DEBUG).toLowerCase() === 'true') ? process.env.REACT_APP_API_SEARCH_URL : '/API/search';
+const API_GENERATE_URL = '/API/generate';
+const API_SEARCH_URL = '/API/search';
 
 // ! What user should send to server for chat message
 // UserMessage = {

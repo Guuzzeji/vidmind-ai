@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   embeder:
     build: .
@@ -17,6 +15,7 @@ services:
       PORT: 4040
     ports:
       - '4040:4040'
+    command: ["pnpm", "run", "start"]
     networks:
       -  db_backend-net
 

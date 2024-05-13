@@ -1,0 +1,32 @@
+# Look at this https://docs.docker.com/compose/compose-file/develop/
+# https://docs.docker.com/compose/file-watch/
+
+services:
+  frontend-dev:
+    build: 
+      context: .
+      dockerfile: ./dev.Dockerfile
+    container_name: frontend
+    stdin_open: true
+    tty: true
+    develop:
+      watch: 
+        # sync static content
+        - action: sync
+          path: ./chat-ui
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./chat-ui/package.json
+          
+    environment:
+      - PORT=8080
+    ports:
+      - '8080:8080'
+    networks:
+      -  db_backend-net
+
+networks:
+  db_backend-net:
+    external: true
