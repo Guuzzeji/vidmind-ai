@@ -10,9 +10,11 @@ import config_env
 from src.video.ffprobe import ffprobe
 
 import logging
-logging.basicConfig(format='%(asctime)s - %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
+
+
+VIDEO_CHOP_PERCENTAGE = 0.0065 # ~153 max frames from video
 
 
 class ContentExtractor:
@@ -26,8 +28,7 @@ class ContentExtractor:
     #! == PRIVATE ==
 
     def __create_work_folders(self, id_file: str) -> dict[str, str]:
-        vid_path = os.path.join(config_env.CURRENT_PATH,
-                                config_env.WORKING_DIR, id_file)
+        vid_path = os.path.join(config_env.CURRENT_PATH, config_env.WORKING_DIR, id_file)
 
         # Creating working folders to store clips and frames
         clips_path = os.path.join(vid_path, "clips")
@@ -52,8 +53,7 @@ class ContentExtractor:
         # Getting time segment base on %4 rule, chunk video by a percentage (0.04)
         # This will give us 50 chunks to use when processing with GPT
         video_info = ffprobe(self.vid_path)
-        seg_time = float(video_info.json.get("streams")
-                         [0].get("duration")) * 0.022
+        seg_time = float(video_info.json.get("streams")[0].get("duration")) * VIDEO_CHOP_PERCENTAGE
 
         # ffmpeg -i input.mp4 -map 0 -c copy -f segment -segment_time 1800 -reset_timestamps 1 output_%03d.mp4
         ffmpeg.option("i", self.vid_path)
@@ -126,8 +126,7 @@ class ContentExtractor:
 
         video = open_video(clip_vid_path)
         scene_manager = SceneManager()
-        scene_manager.add_detector(
-            ContentDetector(threshold=8.7, luma_only=True, min_scene_len=30*2))
+        scene_manager.add_detector(ContentDetector(threshold=8.7, luma_only=True, min_scene_len=30*2))
         scene_manager.auto_downscale = True
         scene_manager.detect_scenes(video)
         scenes = scene_manager.get_scene_list()
@@ -143,8 +142,7 @@ class ContentExtractor:
             ffmpeg.execute()
 
         else:
-            save_images(scenes, video, num_images=1,
-                        image_name_template=save_path, encoder_param=85)
+            save_images(scenes, video, num_images=1, image_name_template=save_path, encoder_param=85)
 
         img_list = os.listdir(save_folder_path)
         for img_path in img_list:
@@ -183,17 +181,13 @@ class ContentExtractor:
         logging.info("Processing each Audio Clips Video ID: " + self.id)
         for clip in self.timestamps:
             # print(clip)
-            logging.info("Processing Audio Clips Video ID: "
-                         + self.id
-                         + " ClipId:" + str(clip["id"]))
+            logging.info("Processing Audio Clips Video ID: " + self.id + " ClipId:" + str(clip["id"]))
             self.__extract_audio(
                 clip["clip_vid_path"], self.folder_location["audio_folder"], str(clip["id"]))
 
         logging.info("Processing each Frame Clips Video ID: " + self.id)
         for clip in self.timestamps:
-            logging.info("Processing Frame Clips Video ID: "
-                         + self.id
-                         + " ClipId:" + str(clip["id"]))
+            logging.info("Processing Frame Clips Video ID: " + self.id + " ClipId:" + str(clip["id"]))
             self.__extract_frames(clip["clip_vid_path"], str(clip["id"]), clip)
 
     def delete_work_folder(self):
