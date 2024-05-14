@@ -1,0 +1,15 @@
+# Calculate Pricing of idea
+
+Img tokens = 85 * 3
+85 = base cost of prompting a img
+3 = number of images
+
+
+prompt tokens = 411 + 255
+411 = cost for text prompt
+255 = cost of img prompt
+
+Overall Cost = (((0.01 / 1000)  * 666 ) *29)  + (((0.03 / 1000) * 130) *29)
+666 = prompt cost
+29 = number of requested need to do to fully read video
+130 = tokens need for generating a answer back
