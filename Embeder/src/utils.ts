@@ -18,3 +18,7 @@ export function secondsToTimestamp(convertSeconds: number): string {
         + ':' + minutes.toString().padStart(2, '0')
         + ':' + seconds.toString().padStart(2, '0');
 }
+
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
