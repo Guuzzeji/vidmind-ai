@@ -1,0 +1,34 @@
+Video Processing: {
+  Butcher -> Embedder
+}
+
+User: {
+  shape: person
+}
+
+Database: {
+  Redis Queue: {
+    shape: queue
+  }
+
+  PostgresQL: {
+    shape: cylinder
+  }
+
+  Minio S3 Bucket: {
+    shape: stored_data
+  }
+}
+
+User <-> Proxy (Nginx)
+
+Proxy (Nginx) <-> ChatAPI
+Proxy (Nginx) <-> Frontend
+Proxy (Nginx) <-> Video Processing.Butcher
+
+Video Processing.Butcher -> Database.Minio S3 Bucket
+Video Processing.Embedder <-> Database.Redis Queue
+Video Processing.Embedder -> Database.PostgresQL
+
+ChatAPI <- Database.Minio S3 Bucket
+ChatAPI <- Database.PostgresQL
