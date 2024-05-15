@@ -80,13 +80,10 @@ function ChatHistory() {
                     <DrawerFooter>
                         <Center p={2}>
                             <ButtonGroup size='sm'>
-
                                 <Button onClick={() => { dispatch(getVideoChats()); }} variant="ghost">
                                     <RepeatIcon />
                                 </Button>
-
                                 <UploadButton />
-
                             </ButtonGroup>
                         </Center>
                     </DrawerFooter>

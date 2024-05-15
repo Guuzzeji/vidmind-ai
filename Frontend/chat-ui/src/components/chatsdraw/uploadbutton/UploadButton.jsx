@@ -1,6 +1,3 @@
-import React from "react";
-import { useSelector, useDispatch } from 'react-redux';
-
 import {
     Button,
     ButtonGroup,
@@ -14,6 +11,8 @@ import {
     PopoverTrigger,
     useToast
 } from "@chakra-ui/react";
+import React from "react";
+import { useSelector, useDispatch } from 'react-redux';
 
 import { sendVideo } from './uploadVideoSlice';
 

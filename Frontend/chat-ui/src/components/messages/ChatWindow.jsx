@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import AIMessage from '../AI/AIMessage';
-import HumanMessage from '../HumanMessage';
+import AIMessage from './AI/AIMessage';
+import HumanMessage from './HumanMessage';
 
 function ChatWindow() {
     const chatMessages = useSelector((state) => state.ChatInput.messages);
