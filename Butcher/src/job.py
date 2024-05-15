@@ -9,8 +9,7 @@ from src import s3_client
 from src.video.ContentExtractor import ContentExtractor
 
 import logging
-logging.basicConfig(format='%(asctime)s - %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
 worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
@@ -33,17 +32,12 @@ async def job(video_id: str, title: str, video_path: str):
 
     # Upload files
     logging.info("S3 Upload Audio ID:" + video_id)
-    audio_urls = s3_client.upload_folder(
-        video_breakdown.folder_location["audio_folder"],
-        "audio",
-        video_id)
+    audio_urls = s3_client.upload_folder(video_breakdown.folder_location["audio_folder"], "audio", video_id)
 
     logging.info("S3 Upload Frame ID:" + video_id)
     frame_url_table = {}
     for folder in os.listdir(video_breakdown.folder_location["frame_folder"]):
-        path_subframe_folder = os.path.join(
-            video_breakdown.folder_location["frame_folder"],
-            folder)
+        path_subframe_folder = os.path.join(video_breakdown.folder_location["frame_folder"], folder)
 
         urls = s3_client.upload_folder(
             path_subframe_folder,
@@ -61,8 +55,7 @@ async def job(video_id: str, title: str, video_path: str):
 
         for frame in chunk.get("imgs_timestamps"):
             frame_copy = frame
-            frame_copy["imgUrl"] = frame_url_table[str(
-                chunk.get("id"))]['{:03d}.jpg'.format(frame_copy.get("id") + 1)]
+            frame_copy["imgUrl"] = frame_url_table[str(chunk.get("id"))]['{:03d}.jpg'.format(frame_copy.get("id") + 1)]
             frame_chunks.append(frame_copy)
 
         chunk_clip_list.append({
