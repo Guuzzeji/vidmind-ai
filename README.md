@@ -1,8 +1,12 @@
-# AI Video Analyzer System
+<p align="center">
+  <img src="./assets/giphy.gif" width="450px">
+</p>
 
-Welcome to the AI Video Analyzer System, a project meticulously crafted to explore the realms of artificial intelligence and video comprehension. Developed with a vision to revolutionize video understanding, this system ingeniously integrates the prowess of Language and Vision Models (LLM and VLM) into a unified platform. Drawing inspiration from groundbreaking research papers on Arxiv, this project embarks on a quest to decode the intricacies of hour-long videos, unraveling their essence with unparalleled precision.
+# VidMind AI (LLM + VLM Video Analyzer System)
 
-While the emergence of OpenAI's groundbreaking GPT-4o model and Google's advancements in video processing might overshadow traditional approaches, the AI Video Analyzer System stands as a testament to innovation and exploration. Despite the rapid evolution in video processing technologies, this endeavor serves as a testament to the enduring quest for knowledge and the relentless pursuit of excellence in the realm of artificial intelligence.
+Welcome to the VidMind AI, a project meticulously crafted to explore the realms of artificial intelligence and video comprehension. Developed with a vision to revolutionize video understanding, this system ingeniously integrates the prowess of Language and Vision Models (LLM and VLM) into a unified platform. Drawing inspiration from groundbreaking research papers on Arxiv, this project embarks on a quest to decode the intricacies of hour-long videos, unraveling their essence with unparalleled precision.
+
+While the emergence of OpenAI's groundbreaking GPT-4o model and Google's advancements in video processing might overshadow traditional approaches, the VidMind AI stands as a testament to innovation and exploration. Despite the rapid evolution in video processing technologies, this endeavor serves as a testament to the enduring quest for knowledge and the relentless pursuit of excellence in the realm of artificial intelligence.
 
 **Research Papers:**
 
@@ -257,3 +261,45 @@ Now you can open your web browser, type in `localhost`, and start playing around
 ## Running in Development Mode
 
 Follow the same steps as in How to Run Project, but instead of doing `docker-compose -f prod.docker-compose.yml`, do `docker-compose -f dev.docker-compose.yml` and make sure to add `--watch` at the end of the command so Docker watches for any file changes. Also, make sure you delete any running Docker images and compose groups before doing so, since the dev container uses the same name as the production ones to help save on having to rewrite stuff.
+
+## Contributing
+
+Thank you for considering contributing! Whether you're fixing a bug, improving the documentation, or adding a new feature, your contribution is greatly appreciated.
+
+### How to Contribute
+
+1. **Fork the Repository:** Start by forking the repository to your GitHub account. This will create a copy of the project in your account.
+
+2. **Clone the Repository:** Clone the forked repository to your local machine using the following command:
+   ```sh
+   git clone [this repo github url]
+   ```
+
+3. **Create a Branch:** Create a new branch for your contribution using a descriptive name. For example:
+   ```sh
+   git checkout -b [your-github-username]/new-feature
+   ```
+
+4. **Make Changes:** Make your desired changes to the codebase. Ensure that your changes adhere to the project's coding standards and conventions.
+
+5. **Commit Changes:** Once you've made your changes, commit them to your branch with a descriptive commit message:
+   ```sh
+   git commit -m "Add new feature: description of your changes"
+   ```
+
+6. **Push Changes:** Push your changes to your forked repository on GitHub:
+   ```sh
+   git push origin feature/new-feature
+   ```
+
+7. **Submit a Pull Request:** Go to the GitHub page of your forked repository and submit a pull request to the main repository's `main` branch. Provide a clear title and description for your pull request, explaining the purpose of your changes.
+
+### Code Style Guidelines
+
+- Follow the existing code style and formatting conventions used in the project.
+- Ensure that your code is well-documented, with clear comments where necessary.
+- Write meaningful commit messages that accurately describe the changes you've made.
+
+### Reporting Issues
+
+If you encounter any bugs, issues, or have suggestions for improvements, please open an issue on the issue tab of the main repository. Provide detailed information about the problem and steps to reproduce it, if applicable.
