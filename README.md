@@ -254,6 +254,6 @@ This will run the proxy service on port 80.
 
 Now you can open your web browser, type in `localhost`, and start playing around with the project.
 
-## Running in Development
+## Running in Development Mode
 
 Follow the same steps as in How to Run Project, but instead of doing `docker-compose -f prod.docker-compose.yml`, do `docker-compose -f dev.docker-compose.yml` and make sure to add `--watch` at the end of the command so Docker watches for any file changes. Also, make sure you delete any running Docker images and compose groups before doing so, since the dev container uses the same name as the production ones to help save on having to rewrite stuff.
