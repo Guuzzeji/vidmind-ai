@@ -39,7 +39,7 @@ Exclude the video title and "Visual Summary:" from your response. Always include
 
 Keep your response concise. If unable to summarize a frame, state: 'None'.`;
 
-export class VisualTranscrpitVLM {
+export class VisualTranscription {
     private title: string;
 
     constructor(title: string) {
@@ -48,7 +48,7 @@ export class VisualTranscrpitVLM {
 
     public async createVisualPrompt({ audioTranscription, imgs }: VLMPromptParms): Promise<string> {
         let audioSummary = await LLMSummarize.invoke({ textToSummarize: audioTranscription })
-        let imagePrompt = await VisualTranscrpitVLM.createImagePromptList(imgs)
+        let imagePrompt = await VisualTranscription.createImagePromptList(imgs)
 
         // for some reason you have to set prompt format like this for langchain to work
         let prompt = [
@@ -76,7 +76,7 @@ export class VisualTranscrpitVLM {
             }),
         ];
 
-        let res = await VisualTranscrpitVLM.callVLM(prompt);
+        let res = await VisualTranscription.callVLM(prompt);
         return res;
     }
 

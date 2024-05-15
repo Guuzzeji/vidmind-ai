@@ -1,7 +1,7 @@
-import { VisualTranscrpitVLM } from '../LLM/VisualTranscrpitVLM.ts';
-import { InsertDataToDB } from '../db/InsertIntoDB.ts';
-import { createTranscriptFromAudio } from '../LLM/audioTranscript.ts';
-import { embedText } from '../LLM/embed.ts';
+import { VisualTranscription } from '../LLM/VisualTranscription.ts';
+import { DBClient } from '../db/DBClient.ts';
+import { createAudioTranscript } from '../LLM/createAudioTranscript.ts';
+import { embedText } from '../LLM/embedText.ts';
 
 import { secondsToTimestamp, getBase64 } from '../utils.ts';
 import * as log from 'npmlog';
@@ -45,7 +45,7 @@ type VisualEmbed = {
 }
 
 
-export class WorkerProcess {
+export class Worker {
     private title: string;
     private clipChunks: ClipChunk[];
     private id: string;
@@ -53,20 +53,20 @@ export class WorkerProcess {
     private audio: AudioEmbed[] = [];
     private visual: VisualEmbed[] = [];
 
-    private DBClient: InsertDataToDB;
-    private VisualLLM: VisualTranscrpitVLM;
+    private DBClient: DBClient;
+    private VisualLLM: VisualTranscription;
 
     private constructor({ title, clipChunks, id, DBClient }) {
         this.title = title;
         this.clipChunks = clipChunks
         this.id = id;
         this.DBClient = DBClient;
-        this.VisualLLM = new VisualTranscrpitVLM(title)
+        this.VisualLLM = new VisualTranscription(title)
     }
 
     static async initialize({ title, clipChunks, id }: WorkDetails) {
-        let dbConnection = await InsertDataToDB.initialize();
-        return new WorkerProcess({ title, clipChunks, id, DBClient: dbConnection });
+        let dbConnection = await DBClient.initialize();
+        return new Worker({ title, clipChunks, id, DBClient: dbConnection });
     }
 
     public async doJob() {
@@ -82,7 +82,7 @@ export class WorkerProcess {
             // Preprocessing audio
             log.info("[Video Processing] Audio - ", "URL:", chunk.audioUrl, "ChunkID:", chunk.id);
             let audioFile = await getBase64(chunk.audioUrl);
-            let audioText = await createTranscriptFromAudio(audioFile);
+            let audioText = await createAudioTranscript(audioFile);
             audioText = `${secondsToTimestamp(chunk.startTime)} to ${secondsToTimestamp(chunk.endTime)} - ${audioText}`;
             let audioEmbed = await embedText(audioText)
             this.audio.push({

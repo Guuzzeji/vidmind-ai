@@ -50,16 +50,16 @@ const DB_POOL = new Pool({
     port: process.env.DB_PORT
 });
 
-export class InsertDataToDB {
+export class DBClient {
     private dbClient: pkg.PoolClient;
 
     private constructor(dbClient: pkg.PoolClient) {
         this.dbClient = dbClient;
     }
 
-    public static async initialize(): Promise<InsertDataToDB> {
+    public static async initialize(): Promise<DBClient> {
         let client = await DB_POOL.connect()
-        return new InsertDataToDB(client);
+        return new DBClient(client);
     }
 
     public async addVideoMetadata({ id, title, numOfClips }: VideoMetadataSQLParms) {
