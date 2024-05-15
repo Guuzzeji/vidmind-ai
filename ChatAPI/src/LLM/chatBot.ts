@@ -3,7 +3,7 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import 'dotenv/config'
 
-import { searchAudioEmbed, searchVisualEmbed, convertDBEmbedResultToString, DBEmbedResult } from "./searchEmbed.ts"
+import { searchAudioEmbed, searchVisualEmbed, convertDBEmbedResultToString, DBEmbedResult } from "../db/searchEmbed.ts"
 import { LLMSummarize } from "./summarize.ts"
 
 export type AIChatMessage = {
@@ -58,7 +58,7 @@ User Current Prompt:
 
 const answerUserPrompt = chatBotPrompt.pipe(GPT).pipe(new StringOutputParser())
 
-export async function ChatBot({ videoID, userPrompt, chatHistory = [] }: ChatBotParms): Promise<AIChatMessage> {
+export async function chatBot({ videoID, userPrompt, chatHistory = [] }: ChatBotParms): Promise<AIChatMessage> {
     let audioInfomation = await searchAudioEmbed({ videoID, query: userPrompt })
     let visualInfomation = await searchVisualEmbed({ videoID, query: userPrompt })
 

@@ -9,6 +9,8 @@ import 'dotenv/config'
 
 import { ApiRouter } from './src/router/api.ts';
 
+console.log("[BOOTUP] ChatAPI is running on port --> " + process.env.PORT)
+
 const app = express();
 
 app.use(morgan('tiny'))
