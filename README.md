@@ -1,137 +1,149 @@
 # AI Video Analyzer System
 
-AI Video Analyzer System is a system I develop to see if it is possible to recreate a AI system that can fully understand hour long videos, combing the power of both a LLM and VLM into one system. It is base heavy off of these two research papers I found on Arxiv. This project is kind of point less since OpenAI new model GPT-4o and Google will have video processing support and seems faster when it comes to video processing and analysis.
+Welcome to the AI Video Analyzer System, a project meticulously crafted to explore the realms of artificial intelligence and video comprehension. Developed with a vision to revolutionize video understanding, this system ingeniously integrates the prowess of Language and Vision Models (LLM and VLM) into a unified platform. Drawing inspiration from groundbreaking research papers on Arxiv, this project embarks on a quest to decode the intricacies of hour-long videos, unraveling their essence with unparalleled precision.
+
+While the emergence of OpenAI's groundbreaking GPT-4o model and Google's advancements in video processing might overshadow traditional approaches, the AI Video Analyzer System stands as a testament to innovation and exploration. Despite the rapid evolution in video processing technologies, this endeavor serves as a testament to the enduring quest for knowledge and the relentless pursuit of excellence in the realm of artificial intelligence.
 
 **Research Papers:**
 
-* MM-VID: Advancing Video Understanding with GPT-4V(ision) : https://arxiv.org/abs/2310.19773
-* MM-REACT: Prompting ChatGPT for Multimodal Reasoning and Action : https://arxiv.org/abs/2303.11381
-* Multimodal prompting with a 44-minute movie | Gemini 1.5 Pro Demo : https://youtu.be/wa0MT8OwHuk?si=ySvZBe81Zr3a4Q3z
+- MM-VID: Advancing Video Understanding with GPT-4V(ision): [Link](https://arxiv.org/abs/2310.19773)
+- MM-REACT: Prompting ChatGPT for Multimodal Reasoning and Action: [Link](https://arxiv.org/abs/2303.11381)
+- VideoPrism: A Foundational Visual Encoder for Video Understanding: [Link](https://arxiv.org/abs/2402.13217)
+- Multimodal prompting with a 44-minute movie | Gemini 1.5 Pro Demo: [Link](https://youtu.be/wa0MT8OwHuk?si=ySvZBe81Zr3a4Q3z)
 
-The goal of this project was to see if I could recreate the ideas found in theses paper and also have a tool that allows me to quickly search through long form lecture videos to help aid in note taking and studying.
+The goal of this project was to see if I could recreate the ideas found in these papers and also have a tool that allows me to quickly search through long-form lecture videos to help aid in note-taking and studying.
 
-This project is primary powered use OpenAI GPT-4 model.
+This project is primarily powered by OpenAI GPT-4V model.
 
 >[!NOTE]
->As of now this project is kind of out of date, since OpenAI just release the GPT-4o model, I'm currently working on getting that working can see this in the roadmap secetion.
+>As of now, this project is somewhat out of date, since OpenAI just released the GPT-4o model. I'm currently working on getting that working, which can be seen in the roadmap section.
 
 **Cost to Run Project**
 
-The average cost to run this model is kind of expensive since we are doing a lot of calls to GPT-4, but there is currently a solutuon to limt that cost. The average cost for a hour long video is about $3 to $5. Additionaly the processing time for a long video is about 7 minutes on average.  
+The average cost to run this model is somewhat expensive since we are making a lot of calls to GPT-4, but there is currently a solution to limit that cost. The average cost for an hour-long video is about $3 to $5. Additionally, the processing time for a long video is about 7 minutes on average.
 
-### Features & Screenshots
+## Features & Demo
 
-**Features that are currentlty impimemented:**
+**Features that are currently implemented:**
 
-* Frontend UI that allows for uploading of videos & chatting between different videos, similar to ChatGPT interface
-* Functionaly ChatAPI that access a vector database when creating responese from a video
-* Video processing and embedding done by OpenAI
-* Queuing done my Redis + Bull to handle multiply video processing jobs
+- Frontend UI that allows for uploading of videos & chatting between different videos, similar to ChatGPT interface
+- Functional ChatAPI that accesses a vector database when creating responses from a video
+- Video processing and embedding done by OpenAI
+- Queuing done by Redis + Bull to handle multiple video processing jobs
 
 **Video Demo**
 
-### How Project Works
+## How Project Works
 
-**Outline Digram**
+### System Digram
 
 ![digram](./assets/d2.png)
 
-This whole porject is built around the idea of micro-serivces, allow for easy development and managment of individual serivces.
+This whole project is built around the idea of micro-services, allowing for easy development and management of individual services.
 
-Here is a list of what each serivce does:
+Here is a list of what each service does:
 
-#### Database
+### Database
 
-Store the Redis queue used by the Embedder, along with our S3 bucket (Minio S3) and PostgresSQL database that store video infomation and vector for audio and frame data from a video. The PostgresSQL also store the links to files from the S3 bucket making file fetching easier.
+Stores the Redis queue used by the Embedder, along with our S3 bucket (Minio S3) and PostgresSQL database that store video information and vectors for audio and frame data from a video. The PostgresSQL also stores the links to files from the S3 bucket making file fetching easier.
 
-**Tech Break Down:**
+**Tech Breakdown:**
 
-* Redis: Used for queue mangament
-* PostgresSQL: Store video infomation and embedding vectors
-* Minio S3: Used to store video chunks and other files generated by processing a video
+- Redis: Used for queue management
+- PostgresSQL: Stores video information and embedding vectors
+- Minio S3: Used to store video chunks and other files generated by processing a video
 
-#### ChatAPI
+### ChatAPI
 
 Grabs data from the PostgresSQL vector store and then gives it to OpenAI GPT-3.5 model to create chat messages for the user. It also allows for searching of the PostgresSQL vector store, able to get back audio transcriptions and key frames from the video.
 
+**Tech Breakdown:**
 
-**Tech Break Down:**
+- Node.js + TS + Express: Used to create a simple REST API
 
-* Node.js + TS + Express: Used to create a simple REST API
+### Butcher
 
-#### Butcher
+This service processes the video into chunks (we aim to create 50 chunks from a video, so if we have a 1-hour-long video, we should get 50 chunks that are 1 minute per chunk). And from those chunks, we then start extracting audio and key frames that we will then give to the Embedder for processing with GPT-4 model and creating embeddings for us to put into the PostgresSQL vector store.
 
-This serivce of porcessing the video into chunks (we aim to create 50 chunks from a video, so if we have a 1 hour long video, we should get 50 chunks that are 1 minute per chunk). And from those chunks we then start extracting audio and key frames that we will then give to the Embedder for processing with GPT-4 model and creating embeddings for us to put into PostgresSQL vector store.
+**Tech Breakdown:**
 
-**Tech Break Down:**
+- Python + Flask: Handle uploads of files and create an HTTP API that can be used
+- FFMPEG: Chunking videos into segments that can be further processed
+- PySceneDetect: Getting the most important frames from a video chunk
 
-* Python + Flask: Handle uploads of files and create HTTP API that can be used
-* FFMPEG: Chunking videos into segments that can be futher porcessed
-* PySceneDetect: Getting the most import frames from a video chunk
+**Notes**
 
-#### Embedder
+How to calculate total video chunks and the number of seconds for video chunk:
 
-This serivce takes a JSON that store all the data created by the Butcher and then adds it to a job queue in Redis. It when pulls from that job queue and then tries to process all the infomation gather about the video and gives it to GPT-4 to try and create a detail description for each key frame we were able to find. We then embed all that infomation and store it into the PostgresSQL vector store for use by the ChatAPI
+Percentage can be, for example, 0.002, which is 2%
 
-**Tech Break Down:**
+Total time seconds / (total time seconds * percentage) = number of clips
 
-* Node.js + TS + Express: Used to create a simple REST API
-* BULL: Mange Redis queue 
-* LangChain: Handle prompts and embeding 
+Total time seconds * percentage = number of seconds per clip
 
-#### Frontend
+### Embedder
+
+This service takes a JSON that stores all the data created by the Butcher and then adds it to a job queue in Redis. It then pulls from that job queue and tries to process all the information gathered about the video and gives it to GPT-4 to try and create a detailed description for each key frame we were able to find. We then embed all that information and store it into the PostgresSQL vector store for use by the ChatAPI
+
+**Tech Breakdown:**
+
+- Node.js + TS + Express: Used to create a simple REST API
+- BULL: Manage Redis queue 
+- LangChain: Handle prompts and embedding 
+
+### Frontend
 
 A simple react-app used to interact with all systems and make it easy to use. Trying to copy ChatGPT interface.
 
-**Tech Break Down:**
+**Tech Breakdown:**
 
-* React
-* serve: Spin up a static React server
+- React
+- Serve: Spin up a static React server
 
-#### Proxy
+### Proxy
 
-We use a reverve proxy to help manage connections between someone wanting to use this system and connecting each individual micro-serivce.
+We use a reverse proxy to help manage connections between someone wanting to use this system and connecting each individual micro-service.
 
-**Tech Break Down:**
+**Tech Breakdown:**
 
-* Nginx
+- Nginx
 
 ## Roadmap & Future Ideas
 
 **Todo list of features:**
 
-- [ ] Need to implement Batch API, which will allow for bigger video inputs and 50% cost cut This will make video processing time take lonerg more then the 7 minutes average, however, this will save on cost by 50% and allow for less rate limitng errors.
-  - [ ] Expand out frame processing to be 150 video chinks instead of 50 video chunks
-  - [ ] Use batching API for video processing
-  - [ ] Use batching API for embedding job
+- [ ] Need to implement Batch API, which will allow for bigger video inputs and 50% cost cut. This will make video processing time take longer than the 7 minutes average, however, this will save on cost by 50% and allow for less rate limiting errors.
+  - [ ] Expand out frame processing to be 150 video chunks instead of 50 video chunks.
+  - [ ] Use batching API for video processing.
+  - [ ] Use batching API for embedding job.
   
-- [ ] Use new GPT-4o model for video porcessing of frames from a video
-- [ ] Cleanup ChatAPI to be more friendly to use and allow other to use the API for there own projects
+- [ ] Use new GPT-4o model for video processing of frames from a video.
+- [ ] Cleanup ChatAPI to be more friendly to use and allow others to use the API for their own projects.
 
 **Todo list of experimental ideas:**
 
-- [ ] Rewite prompts to see if we can gain improve GPT responese 
-- [ ] Try using GPT-4 for ChatAPI
-- [ ] Try converting system to use open source models 
-- [ ] Abstract microserivces to call a custom AI serivce that allows the how system to not care which AI model is being used, allowing for more flexble with the use of open source and other AI models.
-- [ ] Figure out a better development expereinece 
+- [ ] Rewrite prompts to see if we can improve GPT response.
+- [ ] Try using GPT-4 for ChatAPI.
+- [ ] Try converting system to use open-source models.
+- [ ] Abstract microservices to call a custom AI service that allows the whole system to not care which AI model is being used, allowing for more flexibility with the use of open-source and other AI models.
+- [ ] Figure out a better development experience.
 
 ## How to Run Project
 
 ### Requirements
 
-You must have docker install on your machine in order to run this project
+You must have Docker installed on your machine in order to run this project.
 
 ### Steps to Run Project
 
-#### 1. Clone repo and change directior into it
+#### 1. Clone the repository and change directory into it
 
 ```sh
 git clone [this repo]
 cd ai-video-analyzer-system
 ```
 
-#### 2. cd into `db` folder and create the following `.env` file
+#### 2. Navigate into the `db` folder and create the following `.env` file
 
 ```txt
 POSTGRES_USER=your_username
@@ -139,47 +151,48 @@ POSTGRES_PASSWORD=your_password
 POSTGRES_HOST_AUTH_METHOD=trust
 
 MINIO_ROOT_USER=your_username
-
-IMPORTANT: pwd should be at least 8 char long for minio to work properly
 MINIO_ROOT_PASSWORD=your_password 
 ```
 
-We will need to crete a .env and store the password to it so we can access through our other serivces that need the database stuff.
+>[!IMPORTANT] 
+>password should be at least 8 char long for MinIO to work properly
 
-#### 3. Now run the following command to have docker run the databases
+We need to create a `.env` file and store the password in it so that we can access it through our other services requiring database credentials.
+
+#### 3. Now, execute the following command to instruct Docker to run the databases:
 
 ```sh
 docker-compose --env-file .env up 
 ```
 
-This will run a Postgress Databse and Minio S3 bucket, along with Redis, for you.
+This command will initiate a PostgreSQL database, a Minio S3 bucket, and Redis for you.
 
-#### 4. Now we need to setup our S3 bucket to accept requests made to it
+#### 4. Now we need to set up our S3 bucket to accept requests made to it.
 
-Open up your web browser and go to `localhost:9001` and use the same password and username you create in the `.env` file store in the `db` folder under MINIO. Now that you are long in there should only be one bucket called `video-files`, can on the setting icon and then go to create access key. Please save that key somewhere safe or just rememeber it since we will need it later.
+Open your web browser and navigate to `localhost:9001`. Use the same username and password you created in the `.env` file stored in the `db` folder under MINIO. Once logged in, you should see only one bucket called `video-files`. Click on the settings icon and then proceed to create an access key. Please save that key somewhere safe or simply remember it since we will need it later.
 
-If you need more help setting up minio go to https://min.io/docs/minio/container/index.html 
+If you need more assistance setting up Minio, visit [this link](https://min.io/docs/minio/container/index.html).
 
-#### 5. Now we can start running our micro-serivces. The first one we are going to run is the Butcher
+#### 5. Now we can start running our microservices. The first one we are going to run is the Butcher.
 
-change directories back to the root of the project and then cd into `Butcher` and create the following `.env` file:
+Change directories back to the root of the project and then `cd` into the `Butcher` directory. Create the following `.env` file:
 
 ```txt
 S3_KEY=the_minio_key_from_before
 S3_PWD=the_minio_pwd_from_before
 ```
 
-Then run the following docker compose command:
+Then run the following Docker Compose command:
 
 ```sh
 docker-compose -f ./prod.docker-compose.yml --env-file .env up 
 ```
 
-This will run the Butcher serivce on port 3030
+This will run the Butcher service on port 3030.
 
-#### 6. Next one we are going to run is the Embedder
+#### 6. Next, we are going to run the Embedder.
 
-change directories back to the root of the project and then cd into `Embedder` and create the following `.env` file:
+Change directories back to the root of the project and then `cd` into the `Embedder` directory. Create the following `.env` file:
 
 ```txt
 OPENAI_API_KEY=your_openai_key
@@ -187,17 +200,17 @@ DB_USER=username_used_when_creating_db
 DB_PWD=pwd_used_when_creating_db
 ```
 
-Then run the following docker compose command:
+Then run the following Docker Compose command:
 
 ```sh
 docker-compose -f ./prod.docker-compose.yml --env-file .env up 
 ```
 
-This will run the Butcher Embedder on port 4040
+This will run the Embedder service on port 4040.
 
-#### 7. Next one we are going to run is the ChatAPI
+#### 7. Next, we are going to run the ChatAPI.
 
-change directories back to the root of the project and then cd into `ChatAPI` and create the following `.env` file:
+Change directories back to the root of the project and then `cd` into the `ChatAPI` directory. Create the following `.env` file:
 
 ```txt
 OPENAI_API_KEY=your_openai_key
@@ -205,42 +218,42 @@ DB_USER=username_used_when_creating_db
 DB_PWD=pwd_used_when_creating_db
 ```
 
-Then run the following docker compose command:
+Then run the following Docker Compose command:
 
 ```sh
 docker-compose -f ./prod.docker-compose.yml --env-file .env up 
 ```
 
-This will run the ChatAPI serivce on port 5050
+This will run the ChatAPI service on port 5050.
 
-#### 8. Next one we are going to run is the Frontend
+#### 8. Next, we are going to run the Frontend.
 
-change directories back to the root of the project and then cd into `Frontend`.
+Change directories back to the root of the project and then `cd` into `Frontend`.
 
-Then run the following docker compose command:
+Then run the following Docker Compose command:
 
 ```sh
 docker-compose -f ./prod.docker-compose.yml up 
 ```
 
-This will run the Frontend serivce on port 8080
+This will run the Frontend service on port 8080.
 
-#### 9. Next one we are going to run is the Nginx Proxy to connect everything together
+#### 9. Next, we are going to run the Nginx Proxy to connect everything together.
 
-change directories back to the root of the project and then cd into `proxy`.
+Change directories back to the root of the project and then `cd` into `proxy`.
 
-Then run the following docker compose command:
+Then run the following Docker Compose command:
 
 ```sh
 docker-compose up 
 ```
 
-This will run the proxy serivce on port 80
+This will run the proxy service on port 80.
 
-#### 10. Now you are all setup! (I know it a lot, will try to fix this)
+#### 10. Now you are all set up! (I know it's a lot, will try to fix this)
 
-Now you can go into your web browser type in `localhost` and start playing around with the project
+Now you can open your web browser, type in `localhost`, and start playing around with the project.
 
 ## Running in Development
 
-Follow the same steps as in How to Run Project, but instead of doing `docker-compose -f prod.docker-compose.yml` do `docker-compose -f dev.docker-compose.yml` and make sure to add `--watch` at the end of command so docker watches for any file changes. Also make sure you delete and running docker image and compose groups before doing so, since the dev container use the same name as the production ones to help save on having to rewrite stuff.
+Follow the same steps as in How to Run Project, but instead of doing `docker-compose -f prod.docker-compose.yml`, do `docker-compose -f dev.docker-compose.yml` and make sure to add `--watch` at the end of the command so Docker watches for any file changes. Also, make sure you delete any running Docker images and compose groups before doing so, since the dev container uses the same name as the production ones to help save on having to rewrite stuff.
