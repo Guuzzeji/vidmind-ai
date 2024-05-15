@@ -1,3 +1,10 @@
+# Docker
+https://docs.docker.com/compose/use-secrets/
+https://geshan.com.np/blog/2022/01/redis-docker/
+https://stackoverflow.com/questions/29377853/how-can-i-use-environment-variables-in-docker-compose
+https://stackoverflow.com/questions/77355287/adding-local-minio-host-to-mc-configuration-failed-to-add-temporary-minio-ser
+https://medium.com/@randy.hamzah.h/running-minio-server-with-docker-compose-54bab3afbe31
+
 # FFmpeg
 This will create frame strip that will can use, frames are base on thumbnail model
 ffmpeg -i output_010.mp4 -vf "thumbnail,tile=6x1" -frames:v 1 -qscale:v 1 THUMBNAIL.png
