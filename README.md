@@ -2,7 +2,11 @@
   <img src="./assets/giphy.gif" width="450px">
 </p>
 
-# VidMind AI (LLM + VLM Video Analyzer System)
+<h1 align="center">VidMind AI</h1>
+
+<p align="center">
+   <i>LLM + VLM Video Analyzer System</i>
+</p>
 
 Welcome to the VidMind AI, a project meticulously crafted to explore the realms of artificial intelligence and video comprehension. Developed with a vision to revolutionize video understanding, this system ingeniously integrates the prowess of Language and Vision Models (LLM and VLM) into a unified platform. Drawing inspiration from groundbreaking research papers on Arxiv, this project embarks on a quest to decode the intricacies of hour-long videos, unraveling their essence with unparalleled precision.
 
@@ -26,7 +30,7 @@ This project is primarily powered by OpenAI GPT-4V model.
 
 The average cost to run this model is somewhat expensive since we are making a lot of calls to GPT-4, but there is currently a solution to limit that cost. The average cost for an hour-long video is about $3 to $5. Additionally, the processing time for a long video is about 7 minutes on average.
 
-## Features & Demo
+## 🤩 Features & Demo
 
 **Features that are currently implemented:**
 
@@ -37,7 +41,7 @@ The average cost to run this model is somewhat expensive since we are making a l
 
 **Video Demo**
 
-## How Project Works
+## 👀 How Project Works
 
 ### System Digram
 
@@ -112,7 +116,7 @@ We use a reverse proxy to help manage connections between someone wanting to use
 
 - Nginx
 
-## Roadmap & Future Ideas
+## 🎯 Roadmap & Future Ideas
 
 **Todo list of features:**
 
@@ -132,7 +136,7 @@ We use a reverse proxy to help manage connections between someone wanting to use
 - [ ] Abstract microservices to call a custom AI service that allows the whole system to not care which AI model is being used, allowing for more flexibility with the use of open-source and other AI models.
 - [ ] Figure out a better development experience.
 
-## How to Run Project
+## 🏃‍♂️ How to Run Project
 
 ### Requirements
 
@@ -258,11 +262,11 @@ This will run the proxy service on port 80.
 
 Now you can open your web browser, type in `localhost`, and start playing around with the project.
 
-## Running in Development Mode
+### Running in Development Mode
 
 Follow the same steps as in How to Run Project, but instead of doing `docker-compose -f prod.docker-compose.yml`, do `docker-compose -f dev.docker-compose.yml` and make sure to add `--watch` at the end of the command so Docker watches for any file changes. Also, make sure you delete any running Docker images and compose groups before doing so, since the dev container uses the same name as the production ones to help save on having to rewrite stuff.
 
-## Contributing
+## 😎 Contributing
 
 Thank you for considering contributing! Whether you're fixing a bug, improving the documentation, or adding a new feature, your contribution is greatly appreciated.
 
