@@ -148,7 +148,7 @@ You must have Docker installed on your machine in order to run this project.
 
 ```sh
 git clone [this repo]
-cd ai-video-analyzer-system
+cd vidmind-ai
 ```
 
 #### 2. Navigate into the `db` folder and create the following `.env` file
