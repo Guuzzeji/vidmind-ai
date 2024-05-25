@@ -39,7 +39,11 @@ The average cost to run this model is somewhat expensive since we are making a l
 - Video processing and embedding done by OpenAI
 - Queuing done by Redis + Bull to handle multiple video processing jobs
 
-**Video Demo**
+**Screenshots**
+
+![Screenshot-1](./assets/Screenshot-1.png)
+
+![Screenshot-2](./assets/Screenshot-2.png)
 
 ## 👀 How Project Works
 
