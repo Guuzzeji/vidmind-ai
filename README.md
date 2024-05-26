@@ -45,6 +45,10 @@ The average cost to run this model is somewhat expensive since we are making a l
 
 ![Screenshot-2](./assets/Screenshot-2.png)
 
+**YouTube Demo**
+
+[![youtube_video_of_project](https://img.youtube.com/vi/KphE5YEqWJQ/0.jpg)](https://www.youtube.com/watch?v=KphE5YEqWJQ)
+
 ## 👀 How Project Works
 
 ### System Digram
