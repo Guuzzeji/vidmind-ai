@@ -47,7 +47,9 @@ The average cost to run this model is somewhat expensive since we are making a l
 
 **YouTube Demo**
 
-[![youtube_video_of_project](https://img.youtube.com/vi/KphE5YEqWJQ/0.jpg)](https://www.youtube.com/watch?v=KphE5YEqWJQ)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=KphE5YEqWJQ"><img alt="youtube_video_of_project" src="https://img.youtube.com/vi/KphE5YEqWJQ/0.jpg" width="450px"></a>
+</p>
 
 ## 👀 How Project Works
 
