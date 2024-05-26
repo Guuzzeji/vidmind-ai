@@ -1,18 +1,17 @@
-import React, { useEffect } from 'react';
 import {
     Box,
     Container,
     Flex,
     Text,
 } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import './Main.css';
 
 import ChatInputBox from '../../components/inputbox/ChatInputBox';
-import ChatHistory from '../../components/chatsdraw/ChatDraw';
-import ChatWindow from '../../components/messages/window/ChatWindow';
-
-import { useSelector } from 'react-redux';
+import ChatHistory from '../../components/chatsdraw/ChatHistory';
+import ChatWindow from '../../components/messages/ChatWindow';
 
 function Main() {
     const videoTitle = useSelector((state) => {

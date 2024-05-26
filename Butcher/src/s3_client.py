@@ -17,7 +17,7 @@ client = Minio(config_env.S3_HOST,
 # From: https://min.io/docs/minio/linux/developers/python/API.html#set_bucket_policy
 # https://thomascenni.com/blog/minio-bucket-anonymous-download/
 # Set bucket policy to read only
-policy = {
+POLICY = {
     "Statement": [{
         "Action": ["s3:GetBucketLocation"],
         "Effect": "Allow",
@@ -36,7 +36,7 @@ policy = {
     "Version": "2012-10-17"
 }
 
-client.set_bucket_policy(BUCKET_NAME, json.dumps(policy))
+client.set_bucket_policy(BUCKET_NAME, json.dumps(POLICY))
 
 
 def upload_file(s3_folder_id: str, file_source: str, file_name: str, folder_name: str) -> str:

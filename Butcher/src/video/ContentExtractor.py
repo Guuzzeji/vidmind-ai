@@ -10,8 +10,7 @@ import config_env
 from src.video.ffprobe import ffprobe
 
 import logging
-logging.basicConfig(format='%(asctime)s - %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
 
@@ -126,8 +125,7 @@ class ContentExtractor:
 
         video = open_video(clip_vid_path)
         scene_manager = SceneManager()
-        scene_manager.add_detector(
-            ContentDetector(threshold=8.7, luma_only=True, min_scene_len=30*2))
+        scene_manager.add_detector(ContentDetector(threshold=8.7, luma_only=True, min_scene_len=30*2))
         scene_manager.auto_downscale = True
         scene_manager.detect_scenes(video)
         scenes = scene_manager.get_scene_list()
@@ -143,8 +141,7 @@ class ContentExtractor:
             ffmpeg.execute()
 
         else:
-            save_images(scenes, video, num_images=1,
-                        image_name_template=save_path, encoder_param=85)
+            save_images(scenes, video, num_images=1, image_name_template=save_path, encoder_param=85)
 
         img_list = os.listdir(save_folder_path)
         for img_path in img_list:
@@ -183,17 +180,13 @@ class ContentExtractor:
         logging.info("Processing each Audio Clips Video ID: " + self.id)
         for clip in self.timestamps:
             # print(clip)
-            logging.info("Processing Audio Clips Video ID: "
-                         + self.id
-                         + " ClipId:" + str(clip["id"]))
+            logging.info("Processing Audio Clips Video ID: " + self.id + " ClipId:" + str(clip["id"]))
             self.__extract_audio(
                 clip["clip_vid_path"], self.folder_location["audio_folder"], str(clip["id"]))
 
         logging.info("Processing each Frame Clips Video ID: " + self.id)
         for clip in self.timestamps:
-            logging.info("Processing Frame Clips Video ID: "
-                         + self.id
-                         + " ClipId:" + str(clip["id"]))
+            logging.info("Processing Frame Clips Video ID: " + self.id + " ClipId:" + str(clip["id"]))
             self.__extract_frames(clip["clip_vid_path"], str(clip["id"]), clip)
 
     def delete_work_folder(self):

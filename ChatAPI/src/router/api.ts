@@ -1,8 +1,8 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 
-import { ChatBot } from "../LLM/chatBot.ts"
-import { searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../LLM/searchEmbed.ts"
+import { chatBot } from "../LLM/chatBot.ts"
+import { searchAudioEmbed, searchVisualEmbed, searchVisualEmbedForImages } from "../db/searchEmbed.ts"
 import { LLMRewriteUserPrompt } from "../LLM/rewritePrompt.ts"
 import { describeImage } from '../LLM/describeImage.ts';
 import { searchForVideos } from '../db/searchForVideos.ts'
@@ -33,7 +33,7 @@ ApiRouter.post("/generate", async function (req, res) {
             userPrompt = await describeImage(parms.imgBase64)
         }
 
-        let message = await ChatBot({ videoID: parms.videoID, userPrompt: userPrompt, chatHistory: parms.chatHistory })
+        let message = await chatBot({ videoID: parms.videoID, userPrompt: userPrompt, chatHistory: parms.chatHistory })
         res.send(message)
 
     } catch (error) {
@@ -88,6 +88,7 @@ ApiRouter.post("/search", async function (req, res) {
     }
 })
 
+// Just get a list of videos that are available to chat with
 ApiRouter.get("/videos", async function (req, res) {
     try {
         let videos = await searchForVideos();

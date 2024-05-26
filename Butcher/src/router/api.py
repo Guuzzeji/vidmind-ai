@@ -12,6 +12,7 @@ import logging
 logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
 
+# Cleaning up workspace
 path_to_workdir = os.path.join(config_env.CURRENT_PATH, config_env.WORKING_DIR)
 if os.path.exists(path_to_workdir):
     shutil.rmtree(path_to_workdir)
@@ -49,24 +50,18 @@ def handle_video_dl():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file_id = str(uuid.uuid1())
-            logging.info("File Setup - "
-                         + "File ID:" + file_id
-                         + " Filename:" + filename)
+            logging.info("File Setup - " + "File ID:" + file_id + " Filename:" + filename)
 
             # Creating working folder
             file_path = os.path.join(
                 config_env.CURRENT_PATH, config_env.WORKING_DIR, file_id)
             os.mkdir(file_path)
 
-            logging.info("File Download to Server - "
-                         + "File ID:" + file_id
-                         + " Filename:" + filename)
+            logging.info("File Download to Server - " + "File ID:" + file_id + " Filename:" + filename)
             video_path = os.path.join(file_path, filename)
             file.save(video_path)
 
-            logging.info("Chopping Video - "
-                         + "File ID:" + file_id
-                         + " Filename:" + filename)
+            logging.info("Chopping Video - " + "File ID:" + file_id + " Filename:" + filename)
             run_job(file_id, title, video_path)
 
             return {
